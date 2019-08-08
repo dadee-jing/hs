@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.duge.mapper.ConfigDataMapper">
+
+    <resultMap type="ConfigData" id="ConfigDataResult">
+        <result property="id" column="id"/>
+        <result property="key" column="key"/>
+        <result property="value" column="value"/>
+    </resultMap>
+
+    <sql id="selectDataVo">
+        select id, `key`, `value` from config_data
+    </sql>
+
+    <select id="selectDataList" parameterType="ConfigData" resultMap="ConfigDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="key != null  and key != '' ">and `key` = #{key}</if>
+            <if test="value != null ">and `value` = #{value}</if>
+        </where>
+    </select>
+
+    <select id="getConfigValue" parameterType="java.lang.String" resultType="java.lang.String">
+        select `value` from config_data where `key` = #{key}
+    </select>
+
+    <select id="selectDataById" parameterType="Long" resultMap="ConfigDataResult">
+        <include refid="selectDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertData" parameterType="ConfigData">
+        insert into config_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="key != null  and key != ''  ">`key`,</if>
+            <if test="value != null  ">`value`,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="key != null  and key != ''  ">`key`,</if>
+            <if test="value != null  ">`value`,</if>
+        </trim>
+    </insert>
+
+    <update id="updateData" parameterType="ConfigData">
+        update config_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="key != null  and key != ''  ">`key`,</if>
+            <if test="value != null  ">`value`,</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDataById" parameterType="Long">
+        delete from config_data where id = #{id}
+    </delete>
+
+    <delete id="deleteDataByIds" parameterType="String">
+        delete from config_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

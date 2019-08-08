@@ -1,0 +1,37 @@
+部署流程:
+
+按照分配的ip，工控机增加一个联通的IP，设置掩码，网关，参考设备ip表excel。
+
+通过大华的设备搜查器，按分配的ip，将球机的IP设为联通的ip，设置掩码，网关，参考设备ip表excel。
+
+添加强制路由，cmd，执行口令 route add 19.0.0.0 mask 255.0.0.0 19.201.27.254 -p
+
+工控机ping 19.201.27.254网关，看看光纤线路是否正常
+
+记下网卡mac地址
+
+win+R,regedit修改注册表，HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\Tds\tcp ，双击PortNumber文件，切换到十进制，默认是3389，将他修改为10000；HKEY_LOCAL_MACHINE\SYSTEM\CurrentContro1Set\Control\Tenninal Server\WinStations\RDP-Tcp，修改PortNumber的值为10000;
+
+新建目录 d:/deploy，将mysql安装程序，ry.sql ，station.jar， station_application.bat等部署所需拷到目录下
+
+执行vcredist_x64.exe,安装 windows visual c++ 2013库
+
+安装mysql，注意只勾选mysql server即可，其他不用安装，设置用户/密码 admin/123456
+
+安装navicat，破解
+
+新建数据库ry，并执行ry.sql,
+
+根据站点设备ip表excel，在equipment_status表添加该站点的设备ip
+
+！！修改 config.properties，修改station_id,和其他ip信息，确保ip正确和数据库配置正确，确认其他站点设备ip配置正确，如新流向将数据上送ip设为工控机的ip！！
+
+上面两个配置文件修改后，winrar打开station.jar,/BOOT-INF/classes目录，替换
+
+启动station_application.bat，查看日志是否有问题
+
+修改数据库config_data表中do_upload_tag项，值为1时表示打开上传
+
+确认无问题后，右键station_application.bat新建快捷方式，并拷贝到开始 启动目录，确保上送程序设置为开机启动
+
+重启工控机，确认自启动程序生效

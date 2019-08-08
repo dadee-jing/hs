@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div id="traffic-chat" style="width: 100%;height:400px; padding: 20px 0;">
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="over-chat" style="width: 100%;height:400px; padding: 20px 0;">
+
+        </div>
+    </div>
+</div>
+
+
+<div th:include="include :: footer"></div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/ajax/libs/echart/echarts.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        // 基于准备好的dom，初始化echarts实例
+        var trafficChat = echarts.init(document.getElementById('traffic-chat'));
+        var data = [];
+        var d = new Date();
+        for(var i= 0; i < d.getDate(); i++ ){
+            data.push((d.getMonth()+1) + "." + (i+1));
+        }
+        option = {
+            title: {
+                text: '月度车流量',
+                left: 'left'
+            },
+            xAxis: {
+                type: 'category',
+                data: data,
+            },
+            yAxis: {
+                type: 'value'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '0%',
+                right: '0%',
+                bottom: '0%',
+                containLabel: true
+            },
+            legend: {
+                data:['德胜大桥下桥位','五沙大桥东']
+            },
+            series: [{
+                name:'德胜大桥下桥位',
+                data: [820, 932, 901, 934, 1290, 1330, 1320,820, 932, 901, 934, 1290, 1300, 1830,820, 932, 901, 934, 1290, 1330, 1320,1320,1320,1320],
+                type: 'line'
+            },{
+                name:'五沙大桥东',
+                data: [420, 502, 651, 934, 1090, 1450, 1320,420, 502, 651, 934, 1090, 1500, 1830,420, 502, 651, 934, 1090, 1450, 1320,1320,1320,1320],
+                type: 'line'
+            }]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        trafficChat.setOption(option);
+
+        var overChat = echarts.init(document.getElementById('over-chat'));
+        option2 = {
+            title: {
+                text: '月度车辆违章',
+                left: 'left'
+            },
+            xAxis: {
+                type: 'category',
+                data: data,
+            },
+            yAxis: {
+                type: 'value'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '0%',
+                right: '0%',
+                bottom: '0%',
+                containLabel: true
+            },
+            legend: {
+                data:['德胜大桥下桥位','五沙大桥东']
+            },
+            series: [{
+                name:'德胜大桥下桥位',
+                data: [820, 932, 901, 934, 1290, 1330, 1320,820, 932, 901, 934, 1290, 1300, 1830,820, 932, 901, 934, 1290, 1330, 1320,1320,1320,1320],
+                type: 'line'
+            },{
+                name:'五沙大桥东',
+                data: [420, 502, 651, 934, 1090, 1450, 1320,420, 502, 651, 934, 1090, 1500, 1830,420, 502, 651, 934, 1090, 1450, 1320,1320,1320,1320],
+                type: 'line'
+            }]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        overChat.setOption(option2);
+    });
+</script>
+</body>
+</html>
