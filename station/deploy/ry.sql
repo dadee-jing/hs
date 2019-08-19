@@ -201,24 +201,29 @@ CREATE TABLE `duge_station_info` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT '' COMMENT '备注',
   `device_code` varchar(8) DEFAULT NULL COMMENT '设备编码',
+  `longitude_WGS84` varchar(50) DEFAULT NULL,
+  `latitude_WGS84` varchar(50) DEFAULT NULL,
+  `longitude_GCJ02` varchar(50) DEFAULT NULL,
+  `latitude_GCJ02` varchar(50) DEFAULT NULL,
+  `longitude_BD09` varchar(50) DEFAULT NULL,
+  `latitude_BD09` varchar(50) DEFAULT NULL,
+  `station_code` varchar(30) DEFAULT NULL COMMENT '站点编码',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='站点信息';
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='站点信息';
 
 -- ----------------------------
 -- Records of duge_station_info
 -- ----------------------------
-INSERT INTO `duge_station_info` VALUES ('1', '德胜大桥（上桥位）', 'DSS', '113.316719', '22.80082', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）', '', null, '', null, '', '000003e9');
-INSERT INTO `duge_station_info` VALUES ('2', '德胜大桥南侧（下桥位）', 'DSX', '113.316719', '22.80082', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）', '', null, '', null, '', '000003e9');
-INSERT INTO `duge_station_info` VALUES ('3', '五沙大桥东侧', 'WSD', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X501  K5＋900顺德区五沙大桥西侧上桥位（五沙方向）', '', null, '', null, '', '000003e9');
-INSERT INTO `duge_station_info` VALUES ('4', '五沙大桥西侧', 'WSX', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X501 K8＋100左顺德区五沙大桥东侧上桥位（往大良方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('5', '三洪奇大桥南（上桥位）', 'SHQS', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G105  K2954＋500顺德区三洪奇大桥南上桥位附近（往北滘方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('6', '三洪奇大桥南（下桥位）', 'SHQX', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G105  K2954＋500顺德区三洪奇大桥南下桥位附近（往伦教方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('7', '三善大桥顺德方向（下桥位）', 'SSX', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G325  K14＋500顺德区三善大桥下桥位附近（往顺德方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('8', '三善大桥广州方向（上桥位）', 'SSS', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G325  K14＋500顺德区三善大桥上桥位附近（往广州方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('9', '乐龙大桥南侧', 'LLN', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', '乐龙路乐龙大桥南侧上桥位附近（往乐从方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('10', '乐龙大桥北侧', 'LLB', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', '乐龙路乐龙大桥北侧上桥位附近（往龙江方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('11', '安利大桥北侧', 'ALB', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', '伦桂路安利特大桥北侧上桥位附近（往容桂方向）', '', null, '', null, '', null);
-INSERT INTO `duge_station_info` VALUES ('12', '安利大桥南侧', 'ALN', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', '伦桂路安利特大桥南侧上桥位附近（往勒流方向）', '', null, '', null, '', null);
+INSERT  INTO `duge_station_info` VALUES (1,'五沙大桥-东侧（往大良方向）','WSD','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','X501  K5＋900顺德区五沙大桥西侧上桥位（五沙方向）','',NULL,'',NULL,'','000003e9','113.3282575600','22.8109135700','113.3336510000','22.8081800000','113.3402110884','22.8139434571','OL0202');
+INSERT  INTO `duge_station_info` VALUES (2,'五沙大桥-西侧（往五沙方向）','WSX','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','X501 K8＋100左顺德区五沙大桥东侧上桥位（往大良方向）','',NULL,'',NULL,'',NULL,'113.3418746300','22.8185526000','113.3473090000','22.8158600000','113.3538941319','22.8215446312','OL0201');
+INSERT  INTO `duge_station_info` VALUES (3,'三善大桥-下桥位（往顺德方向）','SSX','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','G325  K14＋500顺德区三善大桥下桥位附近（往顺德方向）','',NULL,'',NULL,'',NULL,'113.2808478400','22.8855975700','113.2861830000','22.8828340000','113.2925990518','22.8891588412','OL0402');
+INSERT  INTO `duge_station_info` VALUES (4,'三善大桥-上桥位（往广州方向）','SSS','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','G325  K14＋500顺德区三善大桥上桥位附近（往广州方向）','',NULL,'',NULL,'',NULL,'113.2809018400','22.8855555700','113.2862370000','22.8827920000','113.2926530518','22.8891168412','OL0401');
+INSERT  INTO `duge_station_info` VALUES (5,'德胜大桥-上桥位（往容桂方向）','DSS','113.316719','22.80082',1,'广东公路局','广东省','佛山市','顺德区','X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）','',NULL,'',NULL,'','000003e9','113.2997091300','22.8049471900','113.3050660000','22.8021770000','113.3115476422','22.8082631319','OL0102');
+INSERT  INTO `duge_station_info` VALUES (6,'德胜大桥-下桥位（往大良方向）','DSX','113.316719','22.80082',1,'广东公路局','广东省','佛山市','顺德区','X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）','',NULL,'',NULL,'','000003e9','113.2995294000','22.8048919500','113.3048740000','22.8021110000','113.3113203215','22.8083471618','OL0101');
+INSERT  INTO `duge_station_info` VALUES (7,'乐龙大桥-南侧（往乐从方向）','LLN','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','乐龙路乐龙大桥南侧上桥位附近（往乐从方向）','',NULL,'',NULL,'',NULL,'113.0942771500','22.8864718300','113.0997530000','22.8838660000','113.1063098779','22.8895422900','OL0502');
+INSERT  INTO `duge_station_info` VALUES (8,'乐龙大桥-北侧（往龙江方向）','LLB','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','乐龙路乐龙大桥北侧上桥位附近（往龙江方向）','',NULL,'',NULL,'',NULL,'113.0977189500','22.8912152500','113.1031970000','22.8886150000','113.1097485908','22.8942889788','OL0501');
+INSERT  INTO `duge_station_info` VALUES (9,'三洪奇大桥-上桥位（往北滘方向）','SHQX','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','G105  K2954＋500顺德区三洪奇大桥南下桥位附近（往伦教方向）','',NULL,'',NULL,'',NULL,'113.2071029900','22.8971377700','113.2124540000','22.8944000000','113.2189867613','22.9001573624','OL0301');
+INSERT  INTO `duge_station_info` VALUES (10,'三洪奇大桥-下桥位（往伦教方向）','SHQS','113.355856','22.821707',1,'广东公路局','广东省','佛山市','顺德区','G105  K2954＋500顺德区三洪奇大桥南上桥位附近（往北滘方向）','',NULL,'',NULL,'',NULL,'113.2073119900','22.8971037700','113.2126630000','22.8943660000','113.2191957613','22.9001233624','OL0302');
 
 -- ----------------------------
 -- Table structure for exception_data
@@ -1101,35 +1106,162 @@ CREATE TABLE `weight_type_table_info` (
 -- ----------------------------
 INSERT INTO `weight_type_table_info` VALUES ('1', '1', '2018-11-01 16:10:55');
 
-
-DROP TABLE IF EXISTS `equipment_name`;
-
-CREATE TABLE `equipment_name` (
+-- ----------------------------
+-- Table structure for device_name
+-- ----------------------------
+DROP TABLE IF EXISTS `device_name`;
+CREATE TABLE `device_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(50) DEFAULT NULL COMMENT '设备名称',
+  `device_name` varchar(50) DEFAULT NULL COMMENT '设备名称',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 
-/*Data for the table `equipment_name` */
+-- ----------------------------
+-- Records of device_name
+-- ----------------------------
+INSERT INTO `device_name` VALUES ('1', '宽高雷达1');
+INSERT INTO `device_name` VALUES ('2', '宽高雷达2');
+INSERT INTO `device_name` VALUES ('3', '宽高雷达3');
+INSERT INTO `device_name` VALUES ('4', '宽高雷达4');
+INSERT INTO `device_name` VALUES ('5', '宽高雷达5');
+INSERT INTO `device_name` VALUES ('6', '宽高雷达6');
+INSERT INTO `device_name` VALUES ('7', '长雷达1');
+INSERT INTO `device_name` VALUES ('8', '长雷达2');
+INSERT INTO `device_name` VALUES ('9', '长雷达3');
+INSERT INTO `device_name` VALUES ('10', '长雷达4');
+INSERT INTO `device_name` VALUES ('11', '长雷达5');
+INSERT INTO `device_name` VALUES ('12', '长雷达6');
+INSERT INTO `device_name` VALUES ('13', '长雷达7');
+INSERT INTO `device_name` VALUES ('14', '长雷达8');
+INSERT INTO `device_name` VALUES ('15', '长雷达9');
+INSERT INTO `device_name` VALUES ('16', '车道1前抓拍');
+INSERT INTO `device_name` VALUES ('17', '车道2前抓拍');
+INSERT INTO `device_name` VALUES ('18', '车道3前抓拍');
+INSERT INTO `device_name` VALUES ('19', '车道4前抓拍');
+INSERT INTO `device_name` VALUES ('20', '车道5前抓拍');
+INSERT INTO `device_name` VALUES ('21', '车道1后抓拍');
+INSERT INTO `device_name` VALUES ('22', '车道2后抓拍');
+INSERT INTO `device_name` VALUES ('23', '车道3后抓拍');
+INSERT INTO `device_name` VALUES ('24', '车道4后抓拍');
+INSERT INTO `device_name` VALUES ('25', '车道5后抓拍');
+INSERT INTO `device_name` VALUES ('26', '右前侧抓拍');
+INSERT INTO `device_name` VALUES ('27', '左前侧抓拍');
+INSERT INTO `device_name` VALUES ('28', '高清球机');
+INSERT INTO `device_name` VALUES ('29', '称重工控机');
+INSERT INTO `device_name` VALUES ('30', '称重仪表');
+INSERT INTO `device_name` VALUES ('31', '称重自启服务');
 
-insert  into `equipment_name`(`id`,`name`) values (1,'宽高雷达1'),(2,'宽高雷达2'),(3,'宽高雷达3'),(4,'宽高雷达4'),(5,'宽高雷达5'),(6,'宽高雷达6'),(7,'长雷达1'),(8,'长雷达2'),(9,'长雷达3'),(10,'长雷达4'),(11,'长雷达5'),(12,'长雷达6'),(13,'长雷达7'),(14,'长雷达8'),(15,'长雷达9'),(16,'车道1前抓拍'),(17,'车道2前抓拍'),(18,'车道3前抓拍'),(19,'车道4前抓拍'),(20,'车道5前抓拍'),(21,'车道1后抓拍'),(22,'车道2后抓拍'),(23,'车道3后抓拍'),(24,'车道4后抓拍'),(25,'车道5后抓拍'),(26,'右前侧抓拍'),(27,'左前侧抓拍'),(28,'高清球机'),(29,'称重工控机'),(30,'称重仪表'),(31,'称重自启服务');
+-- ----------------------------
+-- Table structure for device_type
+-- ----------------------------
+DROP TABLE IF EXISTS `device_type`;
+CREATE TABLE `device_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '设备类型编号',
+  `device_type_name` varchar(30) DEFAULT NULL COMMENT '设备类型名称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
-/*Table structure for table `equipment_status` */
+-- ----------------------------
+-- Records of device_type
+-- ----------------------------
+INSERT INTO `device_type` VALUES ('1', '工控机');
+INSERT INTO `device_type` VALUES ('2', '摄像机');
+INSERT INTO `device_type` VALUES ('3', '雷达');
 
-DROP TABLE IF EXISTS `equipment_status`;
-
-CREATE TABLE `equipment_status` (
+-- ----------------------------
+-- Table structure for station_device_info
+-- ----------------------------
+DROP TABLE IF EXISTS `station_device_info`;
+CREATE TABLE `station_device_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `station_id` int(11) DEFAULT NULL COMMENT '站点编号',
-  `equipmentName_id` int(11) DEFAULT NULL COMMENT '设备名称编号',
-  `ipAddress` varchar(50) DEFAULT NULL COMMENT '设备IP',
-  `port` varchar(50) DEFAULT NULL COMMENT '设备端口号',
-  `checkState` tinyint(3) DEFAULT NULL COMMENT '设备状态(0异常 1正常)',
-  PRIMARY KEY (`id`),
-  KEY `station_id` (`station_id`),
-  KEY `equipmentName_id` (`equipmentName_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8;
+  `deviceType_id` int(11) DEFAULT NULL COMMENT '设备类型编号',
+  `deviceName_id` int(11) DEFAULT NULL COMMENT '设备名称编号',
+  `ipAddress` varchar(30) DEFAULT NULL COMMENT '设备IP地址',
+  `port` varchar(30) DEFAULT NULL COMMENT '设备端口号',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8;
 
-/*Data for the table `equipment_status` */
-
-insert  into `equipment_status`(`id`,`station_id`,`equipmentName_id`,`ipAddress`,`port`,`checkState`) values (1,3,1,'192.168.1.79','10001',NULL),(2,3,2,'192.168.1.80','10001',NULL),(3,3,3,'192.168.1.81','10001',NULL),(4,3,4,'192.168.1.82','10001',NULL),(5,3,5,'192.168.1.83','10001',NULL),(6,3,7,'192.168.1.84','10001',NULL),(7,3,8,'192.168.1.85','10001',NULL),(8,3,9,'192.168.1.86','10001',NULL),(9,3,10,'192.168.1.87','10001',NULL),(10,3,11,'192.168.1.88','10001',NULL),(11,3,12,'192.168.1.89','10001',NULL),(12,3,13,'192.168.1.90','10001',NULL),(13,3,16,'192.168.1.91','37777',NULL),(14,3,17,'192.168.1.92','37777',NULL),(15,3,18,'192.168.1.93','37777',NULL),(16,3,19,'192.168.1.94','37777',NULL),(17,3,21,'192.168.1.95','37777',NULL),(18,3,22,'192.168.1.96','37777',NULL),(19,3,23,'192.168.1.97','37777',NULL),(20,3,24,'192.168.1.98','37777',NULL),(21,3,26,'192.168.1.99','37777',NULL),(22,3,27,'192.168.1.100','37777',NULL),(23,3,28,'192.168.1.101',NULL,NULL),(24,3,29,'192.168.1.102',NULL,NULL),(25,3,30,'192.168.1.103',NULL,NULL),(26,3,31,'192.168.1.104',NULL,NULL),(28,2,1,'192.168.1.41','10001',NULL),(29,2,2,'192.168.1.42','10001',NULL),(30,2,3,'192.168.1.43','10001',NULL),(31,2,4,'192.168.1.44','10001',NULL),(32,2,5,'192.168.1.45','10001',NULL),(33,2,7,'192.168.1.46','10001',NULL),(34,2,8,'192.168.1.47','10001',NULL),(35,2,9,'192.168.1.48','10001',NULL),(36,2,10,'192.168.1.49','10001',NULL),(37,2,11,'192.168.1.50','10001',NULL),(38,2,12,'192.168.1.63','10001',NULL),(39,2,13,'192.168.1.64','10001',NULL),(40,2,16,'192.168.1.65','37777',NULL),(41,2,17,'192.168.1.66','37777',NULL),(42,2,18,'192.168.1.67','37777',NULL),(43,2,19,'192.168.1.68','37777',NULL),(44,2,21,'192.168.1.69','37777',NULL),(45,2,22,'192.168.1.70','37777',NULL),(46,2,23,'192.168.1.71','37777',NULL),(47,2,24,'192.168.1.72','37777',NULL),(48,2,26,'192.168.1.73','37777',NULL),(49,2,27,'192.168.1.74','37777',NULL),(50,2,28,'192.168.1.75',NULL,NULL),(51,2,29,'192.168.1.76',NULL,NULL),(52,2,30,'192.168.1.77',NULL,NULL),(53,2,31,'192.168.1.78',NULL,NULL),(54,1,1,'192.168.1.22','10001',NULL),(55,1,2,'192.168.1.24','10001',NULL),(56,1,3,'192.168.1.23','10001',NULL),(57,1,4,'192.168.1.20','10001',NULL),(58,1,5,'192.168.1.19','10001',NULL),(59,1,6,'192.168.1.21','10001',NULL),(60,1,7,'192.168.1.10','10001',NULL),(61,1,8,'192.168.1.18','10001',NULL),(62,1,9,'192.168.1.16','10001',NULL),(63,1,10,'192.168.1.17','10001',NULL),(64,1,11,'192.168.1.15','10001',NULL),(65,1,12,'192.168.1.14','10001',NULL),(66,1,13,'192.168.1.11','10001',NULL),(67,1,14,'192.168.1.13','10001',NULL),(68,1,15,'192.168.1.12','10001',NULL),(69,1,16,'192.168.1.25','37777',NULL),(70,1,17,'192.168.1.26','37777',NULL),(71,1,18,'192.168.1.27','37777',NULL),(72,1,19,'192.168.1.28','37777',NULL),(73,1,20,'192.168.1.29','37777',NULL),(74,1,21,'192.168.1.30','37777',NULL),(75,1,22,'192.168.1.31','37777',NULL),(76,1,23,'192.168.1.32','37777',NULL),(77,1,24,'192.168.1.33','37777',NULL),(78,1,25,'192.168.1.34','37777',NULL),(79,1,26,'192.168.1.35','37777',NULL),(80,1,27,'192.168.1.36','37777',NULL),(81,1,28,'192.168.1.37',NULL,NULL),(82,1,29,'192.168.1.38',NULL,NULL),(83,1,30,'192.168.1.39',NULL,NULL),(84,1,31,'192.168.1.40',NULL,NULL),(85,5,1,'192.168.1.105','10001',NULL),(86,5,2,'192.168.1.106','10001',NULL),(87,5,3,'192.168.1.107','10001',NULL),(88,5,4,'192.168.1.108','10001',NULL),(89,5,5,'192.168.1.109','10001',NULL),(90,5,7,'192.168.1.110','10001',NULL),(91,5,8,'192.168.1.111','10001',NULL),(92,5,9,'192.168.1.112','10001',NULL),(93,5,10,'192.168.1.113','10001',NULL),(94,5,11,'192.168.1.114','10001',NULL),(95,5,12,'192.168.1.115','10001',NULL),(96,5,13,'192.168.1.116','10001',NULL),(97,5,16,'192.168.1.117','37777',NULL),(98,5,17,'192.168.1.118','37777',NULL),(99,5,18,'192.168.1.119','37777',NULL),(100,5,19,'192.168.1.120','37777',NULL),(101,5,21,'192.168.1.121','37777',NULL),(102,5,22,'192.168.1.122','37777',NULL),(103,5,23,'192.168.1.123','37777',NULL),(104,5,24,'192.168.1.124','37777',NULL),(105,5,26,'192.168.1.125','37777',NULL),(106,5,27,'192.168.1.126','37777',NULL),(107,5,28,'192.168.1.127',NULL,NULL),(108,5,29,'192.168.1.128',NULL,NULL),(109,5,30,'192.168.1.129',NULL,NULL),(110,5,31,'192.168.1.130',NULL,NULL),(111,4,1,'192.168.1.131','10001',NULL),(112,4,2,'192.168.1.132','10001',NULL),(113,4,3,'192.168.1.133','10001',NULL),(114,4,4,'192.168.1.134','10001',NULL),(115,4,5,'192.168.1.135','10001',NULL),(116,4,7,'192.168.1.136','10001',NULL),(117,4,8,'192.168.1.137','10001',NULL),(118,4,9,'192.168.1.138','10001',NULL),(119,4,10,'192.168.1.139','10001',NULL),(120,4,11,'192.168.1.140','10001',NULL),(121,4,12,'192.168.1.141','10001',NULL),(122,4,13,'192.168.1.142','10001',NULL),(123,4,14,'192.168.1.143','10001',NULL),(124,4,16,'192.168.1.144','37777',NULL),(125,4,17,'192.168.1.145','37777',NULL),(126,4,18,'192.168.1.146','37777',NULL),(127,4,19,'192.168.1.147','37777',NULL),(128,4,21,'192.168.1.148','37777',NULL),(129,4,22,'192.168.1.149','37777',NULL),(130,4,23,'192.168.1.150','37777',NULL),(131,4,24,'192.168.1.151','37777',NULL),(132,4,26,'192.168.1.152','37777',NULL),(133,4,27,'192.168.1.153','37777',NULL),(134,4,28,'192.168.1.154',NULL,NULL),(135,4,29,'192.168.1.155',NULL,NULL),(136,4,30,'192.168.1.156',NULL,NULL),(137,4,31,'192.168.1.157',NULL,NULL);
+-- ----------------------------
+-- Records of station_device_info
+-- ----------------------------
+INSERT INTO `station_device_info` VALUES ('1', '3', '3', '1', '192.168.1.79', '10001');
+INSERT INTO `station_device_info` VALUES ('2', '3', '3', '2', '192.168.1.80', '10001');
+INSERT INTO `station_device_info` VALUES ('3', '3', '3', '3', '192.168.1.81', '10001');
+INSERT INTO `station_device_info` VALUES ('4', '3', '3', '4', '192.168.1.82', '10001');
+INSERT INTO `station_device_info` VALUES ('5', '3', '3', '5', '192.168.1.83', '10001');
+INSERT INTO `station_device_info` VALUES ('6', '3', '3', '7', '192.168.1.84', '10001');
+INSERT INTO `station_device_info` VALUES ('7', '3', '3', '8', '192.168.1.85', '10001');
+INSERT INTO `station_device_info` VALUES ('8', '3', '3', '9', '192.168.1.86', '10001');
+INSERT INTO `station_device_info` VALUES ('9', '3', '3', '10', '192.168.1.87', '10001');
+INSERT INTO `station_device_info` VALUES ('10', '3', '3', '11', '192.168.1.88', '10001');
+INSERT INTO `station_device_info` VALUES ('11', '3', '3', '12', '192.168.1.89', '10001');
+INSERT INTO `station_device_info` VALUES ('12', '3', '3', '13', '192.168.1.90', '10001');
+INSERT INTO `station_device_info` VALUES ('13', '3', '2', '16', '192.168.1.91', '37777');
+INSERT INTO `station_device_info` VALUES ('14', '3', '2', '17', '192.168.1.92', '37777');
+INSERT INTO `station_device_info` VALUES ('15', '3', '2', '18', '192.168.1.93', '37777');
+INSERT INTO `station_device_info` VALUES ('16', '3', '2', '19', '192.168.1.94', '37777');
+INSERT INTO `station_device_info` VALUES ('17', '3', '2', '21', '192.168.1.95', '37777');
+INSERT INTO `station_device_info` VALUES ('18', '3', '2', '22', '192.168.1.96', '37777');
+INSERT INTO `station_device_info` VALUES ('19', '3', '2', '23', '192.168.1.97', '37777');
+INSERT INTO `station_device_info` VALUES ('20', '3', '2', '24', '192.168.1.98', '37777');
+INSERT INTO `station_device_info` VALUES ('21', '3', '2', '26', '192.168.1.99', '37777');
+INSERT INTO `station_device_info` VALUES ('22', '3', '2', '27', '192.168.1.100', '37777');
+INSERT INTO `station_device_info` VALUES ('23', '3', '2', '28', '19.201.27.230', null);
+INSERT INTO `station_device_info` VALUES ('24', '3', '1', '29', '192.168.1.102', null);
+INSERT INTO `station_device_info` VALUES ('25', '3', '1', '30', '192.168.1.103', null);
+INSERT INTO `station_device_info` VALUES ('27', '2', '3', '1', '192.168.1.41', '10001');
+INSERT INTO `station_device_info` VALUES ('28', '2', '3', '2', '192.168.1.42', '10001');
+INSERT INTO `station_device_info` VALUES ('29', '2', '3', '3', '192.168.1.43', '10001');
+INSERT INTO `station_device_info` VALUES ('30', '2', '3', '4', '192.168.1.44', '10001');
+INSERT INTO `station_device_info` VALUES ('31', '2', '3', '5', '192.168.1.45', '10001');
+INSERT INTO `station_device_info` VALUES ('32', '2', '3', '7', '192.168.1.46', '10001');
+INSERT INTO `station_device_info` VALUES ('33', '2', '3', '8', '192.168.1.47', '10001');
+INSERT INTO `station_device_info` VALUES ('34', '2', '3', '9', '192.168.1.48', '10001');
+INSERT INTO `station_device_info` VALUES ('35', '2', '3', '10', '192.168.1.49', '10001');
+INSERT INTO `station_device_info` VALUES ('36', '2', '3', '11', '192.168.1.50', '10001');
+INSERT INTO `station_device_info` VALUES ('37', '2', '3', '12', '192.168.1.63', '10001');
+INSERT INTO `station_device_info` VALUES ('38', '2', '3', '13', '192.168.1.64', '10001');
+INSERT INTO `station_device_info` VALUES ('39', '2', '2', '16', '192.168.1.65', '37777');
+INSERT INTO `station_device_info` VALUES ('40', '2', '2', '17', '192.168.1.66', '37777');
+INSERT INTO `station_device_info` VALUES ('41', '2', '2', '18', '192.168.1.67', '37777');
+INSERT INTO `station_device_info` VALUES ('42', '2', '2', '19', '192.168.1.68', '37777');
+INSERT INTO `station_device_info` VALUES ('43', '2', '2', '21', '192.168.1.69', '37777');
+INSERT INTO `station_device_info` VALUES ('44', '2', '2', '22', '192.168.1.70', '37777');
+INSERT INTO `station_device_info` VALUES ('45', '2', '2', '23', '192.168.1.71', '37777');
+INSERT INTO `station_device_info` VALUES ('46', '2', '2', '24', '192.168.1.72', '37777');
+INSERT INTO `station_device_info` VALUES ('47', '2', '2', '26', '192.168.1.73', '37777');
+INSERT INTO `station_device_info` VALUES ('48', '2', '2', '27', '192.168.1.74', '37777');
+INSERT INTO `station_device_info` VALUES ('49', '2', '2', '28', '19.201.27.228', null);
+INSERT INTO `station_device_info` VALUES ('50', '2', '1', '29', '192.168.1.76', null);
+INSERT INTO `station_device_info` VALUES ('51', '2', '1', '30', '192.168.1.77', null);
+INSERT INTO `station_device_info` VALUES ('53', '1', '3', '1', '192.168.1.22', '10001');
+INSERT INTO `station_device_info` VALUES ('54', '1', '3', '2', '192.168.1.24', '10001');
+INSERT INTO `station_device_info` VALUES ('55', '1', '3', '3', '192.168.1.23', '10001');
+INSERT INTO `station_device_info` VALUES ('56', '1', '3', '4', '192.168.1.20', '10001');
+INSERT INTO `station_device_info` VALUES ('57', '1', '3', '5', '192.168.1.19', '10001');
+INSERT INTO `station_device_info` VALUES ('58', '1', '3', '6', '192.168.1.21', '10001');
+INSERT INTO `station_device_info` VALUES ('59', '1', '3', '7', '192.168.1.10', '10001');
+INSERT INTO `station_device_info` VALUES ('60', '1', '3', '8', '192.168.1.18', '10001');
+INSERT INTO `station_device_info` VALUES ('61', '1', '3', '9', '192.168.1.16', '10001');
+INSERT INTO `station_device_info` VALUES ('62', '1', '3', '10', '192.168.1.17', '10001');
+INSERT INTO `station_device_info` VALUES ('63', '1', '3', '11', '192.168.1.15', '10001');
+INSERT INTO `station_device_info` VALUES ('64', '1', '3', '12', '192.168.1.14', '10001');
+INSERT INTO `station_device_info` VALUES ('65', '1', '3', '13', '192.168.1.11', '10001');
+INSERT INTO `station_device_info` VALUES ('66', '1', '3', '14', '192.168.1.13', '10001');
+INSERT INTO `station_device_info` VALUES ('67', '1', '3', '15', '192.168.1.12', '10001');
+INSERT INTO `station_device_info` VALUES ('68', '1', '2', '16', '192.168.1.25', '37777');
+INSERT INTO `station_device_info` VALUES ('69', '1', '2', '17', '192.168.1.26', '37777');
+INSERT INTO `station_device_info` VALUES ('70', '1', '2', '18', '192.168.1.27', '37777');
+INSERT INTO `station_device_info` VALUES ('71', '1', '2', '19', '192.168.1.28', '37777');
+INSERT INTO `station_device_info` VALUES ('72', '1', '2', '20', '192.168.1.29', '37777');
+INSERT INTO `station_device_info` VALUES ('73', '1', '2', '21', '192.168.1.30', '37777');
+INSERT INTO `station_device_info` VALUES ('74', '1', '2', '22', '192.168.1.31', '37777');
+INSERT INTO `station_device_info` VALUES ('75', '1', '2', '23', '192.168.1.32', '37777');
+INSERT INTO `station_device_info` VALUES ('76', '1', '2', '24', '192.168.1.33', '37777');
+INSERT INTO `station_device_info` VALUES ('77', '1', '2', '25', '192.168.1.34', '37777');
+INSERT INTO `station_device_info` VALUES ('78', '1', '2', '26', '192.168.1.35', '37777');
+INSERT INTO `station_device_info` VALUES ('79', '1', '2', '27', '192.168.1.36', '37777');
+INSERT INTO `station_device_info` VALUES ('80', '1', '2', '28', '19.201.27.226', null);
+INSERT INTO `station_device_info` VALUES ('81', '1', '1', '29', '192.168.1.38', null);
+INSERT INTO `station_device_info` VALUES ('82', '1', '1', '30', '192.168.1.39', null);

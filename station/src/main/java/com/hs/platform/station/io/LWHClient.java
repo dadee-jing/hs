@@ -29,7 +29,6 @@ public class LWHClient {
     private int port;
     private IoSession session;
     private NioSocketConnector connector;
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
     public LWHClient(String host, int port) {
         this.host = host;
@@ -72,6 +71,7 @@ public class LWHClient {
         connector.setHandler(new LWHClientHandler());
         connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));// 设置默认访问地址
 
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 30, TimeUnit.SECONDS);
     }
 
