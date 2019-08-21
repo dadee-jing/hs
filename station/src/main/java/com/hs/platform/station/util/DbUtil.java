@@ -576,10 +576,10 @@ public class DbUtil {
             while (rs.next()) {
                 equipment = new DeviceInfo();
                 equipment.setId(rs.getInt("id"));
-                equipment.setStation_id(rs.getInt("station_id"));
-                equipment.setStation_code(rs.getString("station_code"));
-                equipment.setStation_name(rs.getString("station_name"));
-                equipment.setDevice_name(rs.getString("device_name"));
+                equipment.setStationId(rs.getInt("station_id"));
+                equipment.setStationCode(rs.getString("station_code"));
+                equipment.setStationName(rs.getString("station_name"));
+                equipment.setDeviceName(rs.getString("device_name"));
                 equipment.setIpAddress(rs.getString("ipAddress"));
                 equipment.setPort(rs.getString("port"));
                 resultList.add(equipment);

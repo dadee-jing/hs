@@ -93,17 +93,17 @@ public class UploadEquipmentData {
         // 处理设备状态信息
         for (DeviceInfo equipment : equipmentList) {
             DeviceHealthState = new DeviceHealthState();
-            DeviceHealthState.setStation_code(equipment.getStation_code());
-            DeviceHealthState.setStation_name(equipment.getStation_name());
-            DeviceHealthState.setDevice_id(equipment.getId());
-            DeviceHealthState.setDevice_name(equipment.getDevice_name());
-            DeviceHealthState.setDevice_status(checkStatus(equipment.getIpAddress()));
-            DeviceHealthState.setReport_date(dateFormat.format(new Date()));
+            DeviceHealthState.setStationCode(equipment.getStationCode());
+            DeviceHealthState.setStationName(equipment.getStationName());
+            DeviceHealthState.setDeviceId(equipment.getId());
+            DeviceHealthState.setDeviceName(equipment.getDeviceName());
+            DeviceHealthState.setDeviceStatus(checkStatus(equipment.getIpAddress()));
+            DeviceHealthState.setReportDate(dateFormat.format(new Date()));
             deviceHealthStateList.add(DeviceHealthState);
         }
         // 检测站点设备状态
-        boolean allOk = deviceHealthStateList.stream().allMatch(deviceHealthState -> deviceHealthState.getDevice_status() == 1);
-        deviceHealthStateList.forEach(deviceHealthState -> deviceHealthState.setStation_status(allOk ? 1 : 0));
+        boolean allOk = deviceHealthStateList.stream().allMatch(deviceHealthState -> deviceHealthState.getDeviceStatus() == 1);
+        deviceHealthStateList.forEach(deviceHealthState -> deviceHealthState.setStationStatus(allOk ? 1 : 0));
     }
 
     /**
