@@ -11,6 +11,7 @@ import com.ruoyi.duge.third.model.BaseThirdApiResponse;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
 import com.ruoyi.duge.third.service.ThirdApiService;
 import com.ruoyi.duge.third.trafficPolice.model.*;
+import com.ruoyi.duge.third.trafficPolice.utils.ImageUploadUtil;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,8 +85,8 @@ public class TrafficPoliceApiService implements ThirdApiService {
                                 .qjys(null) // 区间用时
                                 .csbl(null) // 区间超速比例
                                 .bz("") // 备注
-                                .zpsl(null) // 违法图片数量
-                                .zpwjm(null) // 照片文件名
+                                .zpsl(ImageUploadUtil.ImagesCount(weightData)) // 违法图片数量
+                                .zpwjm(ImageUploadUtil.IllegalImages(weightData,data)) // 照片文件名
                                 .fxbh("") // 方向编号（取值：TYPEID=”2000006”）
                                 .build();
                     } catch (Exception e) {

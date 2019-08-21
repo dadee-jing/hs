@@ -192,7 +192,6 @@ public class FTPClientUtil {
                 targetClient.changeWorkingDirectory("/");
                 targetClient.storeFile(targetPath, inputStream);
                 // 同个connect，执行多个任务，每条任务需要complete command
-                sourceClient.completePendingCommand();
                 LOGGER.info("ok:" + sourcePath);
             } else {
                 LOGGER.error("empty:" + sourcePath);

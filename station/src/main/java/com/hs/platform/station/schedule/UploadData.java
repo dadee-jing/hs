@@ -67,7 +67,7 @@ public class UploadData {
                     remoteWeightDataData.setUploadTag(0);
                     // 文本数据
                     remoteWeightDataRepository.save(remoteWeightDataData);
-                    // 异步提交文件
+
                     ImageDownloadUtil.submitDownloadTask(weightData);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
