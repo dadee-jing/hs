@@ -13,6 +13,11 @@ public class EquipmentService {
                             "JOIN device_name dn ON sdi.deviceName_id = dn.id " +
                                 "WHERE sdi.station_id = ?";
         List<DeviceInfo> resultList = DbUtil.getEquipmentList(sql,stationId);
-        return resultList;
+        // 判断数据是否为空 如为空则抛出异常不再执行往后的操作
+        if (null != resultList && !resultList.isEmpty()) {
+            return resultList;
+        }else{
+            throw new RuntimeException("判断对象属性为空异常");
+        }
     }
 }

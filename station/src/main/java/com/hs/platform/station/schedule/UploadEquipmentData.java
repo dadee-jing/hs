@@ -56,7 +56,7 @@ public class UploadEquipmentData {
 
     /**
      * 处理post请求.
-     * @param url    请求路径
+     * @param url 请求路径
      * @param params 参数
      * @return json
      */
@@ -98,12 +98,18 @@ public class UploadEquipmentData {
             DeviceHealthState.setDeviceId(equipment.getId());
             DeviceHealthState.setDeviceName(equipment.getDeviceName());
             DeviceHealthState.setDeviceStatus(checkStatus(equipment.getIpAddress()));
-            DeviceHealthState.setReportDate(dateFormat.format(new Date()));
             deviceHealthStateList.add(DeviceHealthState);
         }
         // 检测站点设备状态
         boolean allOk = deviceHealthStateList.stream().allMatch(deviceHealthState -> deviceHealthState.getDeviceStatus() == 1);
-        deviceHealthStateList.forEach(deviceHealthState -> deviceHealthState.setStationStatus(allOk ? 1 : 0));
+        // 生成检测时间
+        String checkDate = dateFormat.format(new Date());
+        // 遍历设置字段属性
+        deviceHealthStateList.forEach(deviceHealthState ->{
+            deviceHealthState.setReportDate(checkDate);
+            deviceHealthState.setStationStatus(allOk ? 1 : 0);
+        });
+
     }
 
     /**
