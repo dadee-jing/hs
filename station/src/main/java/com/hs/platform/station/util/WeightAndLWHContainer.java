@@ -2,6 +2,7 @@ package com.hs.platform.station.util;
 
 import com.hs.platform.station.Constants;
 import com.hs.platform.station.entity.WeightAndLwhEntity;
+import com.hs.platform.station.led.LedComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.hs.platform.station.Constants.led_overWeight_percentage;
 import static com.hs.platform.station.util.DbUtil.getWeightLimitMap;
 
 public class WeightAndLWHContainer {
@@ -19,6 +21,8 @@ public class WeightAndLWHContainer {
     private static final ConcurrentHashMap<String, WeightAndLwhEntity> mapContainer = new ConcurrentHashMap<>();
 
     private static Map<Integer, Long> weightLimitMap = getWeightLimitMap();
+
+    private static final double overWeightPercentage = led_overWeight_percentage;
 
     /**
      * 清除内存中的没有匹配的对象，并插入数据库做记录
@@ -94,6 +98,14 @@ public class WeightAndLWHContainer {
                         OverWeight = Weight.subtract(LimitWeight);
                         if (OverWeight.compareTo(new BigDecimal(0d)) <= 0) {
                             OverWeight = new BigDecimal(0d);
+                        } else { // 车辆实际重量大于限制重量
+                            // 计算超重百分比
+                            BigDecimal actualOverWeightPercentage = OverWeight.divide(LimitWeight,4,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100d));
+                            // 筛选超重百分比
+                            if (actualOverWeightPercentage.compareTo(new BigDecimal(overWeightPercentage)) >=0 ) {
+                                // 发送到LED屏
+                                LedComponent.showMessageLed("【" + TruckNumber + "】您已超重\n限重：" + LimitWeight + "，总重：" + Weight.setScale(2,BigDecimal.ROUND_DOWN));
+                            }
                         }
                     }
                     BigDecimal AxleWeight1 = currentEntity.getAxleWeight1();
@@ -171,7 +183,5 @@ public class WeightAndLWHContainer {
                 LOGGER.info("insert DB :" + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" + previousEntity.getWeight() + "-" + previousEntity.getHeight());
             }
         }
-
     }
-
 }

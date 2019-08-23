@@ -18,8 +18,9 @@ public class ShundeController {
     private YiHuaLuApiService yiHuaLuApiService;
 
     @PostMapping("/uploadEquipmentStatus")
-    public void getEquipmentData(@RequestBody List<DeviceHealthState> params)throws Exception{
-        if(null != params){
+    public void getEquipmentData(@RequestBody List<DeviceHealthState> params) throws Exception {
+        if (null != params) {
+            log.info("equipment status size:" + params.size());
             yiHuaLuApiService.InsertData(params);
             params.forEach(param -> log.debug(param.toString()));
         }

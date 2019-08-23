@@ -1,7 +1,6 @@
 package com.ruoyi.duge.third.shunde.service;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.enums.BusinessStatus;
 import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.mapper.WeightDataMapper;
@@ -12,7 +11,6 @@ import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
 import com.ruoyi.duge.third.service.ThirdApiService;
 import com.ruoyi.duge.third.shunde.persistence.VehicleImage;
 import com.ruoyi.duge.third.shunde.persistence.VehicleRecord;
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -23,7 +21,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.jms.*;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
@@ -39,16 +36,9 @@ public class ShundeApiService implements ThirdApiService {
     @Autowired
     private WeightDataMapper weightDataMapper;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private DruidDataSource dataSource = null;
 
     private java.sql.Connection conn = null;
-
-    private ConnectionFactory factory;
-
-    private Connection connection;
 
     private static final Logger log = LoggerFactory.getLogger(ShundeApiService.class);
 
@@ -56,10 +46,6 @@ public class ShundeApiService implements ThirdApiService {
     public void init() {
         try {
             GetDbConnect();
-            // 1.创建一个连接工厂
-            factory = new ActiveMQConnectionFactory(configDataService.getConfigValue("yhl_mq_user"),
-                    configDataService.getConfigValue("yhl_mq_password"),
-                    configDataService.getConfigValue("yhl_mq_url"));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -376,66 +362,7 @@ public class ShundeApiService implements ThirdApiService {
 
     @Override
     public BaseThirdApiResponse submitEquipmentStatus(BaseEquipmentStatusRequest request) {
-        if ("1".equals(configDataService.getConfigValue("yhl_mq_tag"))) {
-            Session session = null;
-            MessageProducer producer = null;
-            try {
-                connection = factory.createConnection();
-                // 3.开启连接
-                connection.start();
-                //4.创建一个Session
-                //第一个参数：是否开启事务(一般不开启)，如果开启事务，第二个参数无意义
-                //第二个参数：应答模式（自动/手动）
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                //5.通过Session创建一个Destination对象，两种形式：queue、topic
-                Topic topic = session.createTopic("ZHICHAO");
-                //6.通过Session创建一个Producer对象
-                producer = session.createProducer(topic);
-                //7.处理数据转换json格式字符串
-                String str = objectMapper.writeValueAsString(request.getDeviceHealthState());
-//            String str = "{\"stationId\":\"1\",\"stationName\":\"五沙大桥东\",\"deviceId\":\"1\",\"deviceName\":\"抓拍机1\",\"deviceStatus\":1,\"errorCode\":\"\",\"errorMsg\":\"\",\"date\":\"2019-03-19 10:10:10\"}";
-                TextMessage textMessage = session.createTextMessage(str);
-                //8.发送消息
-                producer.send(textMessage);
-                //9.关闭资源
-                producer.close();
-                session.close();
-                connection.close();
-            } catch (Exception e) {
-                log.error("mq error: " + e.getMessage());
-                return BaseThirdApiResponse.builder()
-                        .businessStatus(BusinessStatus.FAIL)
-                        .errorCode("SYSTEM ERROR")
-                        .errorMsg(e.getMessage())
-                        .build();
-            } finally {
-                if (producer != null) {
-                    try {
-                        producer.close();
-                    } catch (Exception ignore) {
-
-                    }
-                }
-                if (session != null) {
-                    try {
-                        session.close();
-                    } catch (Exception ignore) {
-
-                    }
-                }
-                if (null != connection) {
-                    try {
-                        connection.close();
-                    } catch (Exception ignore) {
-
-                    }
-                }
-            }
-        }
-
-        return BaseThirdApiResponse.builder()
-                .businessStatus(BusinessStatus.SUCCESS)
-                .build();
+        return null;
     }
 
     private BaseThirdApiResponse getErrorResponse(String errorCode, String errorMsg) {
