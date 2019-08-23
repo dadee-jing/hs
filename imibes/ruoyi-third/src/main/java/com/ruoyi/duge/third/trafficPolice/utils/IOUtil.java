@@ -132,34 +132,34 @@ public class IOUtil {
             }
         }
     }
-    static Integer parsePlateType(String colorStr,String truckNumber){
+    static String parsePlateType(String colorStr,String truckNumber){
         switch (colorStr) {
             case "黄":
                 if(truckNumber.contains("学")){
-                    return 16;
+                    return "16";
                 }else {
-                    return 01;
+                    return "01";
                 }
             case "蓝":
-                return 02;
+                return "02";
             case "黑":
                 if(truckNumber.contains("使")){
-                    return 03;
+                    return "03";
                 }else if(truckNumber.contains("领")){
-                    return 04;
+                    return "04";
                 }else if(truckNumber.contains("港")){
-                    return  26;
+                    return  "26";
                 }else if(truckNumber.contains("澳")){
-                    return 27;
+                    return "27";
                 }
             case "白":
                 if(truckNumber.contains("警")){
-                    return 23;
+                    return "23";
                 }else {
-                    return 20;
+                    return "20";
                 }
             default:
-                return 99;
+                return "99";
         }
     }
 }
