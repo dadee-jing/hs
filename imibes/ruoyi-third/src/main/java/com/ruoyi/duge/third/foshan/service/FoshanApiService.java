@@ -39,7 +39,7 @@ public class FoshanApiService implements ThirdApiService {
     private final IStationStatisticsService stationStatisticsService;
     private final IConfigDataService configDataService;
     private int serialNo = 100;
-    @Value("${baseDir}")
+    @Value("${foshan.baseDir}")
     private String baseDir;
     @Autowired
     public FoshanApiService(SendMsgClient sendMsgClient,

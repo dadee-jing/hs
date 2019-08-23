@@ -51,7 +51,7 @@ public class TrafficPoliceApiService implements ThirdApiService {
         String errorCode = null, errorMsg = null;
         try {
             List<Data> dataList = request.getWeightDataList().stream().map(weightData -> {
-                StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue());
+                    StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue());
                 Data data = null;
                 Double overRate = weightData.getOverWeight().doubleValue() / weightData.getLimitWeight().doubleValue();
                 int overLevel = overRate > 0 ? overRate >= 0.3 ? 2 : 1 : 0;
@@ -85,8 +85,8 @@ public class TrafficPoliceApiService implements ThirdApiService {
                                 .qjys(null) // 区间用时
                                 .csbl(null) // 区间超速比例
                                 .bz("") // 备注
-                                .zpsl(ImageUploadUtil.ImagesCount(weightData)) // 违法图片数量
-                                .zpwjm(ImageUploadUtil.IllegalImages(weightData,data)) // 照片文件名
+                                .zpsl(0) // 违法图片数量
+                                .zpwjm("") // 照片文件名
                                 .fxbh("") // 方向编号（取值：TYPEID=”2000006”）
                                 .build();
                     } catch (Exception e) {
