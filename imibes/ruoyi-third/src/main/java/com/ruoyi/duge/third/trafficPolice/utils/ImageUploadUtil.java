@@ -1,5 +1,6 @@
 package com.ruoyi.duge.third.trafficPolice.utils;
 
+import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.third.trafficPolice.model.Data;
 import com.sun.imageio.plugins.common.ImageUtil;
@@ -7,17 +8,28 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ImageUploadUtil {
+    @Value("${ftp.host}")
+    private static String SHUNDEHOST="192.168.1.130";
+    @Value("${ftp.port}")
+    private static int SHUNDEPORT=2121;
+    @Value("${ftp.username}")
+    private static String SHUNDEUSERNAME="tzy";
+    @Value("${ftp.password}")
+    private static String SHUNDEPASSWORD="123456";
     private final static Object fileLock = new Object();
     private static Logger LOGGER = LoggerFactory.getLogger(ImageUtil.class);
-    static SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" );
+    static SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddHHmmss" );
+    static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
     /**
      *
     A通过时间：年(4位)月(2位)日(2位)时(2位，24小时制)分(2位)秒(2位)，不可为空；
@@ -76,14 +88,11 @@ public class ImageUploadUtil {
                .append("_y")
                .append("")
                .append("_z");
-        //此处加入上传图片的逻辑
-
+               //此处加入上传图片的逻辑
                //upload(wd.getFtpAxle(),imageName.toString());
-
-
-
        return imageName.toString();
    }
+
     /**
     示例：a20141105205938_b02_c津A350L3_d600011047000_e1345_f90_g60_h15_i01_j2_k441781000000_m1.20,1.50,4.20,5.00,1.65,1.80,1.60,2.00_s370785020003_x01_y易华录_z11.JPG
     其中：
@@ -106,41 +115,49 @@ public class ImageUploadUtil {
     两张图片：z21，z22；三张图片：z31，z32，z33；
     建议多张图片顺序：全景、违法前、违法中、违法后；
      */
-    public static String IllegalImages(WeightData wd , Data dt) throws IOException {
+    public static String IllegalImages(WeightData wd ,  StationInfo st)  {
         StringBuffer imageName=new StringBuffer();
         imageName.append("a")
-                .append(sdf.format(wd.getCreateTime()))
+                .append(sdf.format(new Date()))
                 .append("_b")
                 .append("")
                 .append("_c")
                 .append(wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌")
                 .append("_d")
-                .append(dt.getWfxw())
+                .append(st.getAddress())
                 .append("_e")
-                .append(dt.getWfxw())
+                .append("2001001")
                 .append("_f")
-                .append(dt.getClsd())
+                .append(wd.getSpeed().doubleValue())
                 .append("_g")
-                .append(dt.getClxs())
+                .append(st.getSpeedLimit())
                 .append("_h")
-                .append("")
+                .append("60")
                 .append("_i")
-                .append(dt.getFxbh())
+                .append("")
                 .append("_j")
-                .append(dt.getCdbh())
+                .append("")
                 .append("_k")
-                .append(dt.getCjjg())
+                .append("TEST")
                 .append("_m")
                 .append("")
                 .append("_s")
-                .append(dt.getSbbh())
+                .append("")
                 .append("_x")
-                .append(dt.getCjfs())
+                .append("TEST")
                 .append("_y")
-                .append(dt.getCjjg())
-                .append("_z");
-              //此处加入上传图片的逻辑
-              //upload(wd.getFtpAxle(),imageName.toString());
+                .append("TEST")
+                .append("_z")
+                .append("11")
+                .append(".JPG");
+
+                String sourcePath="/"+wd.getStationId()+"/"+today.format(new Date())+"/"+wd.getFtpPriorHead();
+//                System.out.println(sourcePath);
+                String targetPath="/tem/"+imageName.toString();System.out.println(targetPath);
+//                System.out.println(targetPath);
+              //此处加入把图片放到临时目录的的逻辑
+               upload(sourcePath,targetPath);
+
         return imageName.toString();
     }
     static Integer parseColor(String colorStr) {
@@ -209,13 +226,13 @@ public class ImageUploadUtil {
             ftpClient = new FTPClient();
             ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
+            if(!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())){ //判断ftp服务器是否连通
+                System.out.println("FtpServer连接失败！");
+            }else {
+                System.out.println("FtpServer连接成功！");
+            }
             // 传文件，使用二进制
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-            if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
-                ftpClient.disconnect();
-            } else {
-                LOGGER.info(ftpHost + "FTP连接成功。");
-            }
         } catch (SocketException e) {
             LOGGER.error(e.getMessage(), e);
         } catch (IOException e) {
@@ -224,7 +241,7 @@ public class ImageUploadUtil {
         return ftpClient;
     }
     public static boolean ftpToFtp(FTPClient sourceClient,FTPClient targetClient,
-                                  String sourcePath,String targetPath) throws IOException {
+                                   String sourcePath,String targetPath) {
         boolean flag = false;
         InputStream inputStream;
         try {
@@ -245,19 +262,9 @@ public class ImageUploadUtil {
         }
         return flag;
     }
-    public static void  upload(String sourcePath,String targetPath) throws IOException {
-        String shundeHost="";
-        int shundePort=0;
-        String shundeUserName="";
-        String shundePassword="";
-
-        String trafficPoliceHost="";
-        int trafficPolicePort=0;
-        String trafficPoliceUserName="";
-        String trafficPolicePassword="";
-
-        FTPClient sourceClient =getFTPClient(shundeHost,shundePort,shundeUserName,shundePassword);
-        FTPClient targetClient =getFTPClient(trafficPoliceHost,trafficPolicePort,trafficPoliceUserName,trafficPolicePassword);
-        ftpToFtp(sourceClient,targetClient,sourcePath,targetPath);
+    public static void  upload(String sourcrPath,String targetPath)  {
+        FTPClient sourceClient =getFTPClient(SHUNDEHOST,SHUNDEPORT,SHUNDEUSERNAME,SHUNDEPASSWORD);
+        FTPClient targetClient =getFTPClient(SHUNDEHOST,SHUNDEPORT,SHUNDEUSERNAME,SHUNDEPASSWORD);
+        ftpToFtp(sourceClient,targetClient,sourcrPath,targetPath);
     }
 }
