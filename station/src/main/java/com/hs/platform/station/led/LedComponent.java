@@ -26,7 +26,11 @@ public class LedComponent {
 
     // 初始化加载网络参数
     static{
-        extSendUtil.initNetwork(ip, port, idcode);
+        try {
+            extSendUtil.initNetwork(ip, port, idcode);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
