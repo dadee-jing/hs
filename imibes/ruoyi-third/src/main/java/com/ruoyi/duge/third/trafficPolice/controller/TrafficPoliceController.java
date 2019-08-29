@@ -6,9 +6,10 @@ import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.duge.service.IWeightDataMapperService;
 import com.ruoyi.duge.third.trafficPolice.utils.IOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.UnsupportedEncodingException;
 
 @RestController
 public class TrafficPoliceController {
@@ -17,7 +18,7 @@ public class TrafficPoliceController {
     @Autowired
     IStationInfoService stationInfoService;
     @RequestMapping("/ftpserver")
-    public String  ftpServer(String id) {
+    public String  ftpServer(String id) throws UnsupportedEncodingException {
         long weightId = Long.parseLong(id);
         WeightData weightData = weightDataMapperService.selectDataById(weightId);
         StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue());
@@ -27,7 +28,7 @@ public class TrafficPoliceController {
     if (overLevel > 0){
         IOUtil.IllegalImages(weightData, stationInfo);
     }else {
-        IOUtil.normalImages(weightData);
+        IOUtil.normalImages(weightData,stationInfo);
     }
         return "success";
     }

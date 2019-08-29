@@ -13,18 +13,20 @@ import java.util.Date;
 
 public class IOUtil {
     private static Logger LOGGER = LoggerFactory.getLogger(ImageUtil.class);
+    static SimpleDateFormat format0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddHHmmss" );
     static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
     static SimpleDateFormat yearmonth =new SimpleDateFormat("yyyyMM" );
     static SimpleDateFormat day =new SimpleDateFormat("dd" );
-    public static String IllegalImages(WeightData wd , StationInfo st)  {
+    public static String IllegalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
         StringBuffer imageName=new StringBuffer();
         imageName.append("a")
                 .append(sdf.format(new Date()))
                 .append("_b")
                 .append("")
                 .append("_c")
-                .append(wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌")
+                .append(new String((wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌").getBytes(),
+                        "utf-8"))
                 .append("_d")
                 .append(st.getAddress())
                 .append("_e")
@@ -53,21 +55,30 @@ public class IOUtil {
                 .append("11")
                 .append(".JPG");
         Date date=new Date();
-        String sourcePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(date)+"/"+wd.getFtpPriorHead();
-
-        String targetPath="/sharedata/ftp/weifa/"+yearmonth.format(date)+"/"+day.format(date)
+        String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
+        String img=basePath+wd.getFtpPlate();
+        String img1=basePath+(wd.getFtpPriorHead()!=null ? wd.getFtpPriorHead():wd.getFtpPlate());
+        String img3=basePath+(wd.getFtpTail()!=null ? wd.getFtpTail():wd.getFtpPlate());
+        String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
+        String targetPath="/sharedata/ftp/peccancy/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-        IOOperate(sourcePath,targetPath);
+        if (wd.getFtpAxle()==null && wd.getFtpHead()==null){
+            MergedImages.Merged(img,img1,img,img3,targetPath,txt);
+        }else {
+            String img2=basePath+(wd.getFtpAxle()!=null ? wd.getFtpAxle():wd.getFtpHead());
+            MergedImages.Merged(img,img1,img2,img3,targetPath,txt);
+        }
         return imageName.toString();
     }
-    public static String normalImages(WeightData wd ) {
+    public static String normalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
         StringBuffer imageName=new StringBuffer();
         imageName.append("A")
                 .append(sdf.format(wd.getCreateTime()))
                 .append("_b")
                 .append(parsePlateType(wd.getTruckCorlor(),wd.getTruckNumber()))
                 .append("_c")
-                .append(wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌")
+                .append(new String((wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌").getBytes(),
+                        "utf-8"))
                 .append("_d")
                 .append(wd.getSpeed())
                 .append("_e")
@@ -75,17 +86,24 @@ public class IOUtil {
                 .append("_f")
                 .append(wd.getLane())
                 .append("_k")
-                .append(wd.getStationName())
+                .append(wd.getStationId())
                 .append("_z")
                 .append("11")
                 .append(".JPG");
         Date date=new Date();
-        String sourcePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(date)+"/"+wd.getFtpPriorHead();
-
+        String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
+        String img=basePath+wd.getFtpPlate();
+        String img1=basePath+(wd.getFtpPriorHead()!=null ? wd.getFtpPriorHead():wd.getFtpPlate());
+        String img3=basePath+(wd.getFtpTail()!=null ? wd.getFtpTail():wd.getFtpPlate());
+        String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-        IOOperate(sourcePath,targetPath);
-
+        if (wd.getFtpAxle()==null && wd.getFtpHead()==null){
+            MergedImages.Merged(img,img1,img,img3,targetPath,txt);
+        }else {
+            String img2=basePath+(wd.getFtpAxle()!=null ? wd.getFtpAxle():wd.getFtpHead());
+            MergedImages.Merged(img,img1,img2,img3,targetPath,txt);
+        }
         return imageName.toString();
     }
     static Integer parseColor(String colorStr) {

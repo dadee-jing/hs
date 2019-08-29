@@ -4,7 +4,10 @@ import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -67,7 +70,7 @@ public class StructUtil {
         System.out.println("picFile:"+picFile.length());
         System.out.println("fileBytes:"+fileBytes.length);
         System.out.println("picstru:"+result.length);
-        return result;
+        return resize(result);
     }
 
     /**
@@ -260,6 +263,26 @@ public class StructUtil {
         byte[] fileBytes = getFileBytes(new File("d:\\6.jpg"));
         System.out.println(bytesToHexString(fileBytes));
         System.out.println(bytesToHexString(replaceTag(fileBytes)));
+    }
+    public static BufferedImage resizeImage(int x, int y, BufferedImage bfi){
+        BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
+        bufferedImage.getGraphics().drawImage(
+                bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
+        return bufferedImage;
+    }
+    public static byte[] resize(byte[] pic){
+        InputStream input = new ByteArrayInputStream(pic);
+        BufferedImage buf;
+        byte[] b=null;
+        try {
+            buf = resizeImage(1700 ,1000, ImageIO.read(input));
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            boolean flag = ImageIO.write(buf, "jpg", out);
+            b = out.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  b;
     }
 
 }
