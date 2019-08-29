@@ -62,12 +62,8 @@ public class IOUtil {
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/peccancy/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-        if (wd.getFtpAxle()==null && wd.getFtpHead()==null){
             MergedImages.Merged(img,img1,img,img3,targetPath,txt);
-        }else {
-            String img2=basePath+(wd.getFtpAxle()!=null ? wd.getFtpAxle():wd.getFtpHead());
-            MergedImages.Merged(img,img1,img2,img3,targetPath,txt);
-        }
+
         return imageName.toString();
     }
     public static String normalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
@@ -98,12 +94,7 @@ public class IOUtil {
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-        if (wd.getFtpAxle()==null && wd.getFtpHead()==null){
             MergedImages.Merged(img,img1,img,img3,targetPath,txt);
-        }else {
-            String img2=basePath+(wd.getFtpAxle()!=null ? wd.getFtpAxle():wd.getFtpHead());
-            MergedImages.Merged(img,img1,img2,img3,targetPath,txt);
-        }
         return imageName.toString();
     }
     static Integer parseColor(String colorStr) {
