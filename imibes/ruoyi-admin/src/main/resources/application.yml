@@ -132,9 +132,16 @@ gen:
   # 自动去除表前缀，默认是true
   autoRemovePre: true
   # 表前缀(类名不会包含表前缀)
-  tablePrefix: sys_
+  tablePrefix: sys_f
 
 upload_yhl_task_cron: 0/5 * * * * ?
 
 #图片存放基本目录
-baseDir: XXX/XXX
+foshan.baseDir: XXX/XXX
+
+#ftp基本配置
+ftp:
+  host : 192.168.1.130
+  port : 2121
+  username : tzy
+  password : 123456
