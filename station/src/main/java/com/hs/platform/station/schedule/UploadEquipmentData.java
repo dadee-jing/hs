@@ -29,7 +29,6 @@ public class UploadEquipmentData {
     private static final Logger logger = LoggerFactory.getLogger(UploadEquipmentData.class);
     private final String url = upload_equipment_state_url;
     private final Integer stationId = station_id;
-    private List<DeviceInfo> deviceInfoList;
     private List<DeviceHealthState> deviceHealthStateList;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -38,12 +37,14 @@ public class UploadEquipmentData {
      */
     @Scheduled(cron="${upload_equipment_status_cron}")
     public void timingUploadStatus() throws Exception {
+        logger.info("uploaded equipment data start");
         // 获取所有最新设备信息
-        deviceInfoList = getEquipmentList();
+        List<DeviceInfo> deviceInfoList = getEquipmentList();
         // 处理设备信息
         processingData(deviceInfoList);
         // 上传设备状态信息
         post(url, deviceHealthStateList);
+        logger.info("uploaded equipment data end");
     }
 
     /**
@@ -88,7 +89,7 @@ public class UploadEquipmentData {
      * @param equipmentList
      */
     public void processingData(List<DeviceInfo> equipmentList) throws Exception {
-        deviceHealthStateList = new ArrayList<DeviceHealthState>();
+        deviceHealthStateList = new ArrayList<>();
         DeviceHealthState DeviceHealthState = null;
         // 处理设备状态信息
         for (DeviceInfo equipment : equipmentList) {
@@ -97,7 +98,9 @@ public class UploadEquipmentData {
             DeviceHealthState.setStationName(equipment.getStationName());
             DeviceHealthState.setDeviceId(equipment.getId());
             DeviceHealthState.setDeviceName(equipment.getDeviceName());
-            DeviceHealthState.setDeviceStatus(checkStatus(equipment.getIpAddress()));
+            //DeviceHealthState.setDeviceStatus(checkStatus(equipment.getIpAddress()));
+            // 先全部返回1
+            DeviceHealthState.setDeviceStatus(1);
             deviceHealthStateList.add(DeviceHealthState);
         }
         // 检测站点设备状态
