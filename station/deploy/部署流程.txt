@@ -2,13 +2,11 @@
 
 按照分配的ip，工控机增加一个联通的IP，设置掩码，网关，参考设备ip表excel。
 
-通过大华的设备搜查器，按分配的ip，将球机的IP设为联通的ip，设置掩码，网关，参考设备ip表excel。
-
-添加强制路由，cmd，执行口令 route add 19.0.0.0 mask 255.0.0.0 19.201.27.254 -p
+通过大华的设备搜查器，按分配的ip，将球机的IP设为联通的ip, web端口设为10000，设置掩码，网关，参考设备ip表excel。
 
 工控机ping 19.201.27.254网关，看看光纤线路是否正常
 
-记下网卡mac地址
+添加强制路由，cmd，执行口令 route add 19.0.0.0 mask 255.0.0.0 19.201.27.254 -p
 
 win+R,regedit修改注册表，HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\Tds\tcp ，双击PortNumber文件，切换到十进制，默认是3389，将他修改为10000；HKEY_LOCAL_MACHINE\SYSTEM\CurrentContro1Set\Control\Tenninal Server\WinStations\RDP-Tcp，修改PortNumber的值为10000;
 
