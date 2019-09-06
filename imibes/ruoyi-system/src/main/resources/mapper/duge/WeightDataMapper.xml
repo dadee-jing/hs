@@ -350,7 +350,7 @@
             and upload_sj &lt;&gt; 1
         </where>
         order by upload_sj
-        limit 100
+        limit 5
     </select>
 
     <select id="selectNotUploadJj" parameterType="WeightData" resultMap="WeightDataResult">

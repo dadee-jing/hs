@@ -31,7 +31,7 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
                 result = Byte2IntUtil. hexStringToByte(foshanMessage.getMessageBody());
             }
 
-            log.info("request:" + bytesToHexString(result));
+     //       log.info("request:" + bytesToHexString(result));
 
             IoBuffer buffer = IoBuffer.allocate(result.length, false);
             buffer.put(result);
@@ -46,6 +46,6 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
     public static void main(String[] args) throws Exception {
         String mb = "7e500200fa0b0000000000000000000000007e";
         byte[] result = Byte2IntUtil. hexStringToByte(mb);
-        System.out.println(bytesToHexString(result));
+//        System.out.println(bytesToHexString(result));
     }
 }

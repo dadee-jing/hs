@@ -1,6 +1,7 @@
 package com.ruoyi.duge.service.impl;
 
 import com.ruoyi.common.support.Convert;
+import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.service.IWeightDataMapperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,6 +88,11 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     @Override
     public Map selectStationStatistics(com.ruoyi.duge.domain.WeightData data){
         return dataMapper.selectStationStatistics(data);
+    }
+
+    @Override
+    public List<WeightData> selectNotUploadSj() {
+        return dataMapper.selectNotUploadSj();
     }
 
 }

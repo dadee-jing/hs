@@ -17,15 +17,18 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getCarData2Info;
@@ -33,7 +36,7 @@ import static com.ruoyi.duge.third.foshan.socket.StructUtil.getPic;
 
 @Component
 public class FoshanApiService implements ThirdApiService {
-
+    static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
     private final SendMsgClient sendMsgClient;
     private final IWeightDataMapperService weightDataMapperService;
     private final IStationStatisticsService stationStatisticsService;
@@ -57,7 +60,18 @@ public class FoshanApiService implements ThirdApiService {
         submitVehicleData(BaseVehicleDataRequest.builder()
                 .weightData(weightData).build());
     }
-
+//    @Scheduled(cron="*/15 * * * * ?")
+    @Scheduled(cron="${foshan.scheduled}")
+    public void submitVehicleData() {
+        List<WeightData> list= weightDataMapperService.selectNotUploadSj();
+        for (WeightData weightData:list) {
+            BaseThirdApiResponse baseThirdApiResponse= submitVehicleData(BaseVehicleDataRequest.builder()
+                    .weightData(weightData).build());
+            if (baseThirdApiResponse.getBusinessStatus()==BusinessStatus.SUCCESS){
+                weightData.setUploadSj(1);
+                weightDataMapperService.updateData(weightData);}
+        }
+    }
     @Override
     public BaseThirdApiResponse submitVehicleData(BaseVehicleDataRequest request) {
         try {
@@ -86,7 +100,11 @@ public class FoshanApiService implements ThirdApiService {
                             0,
                             mappingPlateColor(weightData.getTruckCorlor()),
                             5,
-                            0, 0, 0, 0, 2)).build();
+                            0, 0, 0, 0, 2))
+//                             .pic1(getPic(weightData.getWeightingDate(), new File("E:/pic/3.jpg")))
+//                             .pic2(getPic(weightData.getWeightingDate(), new File("E:/pic/6.jpg")))
+                             .build();
+                    String baseDir="/sharedata/ftp/"+weightData.getStationId()+"/"+today.format(weightData.getCreateTime())+"/";
                     if(StringUtils.isNoneBlank(weightData.getFtpPriorHead())){
                        foshanMessage.setPic1(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpPriorHead())));
                      }

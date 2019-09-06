@@ -1,5 +1,7 @@
 package com.ruoyi.duge.service;
 
+import com.ruoyi.duge.domain.WeightData;
+
 import java.util.List;
 import java.util.Map;
 
@@ -56,4 +58,6 @@ public interface IWeightDataMapperService
 	public int deleteDataByIds(String ids);
 
 	public Map selectStationStatistics(com.ruoyi.duge.domain.WeightData data);
+
+	List<WeightData> selectNotUploadSj();
 }

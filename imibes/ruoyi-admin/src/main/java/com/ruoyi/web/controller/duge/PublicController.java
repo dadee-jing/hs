@@ -38,11 +38,11 @@ public class PublicController extends BaseController {
     @Autowired
     private FoshanApiService foshanApiService;
 
-    @PostMapping("/submit/foshan")
+    @GetMapping("/submit/foshan")
     @ResponseBody
-    public String submitFoshan(@RequestBody com.ruoyi.duge.domain.WeightData data) {
+    public String submitFoshan(String id) {
         try {
-            foshanApiService.submitVehicleData(data.getId());
+            foshanApiService.submitVehicleData(Long.parseLong(id));
             return "ok";
         } catch (Exception e) {
             e.printStackTrace();

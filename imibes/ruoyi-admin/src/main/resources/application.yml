@@ -138,10 +138,12 @@ upload_yhl_task_cron: 0/5 * * * * ?
 
 #图片存放基本目录
 foshan.baseDir: XXX/XXX
-
+#上传佛山定时任务执行
+foshan.scheduled: 0/15 * * * * ?
 #ftp基本配置
 ftp:
   host : 192.168.1.130
   port : 2121
   username : tzy
   password : 123456
+

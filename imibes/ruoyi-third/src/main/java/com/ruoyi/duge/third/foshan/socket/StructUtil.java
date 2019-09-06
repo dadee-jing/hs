@@ -58,19 +58,19 @@ public class StructUtil {
     }
 
     public static byte[] getPic(Date picDate, File picFile) {
-        byte[] fileBytes = getFileBytes(picFile);
+        byte[] fileBytes = resize(picFile);
         byte[] picDateBytes = getTime2t(picDate);
         byte[] picLengthBytes = getLongBytes(fileBytes.length);
         byte[] result = new byte[9 + 4 + fileBytes.length];
         AtomicInteger currPos = new AtomicInteger(0);
         // 按顺序填数组
-        fillArray(result, currPos, picDateBytes);
-        fillArray(result, currPos, picLengthBytes);
-        fillArray(result, currPos, fileBytes);
+        fillArray(result, currPos, picDateBytes);//抓拍日期信息
+        fillArray(result, currPos, picLengthBytes);//图片长度
+        fillArray(result, currPos, fileBytes); //图片本身
         System.out.println("picFile:"+picFile.length());
         System.out.println("fileBytes:"+fileBytes.length);
         System.out.println("picstru:"+result.length);
-        return resize(result);
+        return result;
     }
 
     /**
@@ -270,12 +270,11 @@ public class StructUtil {
                 bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
         return bufferedImage;
     }
-    public static byte[] resize(byte[] pic){
-        InputStream input = new ByteArrayInputStream(pic);
+    public static byte[] resize(File picFile){
         BufferedImage buf;
         byte[] b=null;
         try {
-            buf = resizeImage(1700 ,1000, ImageIO.read(input));
+            buf = resizeImage(1700 ,1000, ImageIO.read(picFile));
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             boolean flag = ImageIO.write(buf, "jpg", out);
             b = out.toByteArray();
