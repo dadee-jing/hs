@@ -76,9 +76,31 @@ public class FoshanApiService implements ThirdApiService {
     public BaseThirdApiResponse submitVehicleData(BaseVehicleDataRequest request) {
         try {
             WeightData weightData = request.getWeightData();
-            FoshanMessage foshanMessage = FoshanMessage.builder()
-                    .messageType(FoshanMessage.BODY_MSG)
-                    .carData2Info(getCarData2Info(Integer.parseInt(configDataService.getConfigValue("site_id")),
+            int picCount=0;
+            FoshanMessage foshanMessage = new FoshanMessage();
+            String baseDir="/sharedata/ftp/"+weightData.getStationId()+"/"+today.format(weightData.getCreateTime())+"/";
+            if(StringUtils.isNoneBlank(weightData.getFtpPriorHead())){
+                foshanMessage.setPic1(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpPriorHead())));
+                picCount++;
+            }
+            if(StringUtils.isNoneBlank(weightData.getFtpTail())){
+                foshanMessage.setPic2(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpTail())));
+                picCount++;
+            }
+            if(StringUtils.isNoneBlank(weightData.getFtpPlate())){
+                foshanMessage.setPic3(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpPlate())));
+                picCount++;
+            }
+            if(StringUtils.isNoneBlank(weightData.getFtpHead())){
+                foshanMessage.setPic4(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpHead())));
+                picCount++;
+            }
+            if(StringUtils.isNoneBlank(weightData.getFtpAxle())){
+                foshanMessage.setPic5(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpAxle())));
+                picCount++;
+            }
+            foshanMessage.setMessageType(FoshanMessage.BODY_MSG);
+            foshanMessage.setCarData2Info(getCarData2Info(Integer.parseInt(configDataService.getConfigValue("site_id")),
                             weightData.getLane(),
                             //new Date(1559017800000l),
                             //2,
@@ -100,26 +122,7 @@ public class FoshanApiService implements ThirdApiService {
                             0,
                             mappingPlateColor(weightData.getTruckCorlor()),
                             5,
-                            0, 0, 0, 0, 2))
-//                             .pic1(getPic(weightData.getWeightingDate(), new File("E:/pic/3.jpg")))
-//                             .pic2(getPic(weightData.getWeightingDate(), new File("E:/pic/6.jpg")))
-                             .build();
-                    String baseDir="/sharedata/ftp/"+weightData.getStationId()+"/"+today.format(weightData.getCreateTime())+"/";
-                    if(StringUtils.isNoneBlank(weightData.getFtpPriorHead())){
-                       foshanMessage.setPic1(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpPriorHead())));
-                     }
-                    if(StringUtils.isNoneBlank(weightData.getFtpTail())){
-                        foshanMessage.setPic2(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpTail())));
-                    }
-                    if(StringUtils.isNoneBlank(weightData.getFtpPlate())){
-                        foshanMessage.setPic3(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpPlate())));
-                    }
-                    if(StringUtils.isNoneBlank(weightData.getFtpHead())){
-                        foshanMessage.setPic4(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpHead())));
-                    }
-                    if(StringUtils.isNoneBlank(weightData.getFtpAxle())){
-                        foshanMessage.setPic4(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpAxle())));
-                    }
+                            0, 0, 0, 0, picCount));
                     sendMsgClient.sendMessage(foshanMessage);
         } catch (Exception e) {
             e.printStackTrace();

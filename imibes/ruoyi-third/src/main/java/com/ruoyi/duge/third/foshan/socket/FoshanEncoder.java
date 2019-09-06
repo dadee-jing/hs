@@ -33,7 +33,7 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
 
      //       log.info("request:" + bytesToHexString(result));
 
-            IoBuffer buffer = IoBuffer.allocate(result.length, false);
+            IoBuffer buffer = IoBuffer.allocate(result.length, true);
             buffer.put(result);
             buffer.flip();
             out.write(buffer);

@@ -58,7 +58,7 @@ public class StructUtil {
     }
 
     public static byte[] getPic(Date picDate, File picFile) {
-        byte[] fileBytes = resize(picFile);
+        byte[] fileBytes = resize(1700,1000,picFile);
         byte[] picDateBytes = getTime2t(picDate);
         byte[] picLengthBytes = getLongBytes(fileBytes.length);
         byte[] result = new byte[9 + 4 + fileBytes.length];
@@ -270,18 +270,28 @@ public class StructUtil {
                 bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
         return bufferedImage;
     }
-    public static byte[] resize(File picFile){
-        BufferedImage buf;
-        byte[] b=null;
+    public static byte[] resize(int x, int y,File picFile) {
+        byte[] b = null;
+
         try {
-            buf = resizeImage(1700 ,1000, ImageIO.read(picFile));
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            boolean flag = ImageIO.write(buf, "jpg", out);
+            BufferedImage bfi = ImageIO.read(picFile);
+            ByteArrayOutputStream out= new ByteArrayOutputStream();
+            if (bfi.getHeight() > x || bfi.getWidth() > y) {
+                BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
+                bufferedImage.getGraphics().drawImage(
+                        bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
+                boolean flag = ImageIO.write(bufferedImage, "jpg", out);
+                b = out.toByteArray();
+                out.close();
+                return b;
+            }
+            boolean flag = ImageIO.write(bfi, "jpg", out);
             b = out.toByteArray();
+            out.close();
+            return b;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return  b;
+        return b;
     }
-
 }
