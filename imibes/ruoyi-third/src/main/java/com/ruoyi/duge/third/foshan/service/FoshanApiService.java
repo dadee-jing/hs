@@ -79,25 +79,35 @@ public class FoshanApiService implements ThirdApiService {
             int picCount=0;
             FoshanMessage foshanMessage = new FoshanMessage();
             String baseDir="/sharedata/ftp/"+weightData.getStationId()+"/"+today.format(weightData.getCreateTime())+"/";
-            if(StringUtils.isNoneBlank(weightData.getFtpPriorHead())){
-                foshanMessage.setPic1(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpPriorHead())));
-                picCount++;
+            if(StringUtils.isNoneBlank(weightData.getFtpPriorHead()) ){
+                File file=new File(baseDir+weightData.getFtpPriorHead());
+                if (file.exists()){
+                foshanMessage.setPic1(getPic(weightData.getWeightingDate(),file));
+                picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpTail())){
-                foshanMessage.setPic2(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpTail())));
-                picCount++;
+                File file=new File(baseDir+weightData.getFtpTail());
+                if (file.exists()){
+                foshanMessage.setPic2(getPic(weightData.getWeightingDate(),file ));
+                picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpPlate())){
-                foshanMessage.setPic3(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpPlate())));
-                picCount++;
+                File file=new  File(baseDir+weightData.getFtpPlate());
+                if (file.exists()){
+                foshanMessage.setPic3(getPic(weightData.getWeightingDate(), file));
+                picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpHead())){
-                foshanMessage.setPic4(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpHead())));
-                picCount++;
+                File file=new File(baseDir+weightData.getFtpHead());
+                if (file.exists()){
+                foshanMessage.setPic4(getPic(weightData.getWeightingDate(),file ));
+                picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpAxle())){
-                foshanMessage.setPic5(getPic(weightData.getWeightingDate(), new File(baseDir+weightData.getFtpAxle())));
-                picCount++;
+                File file=new File(baseDir+weightData.getFtpAxle());
+                if (file.exists()){
+                foshanMessage.setPic5(getPic(weightData.getWeightingDate(),file ));
+                picCount++;}
             }
             foshanMessage.setMessageType(FoshanMessage.BODY_MSG);
             foshanMessage.setCarData2Info(getCarData2Info(Integer.parseInt(configDataService.getConfigValue("site_id")),
