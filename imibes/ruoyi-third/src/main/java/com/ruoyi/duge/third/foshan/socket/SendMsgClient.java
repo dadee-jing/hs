@@ -19,14 +19,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class SendMsgClient {
 
     private IoSession session;
     private NioSocketConnector connector;
-    //private final IConfigDataService configDataService;
     private final SendMsgClientHandler sendMsgClientHandler;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private static final Logger log = LoggerFactory.getLogger(SendMsgClient.class);
@@ -36,7 +34,6 @@ public class SendMsgClient {
     @Autowired
     public SendMsgClient(IConfigDataService configDataService,
                          SendMsgClientHandler sendMsgClientHandler) {
-        //this.configDataService = configDataService;
         this.sendMsgClientHandler = sendMsgClientHandler;
         host = configDataService.getConfigValue("foshan.tcp.host");
         port = Integer.parseInt(configDataService.getConfigValue("foshan.tcp.port"));
@@ -90,14 +87,14 @@ public class SendMsgClient {
 
     }
 
-    //@Scheduled(fixedDelay = 9000, initialDelay = 5000)
+    @Scheduled(fixedDelay = 9000, initialDelay = 5000)
     public void heartbeat() {
         sendMessage(FoshanMessage.builder().messageType(FoshanMessage.HEART_BEAT_MSG).build());
     }
 
-    public synchronized void connect() {
+    public synchronized boolean connect() {
         if (null != session && session.isConnected()) {
-            return;
+            return true;
         }
         for (int i = 0; i < 5; i++) {
             try {
@@ -107,7 +104,7 @@ public class SendMsgClient {
                 // 获取会话
                 session = future.getSession();
                 log.info("连接佛山服务端" + host + ":" + port + "[成功],时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                break;
+                return true;
             } catch (RuntimeIoException e) {
                 log.error("连接佛山服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e.getMessage());
                 try {
@@ -117,12 +114,12 @@ public class SendMsgClient {
                 }
             }
         }
+        return false;
     }
 
     public synchronized void sendMessage(FoshanMessage foshanMessage) {
-        if (null == session || !session.isConnected()) {
-            connect();
+        if (connect()) {
+            session.write(foshanMessage);
         }
-        session.write(foshanMessage);
     }
 }
