@@ -24,7 +24,8 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
             byte[] result;
             if (StringUtils.isBlank(foshanMessage.getMessageBody())) {
                 byte[] msg = combineMsg(foshanMessage.getMessageType(),
-                        foshanMessage.getCarData2Info(), foshanMessage.getPic1(), foshanMessage.getPic2());
+                        foshanMessage.getCarData2Info(), foshanMessage.getPic1(), foshanMessage.getPic2(),
+                        foshanMessage.getPic3(), foshanMessage.getPic4(),foshanMessage.getPic5());
                 result = combineAll(msg);
             } else {
                 result = Byte2IntUtil.hexStringToByte(foshanMessage.getMessageBody());
