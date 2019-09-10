@@ -150,16 +150,16 @@ public class Byte2IntUtil {
         return stringBuilder.toString();
     }
 
-    public static void getFile(byte[] bfile, String filePath,String fileName) {
+    public static void getFile(byte[] bfile, String filePath, String fileName) {
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
         File file = null;
         try {
             File dir = new File(filePath);
-            if(!dir.exists()&&dir.isDirectory()){//判断文件目录是否存在
+            if (!dir.exists() && dir.isDirectory()) {//判断文件目录是否存在
                 dir.mkdirs();
             }
-            file = new File(filePath+"\\"+fileName);
+            file = new File(filePath + "\\" + fileName);
             fos = new FileOutputStream(file);
             bos = new BufferedOutputStream(fos);
             bos.write(bfile);

@@ -16,6 +16,7 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
     public void exceptionCaught(IoSession session, Throwable cause)
             throws Exception {
         // TODO Auto-generated method stub
+        session.closeNow();
         LOGGER.warn(cause.getMessage(), cause);
     }
 
@@ -33,7 +34,7 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
     public void messageSent(IoSession session, Object message) throws Exception {
         // TODO Auto-generated method stub
         super.messageSent(session, message);
-        LOGGER.info("向服务器发送消息成功！！！！"+ message.toString());
+        LOGGER.info("向服务器发送消息成功！！！！" + message.toString());
     }
 
     @Override

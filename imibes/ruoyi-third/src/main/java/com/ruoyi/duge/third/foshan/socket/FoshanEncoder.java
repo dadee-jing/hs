@@ -9,7 +9,6 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.ruoyi.duge.third.foshan.socket.Byte2IntUtil.bytesToHexString;
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.combineAll;
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.combineMsg;
 
@@ -28,10 +27,10 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
                         foshanMessage.getCarData2Info(), foshanMessage.getPic1(), foshanMessage.getPic2());
                 result = combineAll(msg);
             } else {
-                result = Byte2IntUtil. hexStringToByte(foshanMessage.getMessageBody());
+                result = Byte2IntUtil.hexStringToByte(foshanMessage.getMessageBody());
             }
 
-     //       log.info("request:" + bytesToHexString(result));
+            //       log.info("request:" + bytesToHexString(result));
 
             IoBuffer buffer = IoBuffer.allocate(result.length, true);
             buffer.put(result);
@@ -41,11 +40,5 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
             e.printStackTrace();
             throw e;
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        String mb = "7e500200fa0b0000000000000000000000007e";
-        byte[] result = Byte2IntUtil. hexStringToByte(mb);
-//        System.out.println(bytesToHexString(result));
     }
 }
