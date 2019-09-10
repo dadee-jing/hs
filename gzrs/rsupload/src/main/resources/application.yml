@@ -59,6 +59,6 @@ spring:
 
 #定时任务时间配置
 #工作日
-workday: 0/10 * 18,19,20,21,22,23,24,1,2,3,4,5,6,7 * * MON-FRI
+workday: 0/10 * 18,19,20,21,22,23,0,1,2,3,4,5,6,7 * * MON-FRI
 #非工作日
-nonworkday: 0/10 * * * * SAT-SUN
+nonworkday: 0/10 * * * * SAT,SUN
