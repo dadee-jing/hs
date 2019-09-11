@@ -3,6 +3,7 @@ package com.ruoyi.duge.third.foshan.service;
 import com.ruoyi.common.enums.BusinessStatus;
 import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.service.IConfigDataService;
+import com.ruoyi.duge.service.IStationStatisticsService;
 import com.ruoyi.duge.service.IWeightDataMapperService;
 import com.ruoyi.duge.third.foshan.socket.FoshanMessage;
 import com.ruoyi.duge.third.foshan.socket.SendMsgClient;
@@ -69,6 +70,7 @@ public class FoshanApiService implements ThirdApiService {
                     .weightData(weightData).build());
             if (baseThirdApiResponse.getBusinessStatus()==BusinessStatus.SUCCESS){
                 weightData.setUploadSj(1);
+                log.info("上送成功！！！");
                 weightDataMapperService.updateData(weightData);}
         }
     }
@@ -133,7 +135,13 @@ public class FoshanApiService implements ThirdApiService {
                             mappingPlateColor(weightData.getTruckCorlor()),
                             5,
                             0, 0, 0, 0, picCount));
+            if(picCount>0){
+                    log.info("执行上送");
                     sendMsgClient.sendMessage(foshanMessage);
+            return BaseThirdApiResponse.builder()
+                    .businessStatus(BusinessStatus.SUCCESS)
+                    .build();}
+
         } catch (Exception e) {
             e.printStackTrace();
             return BaseThirdApiResponse.builder()
@@ -142,8 +150,9 @@ public class FoshanApiService implements ThirdApiService {
                     .errorMsg(e.getMessage())
                     .build();
         }
+        log.info("上送失败！！！");
         return BaseThirdApiResponse.builder()
-                .businessStatus(BusinessStatus.SUCCESS)
+                .businessStatus(BusinessStatus.FAIL)
                 .build();
     }
 
