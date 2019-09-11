@@ -20,15 +20,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getCarData2Info;
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getPic;
@@ -36,7 +29,7 @@ import static com.ruoyi.duge.third.foshan.socket.StructUtil.getPic;
 @Component
 public class FoshanApiService implements ThirdApiService {
     private static final Logger log = LoggerFactory.getLogger(FoshanApiService.class);
-    static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
+    static SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
     private final SendMsgClient sendMsgClient;
     private final IWeightDataMapperService weightDataMapperService;
     private final IStationStatisticsService stationStatisticsService;
@@ -44,6 +37,7 @@ public class FoshanApiService implements ThirdApiService {
     private int serialNo = 100;
     @Value("${foshan.baseDir}")
     private String baseDir;
+
     @Autowired
     public FoshanApiService(SendMsgClient sendMsgClient,
                             IWeightDataMapperService weightDataMapperService,
@@ -60,87 +54,90 @@ public class FoshanApiService implements ThirdApiService {
         submitVehicleData(BaseVehicleDataRequest.builder()
                 .weightData(weightData).build());
     }
-//    @Scheduled(cron="*/15 * * * * ?")
-    @Scheduled(cron="${foshan.scheduled}")
+
+    @Scheduled(cron = "${foshan.scheduled}")
     public void submitVehicleData() {
-        log.info("佛山市局定时任务执行");
-        List<WeightData> list= weightDataMapperService.selectNotUploadSj();
-        for (WeightData weightData:list) {
-            BaseThirdApiResponse baseThirdApiResponse= submitVehicleData(BaseVehicleDataRequest.builder()
-                    .weightData(weightData).build());
-            if (baseThirdApiResponse.getBusinessStatus()==BusinessStatus.SUCCESS){
-                weightData.setUploadSj(1);
-                log.info("上送成功！！！");
-                weightDataMapperService.updateData(weightData);}
+        if(sendMsgClient.isConnected()){
+            log.info("佛山市局定时任务执行");
+            List<WeightData> list = weightDataMapperService.selectNotUploadSj();
+            for (WeightData weightData : list) {
+                BaseThirdApiResponse baseThirdApiResponse = submitVehicleData(BaseVehicleDataRequest.builder()
+                        .weightData(weightData).build());
+                if (baseThirdApiResponse.getBusinessStatus() == BusinessStatus.SUCCESS) {
+                    weightData.setUploadSj(1);
+                    log.info("上送成功！！！");
+                    weightDataMapperService.updateData(weightData);
+                }
+            }
         }
     }
+
     @Override
     public BaseThirdApiResponse submitVehicleData(BaseVehicleDataRequest request) {
         try {
             WeightData weightData = request.getWeightData();
-            int picCount=0;
+            int picCount = 0;
             FoshanMessage foshanMessage = new FoshanMessage();
-            String baseDir="/sharedata/ftp/"+weightData.getStationId()+"/"+today.format(weightData.getCreateTime())+"/";
-            if(StringUtils.isNoneBlank(weightData.getFtpPriorHead()) ){
-                File file=new File(baseDir+weightData.getFtpPriorHead());
-                if (file.exists()){
-                foshanMessage.setPic1(getPic(weightData.getWeightingDate(),file));
-                picCount++;}
+            String baseDir = "/sharedata/ftp/" + weightData.getStationId() + "/" + today.format(weightData.getCreateTime()) + "/";
+            if (StringUtils.isNoneBlank(weightData.getFtpPriorHead())) {
+                File file = new File(baseDir + weightData.getFtpPriorHead());
+                if (file.exists()) {
+                    foshanMessage.setPic1(getPic(weightData.getWeightingDate(), file));
+                    picCount++;
+                }
             }
-            if(StringUtils.isNoneBlank(weightData.getFtpTail())){
-                File file=new File(baseDir+weightData.getFtpTail());
-                if (file.exists()){
-                foshanMessage.setPic2(getPic(weightData.getWeightingDate(),file ));
-                picCount++;}
+            if (StringUtils.isNoneBlank(weightData.getFtpTail())) {
+                File file = new File(baseDir + weightData.getFtpTail());
+                if (file.exists()) {
+                    foshanMessage.setPic2(getPic(weightData.getWeightingDate(), file));
+                    picCount++;
+                }
             }
-            if(StringUtils.isNoneBlank(weightData.getFtpPlate())){
-                File file=new  File(baseDir+weightData.getFtpPlate());
-                if (file.exists()){
-                foshanMessage.setPic3(getPic(weightData.getWeightingDate(), file));
-                picCount++;}
+            if (StringUtils.isNoneBlank(weightData.getFtpPlate())) {
+                File file = new File(baseDir + weightData.getFtpPlate());
+                if (file.exists()) {
+                    foshanMessage.setPic3(getPic(weightData.getWeightingDate(), file));
+                    picCount++;
+                }
             }
-            if(StringUtils.isNoneBlank(weightData.getFtpHead())){
-                File file=new File(baseDir+weightData.getFtpHead());
-                if (file.exists()){
-                foshanMessage.setPic4(getPic(weightData.getWeightingDate(),file ));
-                picCount++;}
+            if (StringUtils.isNoneBlank(weightData.getFtpHead())) {
+                File file = new File(baseDir + weightData.getFtpHead());
+                if (file.exists()) {
+                    foshanMessage.setPic4(getPic(weightData.getWeightingDate(), file));
+                    picCount++;
+                }
             }
-            if(StringUtils.isNoneBlank(weightData.getFtpAxle())){
-                File file=new File(baseDir+weightData.getFtpAxle());
-                if (file.exists()){
-                foshanMessage.setPic5(getPic(weightData.getWeightingDate(),file ));
-                picCount++;}
+            if (StringUtils.isNoneBlank(weightData.getFtpAxle())) {
+                File file = new File(baseDir + weightData.getFtpAxle());
+                if (file.exists()) {
+                    foshanMessage.setPic5(getPic(weightData.getWeightingDate(), file));
+                    picCount++;
+                }
             }
-            foshanMessage.setMessageType(FoshanMessage.BODY_MSG);
-            foshanMessage.setCarData2Info(getCarData2Info(Integer.parseInt(configDataService.getConfigValue("site_id")),
-                            weightData.getLane(),
-                            //new Date(1559017800000l),
-                            //2,
-                            weightData.getWeightingDate(),
-                            weightData.getAxleCount(),
-                            null,
-                            weightData.getWeight().floatValue(),
-                            weightData.getSpeed().floatValue(),
-                            Float.parseFloat(weightData.getLength()) / 1000.0f,
-                            Float.parseFloat(weightData.getWidth()) / 1000.0f,
-                            Float.parseFloat(weightData.getHeight()) / 1000.0f,
-//                            7.3F,
-//                            52.58033F,
-//                            6.403F,
-//                            2.336F,
-//                            3.109F,
-                            0.00f, 0.00f,
-                            weightData.getPlate(),
-                            0,
-                            mappingPlateColor(weightData.getTruckCorlor()),
-                            5,
-                            0, 0, 0, 0, picCount));
-            if(picCount>0){
-                    log.info("执行上送");
-                    sendMsgClient.sendMessage(foshanMessage);
-            return BaseThirdApiResponse.builder()
-                    .businessStatus(BusinessStatus.SUCCESS)
-                    .build();}
+            if (picCount > 0) {
+                foshanMessage.setMessageType(FoshanMessage.BODY_MSG);
+                foshanMessage.setCarData2Info(getCarData2Info(Integer.parseInt(configDataService.getConfigValue("site_id")),
+                        weightData.getLane(),
+                        weightData.getWeightingDate(),
+                        weightData.getAxleCount(),
+                        null,
+                        weightData.getWeight().floatValue(),
+                        weightData.getSpeed().floatValue(),
+                        Float.parseFloat(weightData.getLength()) / 1000.0f,
+                        Float.parseFloat(weightData.getWidth()) / 1000.0f,
+                        Float.parseFloat(weightData.getHeight()) / 1000.0f,
+                        0.00f, 0.00f,
+                        weightData.getPlate(),
+                        0,
+                        mappingPlateColor(weightData.getTruckCorlor()),
+                        5,
+                        0, 0, 0, 0, picCount));
+                log.info("执行上送");
+                sendMsgClient.sendMessage(foshanMessage);
+                return BaseThirdApiResponse.builder()
+                        .businessStatus(BusinessStatus.SUCCESS)
+                        .build();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

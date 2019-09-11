@@ -17,8 +17,6 @@ import javax.annotation.PostConstruct;
 import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Component
 public class SendMsgClient {
@@ -36,6 +34,10 @@ public class SendMsgClient {
         this.sendMsgClientHandler = sendMsgClientHandler;
         host = configDataService.getConfigValue("foshan.tcp.host");
         port = Integer.parseInt(configDataService.getConfigValue("foshan.tcp.port"));
+    }
+
+    public boolean isConnected() {
+        return null != session && session.isActive();
     }
 
     @PostConstruct
