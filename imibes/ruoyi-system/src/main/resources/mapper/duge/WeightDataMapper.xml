@@ -347,6 +347,7 @@
     <select id="selectNotUploadSj" parameterType="WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
+            wd.create_time &lt;&gt; date_add(now(), interval - 5 minute)
             and upload_sj &lt;&gt; 1
         </where>
         order by upload_sj
