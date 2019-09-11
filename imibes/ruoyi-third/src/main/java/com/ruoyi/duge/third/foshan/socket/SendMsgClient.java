@@ -26,7 +26,6 @@ public class SendMsgClient {
     private IoSession session;
     private NioSocketConnector connector;
     private final SendMsgClientHandler sendMsgClientHandler;
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private static final Logger log = LoggerFactory.getLogger(SendMsgClient.class);
     private String host;
     private int port;
@@ -53,38 +52,6 @@ public class SendMsgClient {
         // 添加处理器
         connector.setHandler(sendMsgClientHandler);
         connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));// 设置默认访问地址
-
-
-        // 断线重连
-        /*
-        connector.getFilterChain().addFirst("reconnection", new IoFilterAdapter() {
-            @Override
-            public void sessionClosed(NextFilter nextFilter, IoSession ioSession) throws Exception {
-                for (int i = 0; i < 5; i++) {
-                    try {
-                        Thread.sleep(5000);
-                        ConnectFuture future = connector.connect();
-                        future.awaitUninterruptibly();// 等待连接创建成功
-                        session = future.getSession();// 获取会话
-                        if (session.isConnected()) {
-                            log.info("断线重连[" + connector.getDefaultRemoteAddress().getHostName() + ":"
-                                    + connector.getDefaultRemoteAddress().getPort() + "]成功");
-                            break;
-                        }
-                    } catch (Exception ex) {
-                        log.info("重连服务器登录失败,3秒再连接一次:" + ex.getMessage());
-                    }
-                }
-            }
-        });
-
-        /*
-        // 协议解析
-        connector.getFilterChain().addLast("codec",
-                new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("GBK"),
-                        LineDelimiter.DEFAULT.getValue(), LineDelimiter.DEFAULT.getValue())));
-        */
-
     }
 
     @Scheduled(fixedDelay = 1000 * 60 * 5, initialDelay = 10000)

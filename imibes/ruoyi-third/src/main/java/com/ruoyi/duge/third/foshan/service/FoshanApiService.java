@@ -1,21 +1,16 @@
 package com.ruoyi.duge.third.foshan.service;
 
 import com.ruoyi.common.enums.BusinessStatus;
-import com.ruoyi.duge.domain.StationStatistics;
 import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.service.IConfigDataService;
-import com.ruoyi.duge.service.IStationStatisticsService;
 import com.ruoyi.duge.service.IWeightDataMapperService;
 import com.ruoyi.duge.third.foshan.socket.FoshanMessage;
 import com.ruoyi.duge.third.foshan.socket.SendMsgClient;
-import com.ruoyi.duge.third.foshan.socket.StructUtil;
 import com.ruoyi.duge.third.model.BaseEquipmentStatusRequest;
 import com.ruoyi.duge.third.model.BaseThirdApiResponse;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
 import com.ruoyi.duge.third.service.ThirdApiService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +19,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getCarData2Info;
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getPic;
@@ -43,20 +31,16 @@ public class FoshanApiService implements ThirdApiService {
     static SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
     private final SendMsgClient sendMsgClient;
     private final IWeightDataMapperService weightDataMapperService;
-    private final IStationStatisticsService stationStatisticsService;
     private final IConfigDataService configDataService;
-    private int serialNo = 100;
     @Value("${foshan.baseDir}")
     private String baseDir;
 
     @Autowired
     public FoshanApiService(SendMsgClient sendMsgClient,
                             IWeightDataMapperService weightDataMapperService,
-                            IStationStatisticsService stationStatisticsService,
                             IConfigDataService configDataService) {
         this.sendMsgClient = sendMsgClient;
         this.weightDataMapperService = weightDataMapperService;
-        this.stationStatisticsService = stationStatisticsService;
         this.configDataService = configDataService;
     }
 
@@ -126,8 +110,6 @@ public class FoshanApiService implements ThirdApiService {
             foshanMessage.setMessageType(FoshanMessage.BODY_MSG);
             foshanMessage.setCarData2Info(getCarData2Info(Integer.parseInt(configDataService.getConfigValue("site_id")),
                     weightData.getLane(),
-                    //new Date(1559017800000l),
-                    //2,
                     weightData.getWeightingDate(),
                     weightData.getAxleCount(),
                     null,
@@ -136,11 +118,6 @@ public class FoshanApiService implements ThirdApiService {
                     Float.parseFloat(weightData.getLength()) / 1000.0f,
                     Float.parseFloat(weightData.getWidth()) / 1000.0f,
                     Float.parseFloat(weightData.getHeight()) / 1000.0f,
-//                            7.3F,
-//                            52.58033F,
-//                            6.403F,
-//                            2.336F,
-//                            3.109F,
                     0.00f, 0.00f,
                     weightData.getPlate(),
                     0,
