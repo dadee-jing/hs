@@ -1,21 +1,16 @@
 package com.ruoyi.duge.third.foshan.service;
 
 import com.ruoyi.common.enums.BusinessStatus;
-import com.ruoyi.duge.domain.StationStatistics;
 import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.service.IConfigDataService;
-import com.ruoyi.duge.service.IStationStatisticsService;
 import com.ruoyi.duge.service.IWeightDataMapperService;
 import com.ruoyi.duge.third.foshan.socket.FoshanMessage;
 import com.ruoyi.duge.third.foshan.socket.SendMsgClient;
-import com.ruoyi.duge.third.foshan.socket.StructUtil;
 import com.ruoyi.duge.third.model.BaseEquipmentStatusRequest;
 import com.ruoyi.duge.third.model.BaseThirdApiResponse;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
 import com.ruoyi.duge.third.service.ThirdApiService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,15 +63,12 @@ public class FoshanApiService implements ThirdApiService {
     @Scheduled(cron="${foshan.scheduled}")
     public void submitVehicleData() {
         log.info("佛山市局定时任务执行");
-        System.out.println("佛山市局定时任务执行");
         List<WeightData> list= weightDataMapperService.selectNotUploadSj();
         for (WeightData weightData:list) {
             BaseThirdApiResponse baseThirdApiResponse= submitVehicleData(BaseVehicleDataRequest.builder()
                     .weightData(weightData).build());
             if (baseThirdApiResponse.getBusinessStatus()==BusinessStatus.SUCCESS){
                 weightData.setUploadSj(1);
-                log.info("上传成功！！！！！");
-                System.out.println("上传成功！！！！！");
                 weightDataMapperService.updateData(weightData);}
         }
     }
@@ -89,31 +81,31 @@ public class FoshanApiService implements ThirdApiService {
             String baseDir="/sharedata/ftp/"+weightData.getStationId()+"/"+today.format(weightData.getCreateTime())+"/";
             if(StringUtils.isNoneBlank(weightData.getFtpPriorHead()) ){
                 File file=new File(baseDir+weightData.getFtpPriorHead());
-                if (file.exists() && file.length()>0){
+                if (file.exists()){
                 foshanMessage.setPic1(getPic(weightData.getWeightingDate(),file));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpTail())){
                 File file=new File(baseDir+weightData.getFtpTail());
-                if (file.exists()&& file.length()>0){
+                if (file.exists()){
                 foshanMessage.setPic2(getPic(weightData.getWeightingDate(),file ));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpPlate())){
                 File file=new  File(baseDir+weightData.getFtpPlate());
-                if (file.exists()&& file.length()>0){
+                if (file.exists()){
                 foshanMessage.setPic3(getPic(weightData.getWeightingDate(), file));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpHead())){
                 File file=new File(baseDir+weightData.getFtpHead());
-                if (file.exists()&& file.length()>0){
+                if (file.exists()){
                 foshanMessage.setPic4(getPic(weightData.getWeightingDate(),file ));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpAxle())){
                 File file=new File(baseDir+weightData.getFtpAxle());
-                if (file.exists()&& file.length()>0){
+                if (file.exists()){
                 foshanMessage.setPic5(getPic(weightData.getWeightingDate(),file ));
                 picCount++;}
             }
@@ -141,13 +133,7 @@ public class FoshanApiService implements ThirdApiService {
                             mappingPlateColor(weightData.getTruckCorlor()),
                             5,
                             0, 0, 0, 0, picCount));
-            if (picCount>0){
-
                     sendMsgClient.sendMessage(foshanMessage);
-                return BaseThirdApiResponse.builder()
-                        .businessStatus(BusinessStatus.SUCCESS)
-                        .build();
-            }
         } catch (Exception e) {
             e.printStackTrace();
             return BaseThirdApiResponse.builder()
@@ -156,10 +142,8 @@ public class FoshanApiService implements ThirdApiService {
                     .errorMsg(e.getMessage())
                     .build();
         }
-        log.info("上传失败！！！");
-        System.out.println("上传失败！！！");
         return BaseThirdApiResponse.builder()
-                .businessStatus(BusinessStatus.FAIL)
+                .businessStatus(BusinessStatus.SUCCESS)
                 .build();
     }
 

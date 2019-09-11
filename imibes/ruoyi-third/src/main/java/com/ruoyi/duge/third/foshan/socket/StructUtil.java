@@ -58,7 +58,7 @@ public class StructUtil {
     }
 
     public static byte[] getPic(Date picDate, File picFile) {
-        byte[] fileBytes = resize(1700,1000,picFile);
+        byte[] fileBytes = resize(1700, 1000, picFile);
         byte[] picDateBytes = getTime2t(picDate);
         byte[] picLengthBytes = getLongBytes(fileBytes.length);
         byte[] result = new byte[9 + 4 + fileBytes.length];
@@ -67,9 +67,9 @@ public class StructUtil {
         fillArray(result, currPos, picDateBytes);//抓拍日期信息
         fillArray(result, currPos, picLengthBytes);//图片长度
         fillArray(result, currPos, fileBytes); //图片本身
-        System.out.println("picFile:"+picFile.length());
-        System.out.println("fileBytes:"+fileBytes.length);
-        System.out.println("picstru:"+result.length);
+        System.out.println("picFile:" + picFile.length());
+        System.out.println("fileBytes:" + fileBytes.length);
+        System.out.println("picstru:" + result.length);
         return result;
     }
 
@@ -128,7 +128,7 @@ public class StructUtil {
         byte[] weightDateBytes = getTime2t(weightDate);
         fillArray(result, currPos, weightDateBytes);
         fillArray(result, currPos, getBytes(totalAxis));
-        fillArray(result, currPos, new byte[]{0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        fillArray(result, currPos, new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
@@ -165,7 +165,7 @@ public class StructUtil {
         int pic4len = picData4 != null ? picData4.length : 0;
         int pic5len = picData5 != null ? picData5.length : 0;
         if (0x5020 == instructionId) {
-            msgLength = carData2Info.length + pic1len + pic2len+pic3len+pic4len+pic5len;
+            msgLength = carData2Info.length + pic1len + pic2len + pic3len + pic4len + pic5len;
         } else {
             msgLength = 0;
         }
@@ -177,7 +177,7 @@ public class StructUtil {
         // 命令类型
         fillArray(result, currPos, new byte[]{0x00});
         // 流水号
-        fillArray(result, currPos, getWordBytes( serailNo++));
+        fillArray(result, currPos, getWordBytes(serailNo++));
         // 进程id
         fillArray(result, currPos, getDwordBytes(0));
         // 保留
@@ -258,7 +258,7 @@ public class StructUtil {
         byte[] pic1 = getPic(new Date(), new File("d:\\6.jpg"));
         byte[] pic2 = getPic(new Date(), new File("d:\\6.jpg"));
         //byte[] msg = combineMsg(0x5020, car, pic1, pic2);
-        byte[] msg = combineMsg(0x5020, car, pic1, pic2,pic1,pic1,pic1);
+        byte[] msg = combineMsg(0x5020, car, pic1, pic2, pic1, pic1, pic1);
         byte[] result = combineAll(msg);
 
         byte[] lengthBytes = new byte[4];
@@ -279,18 +279,20 @@ public class StructUtil {
         System.out.println(bytesToHexString(fileBytes));
         System.out.println(bytesToHexString(replaceTag(fileBytes)));
     }
-    public static BufferedImage resizeImage(int x, int y, BufferedImage bfi){
+
+    public static BufferedImage resizeImage(int x, int y, BufferedImage bfi) {
         BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
         bufferedImage.getGraphics().drawImage(
                 bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
         return bufferedImage;
     }
-    public static byte[] resize(int x, int y,File picFile) {
+
+    public static byte[] resize(int x, int y, File picFile) {
         byte[] b = null;
 
         try {
             BufferedImage bfi = ImageIO.read(picFile);
-            ByteArrayOutputStream out= new ByteArrayOutputStream();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             if (bfi.getHeight() > x || bfi.getWidth() > y) {
                 BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
                 bufferedImage.getGraphics().drawImage(

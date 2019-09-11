@@ -132,7 +132,7 @@ gen:
   # 自动去除表前缀，默认是true
   autoRemovePre: true
   # 表前缀(类名不会包含表前缀)
-  tablePrefix: sys_f
+  tablePrefix: sys_
 
 upload_yhl_task_cron: 0/5 * * * * ?
 
