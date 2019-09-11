@@ -32,20 +32,16 @@ public class FoshanApiService implements ThirdApiService {
     static SimpleDateFormat today = new SimpleDateFormat("yyyyMMdd");
     private final SendMsgClient sendMsgClient;
     private final IWeightDataMapperService weightDataMapperService;
-    private final IStationStatisticsService stationStatisticsService;
     private final IConfigDataService configDataService;
-    private int serialNo = 100;
     @Value("${foshan.baseDir}")
     private String baseDir;
 
     @Autowired
     public FoshanApiService(SendMsgClient sendMsgClient,
                             IWeightDataMapperService weightDataMapperService,
-                            IStationStatisticsService stationStatisticsService,
                             IConfigDataService configDataService) {
         this.sendMsgClient = sendMsgClient;
         this.weightDataMapperService = weightDataMapperService;
-        this.stationStatisticsService = stationStatisticsService;
         this.configDataService = configDataService;
     }
 
@@ -156,36 +152,6 @@ public class FoshanApiService implements ThirdApiService {
     public void submitByte(String sendva) {
         FoshanMessage foshanMessage = FoshanMessage.builder().messageBody(sendva).build();
         sendMsgClient.sendMessage(foshanMessage);
-        /*
-        String ip = "19.128.109.103";
-        int port = Integer.parseInt("10100");
-        //String sendva = "7e50020000000000000000000000000000007e";
-        byte[] sendByte = hexStringToByte(sendva);
-        String testv = bytesToHexString(sendByte);
-        System.out.println(testv);
-        System.out.println(ip + ":" + port);
-
-        SockeUtil socketClient = null;
-        ;
-        try {
-            socketClient = new SockeUtil(ip, port);
-        } catch (UnknownHostException e) {
-//            log.error("socket链接异常,链接信息："+ip+端口);
-            e.printStackTrace();
-        } catch (IOException e) {
-//            log.error("socket IO异常");
-            e.printStackTrace();
-        }
-        byte[] ss = null;
-
-        try {
-            ss = socketClient.sentByte(sendByte);
-            String retu = bytesToHexString(ss);
-            System.out.println("response:" + retu);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
     }
 
     static int mappingPlateColor(String colorChs) {
