@@ -87,7 +87,7 @@ public class SendMsgClient {
 
     }
 
-    @Scheduled(fixedDelay = 9000, initialDelay = 5000)
+    @Scheduled(fixedDelay = 1000 * 60 * 5, initialDelay = 10000)
     public void heartbeat() {
         sendMessage(FoshanMessage.builder().messageType(FoshanMessage.HEART_BEAT_MSG).build());
     }
