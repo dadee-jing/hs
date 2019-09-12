@@ -83,31 +83,31 @@ public class FoshanApiService implements ThirdApiService {
             String baseDir="/sharedata/ftp/"+weightData.getStationId()+"/"+today.format(weightData.getCreateTime())+"/";
             if(StringUtils.isNoneBlank(weightData.getFtpPriorHead()) ){
                 File file=new File(baseDir+weightData.getFtpPriorHead());
-                if (file.exists()){
+                if (file.exists()&& file.length()>0){
                 foshanMessage.setPic1(getPic(weightData.getWeightingDate(),file));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpTail())){
                 File file=new File(baseDir+weightData.getFtpTail());
-                if (file.exists()){
+                if (file.exists()&& file.length()>0){
                 foshanMessage.setPic2(getPic(weightData.getWeightingDate(),file ));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpPlate())){
                 File file=new  File(baseDir+weightData.getFtpPlate());
-                if (file.exists()){
+                if (file.exists()&& file.length()>0){
                 foshanMessage.setPic3(getPic(weightData.getWeightingDate(), file));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpHead())){
                 File file=new File(baseDir+weightData.getFtpHead());
-                if (file.exists()){
+                if (file.exists()&& file.length()>0){
                 foshanMessage.setPic4(getPic(weightData.getWeightingDate(),file ));
                 picCount++;}
             }
             if(StringUtils.isNoneBlank(weightData.getFtpAxle())){
                 File file=new File(baseDir+weightData.getFtpAxle());
-                if (file.exists()){
+                if (file.exists()&& file.length()>0){
                 foshanMessage.setPic5(getPic(weightData.getWeightingDate(),file ));
                 picCount++;}
             }
@@ -137,10 +137,10 @@ public class FoshanApiService implements ThirdApiService {
                             0, 0, 0, 0, picCount));
             if(picCount>0){
                     log.info("执行上送");
-                    sendMsgClient.sendMessage(foshanMessage);
+                    sendMsgClient.sendMessage(foshanMessage);}
             return BaseThirdApiResponse.builder()
                     .businessStatus(BusinessStatus.SUCCESS)
-                    .build();}
+                    .build();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,10 +150,6 @@ public class FoshanApiService implements ThirdApiService {
                     .errorMsg(e.getMessage())
                     .build();
         }
-        log.info("上送失败！！！");
-        return BaseThirdApiResponse.builder()
-                .businessStatus(BusinessStatus.FAIL)
-                .build();
     }
 
     public void submitByte(String sendva) {
