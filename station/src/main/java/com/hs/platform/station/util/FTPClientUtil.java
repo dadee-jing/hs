@@ -31,19 +31,22 @@ public class FTPClientUtil {
         FTPClient ftpClient = null;
         try {
             ftpClient = new FTPClient();
+            ftpClient.setDefaultTimeout(5 * 1000);
+            ftpClient.setConnectTimeout(5 * 1000);
             ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
             // 传文件，使用二进制
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
                 ftpClient.disconnect();
+                LOGGER.error("FTP FAIL ERROR RESPONSE");
             } else {
                 LOGGER.info(ftpHost + "FTP连接成功。");
             }
         } catch (SocketException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("FTP FAIL " + e.getMessage(), e);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("FTP FAIL " + e.getMessage(), e);
         }
         return ftpClient;
     }

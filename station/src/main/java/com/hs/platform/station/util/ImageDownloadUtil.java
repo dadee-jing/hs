@@ -67,6 +67,8 @@ public class ImageDownloadUtil {
                         if (null != FtpFullView && !"".equals(FtpFullView)) {
                             FTPClientUtil.ftpToFtp(FtpFullView, targetParentPath + '/' + FtpFullView, newlxFtpClient, shundeFtpClient);
                         }
+                        newlxFtpClient.logout();
+                        shundeFtpClient.logout();
                     }
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
@@ -85,7 +87,7 @@ public class ImageDownloadUtil {
 
             });
         } catch (Exception e) {
-            throw new RuntimeException();
+            LOGGER.error(e.getMessage(), e);
         }
     }
 }
