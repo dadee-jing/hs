@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LWHClientHandler extends IoHandlerAdapter {
 
@@ -46,21 +48,28 @@ public class LWHClientHandler extends IoHandlerAdapter {
     public void messageReceived(IoSession session, Object message) throws Exception {
         try {
             String dataString = (String) message;
+            LOGGER.info("[duge_lwh_message]: " + dataString);
             String[] dataArray = dataString.split(" ");
-            String timeString = dataArray[1];
+            Map<String, String> dataMap = new HashMap<>();
+            for (int i = 0; i < dataArray.length; i++) {
+                if (i % 2 == 0) {
+                    dataMap.put(dataArray[i], dataArray[i + 1]);
+                }
+            }
+            String timeString = dataMap.get("time");
             String processTime = timeString.substring(0, 4) + "-" + timeString.substring(4, 6) + "-"
                     + timeString.substring(6, 8) + " " + timeString.substring(8, 10) + ":" + timeString.substring(10, 12)
                     + ":" + timeString.substring(12, 14);
             Timestamp lwhDate = Timestamp.valueOf(processTime);
-            String plate = dataArray[3];// TruckNumber
-            String width = dataArray[5];
-            String height = dataArray[7];
-            String length = dataArray[9];
-            String laneMid = dataArray[11];
-            String laneMin = dataArray[13];
-            String laneMax = dataArray[15];
-            String passTime = dataArray[17];
-            LOGGER.info("[duge_lwh_message]: " + dataString);
+            String plate = dataMap.get("plate");// TruckNumber
+            String width = dataMap.get("width");
+            String height = dataMap.get("height");
+            String length = dataMap.get("length");
+            String laneMid = dataMap.get("laneMid");
+            String laneMin = dataMap.get("laneMin");
+            String laneMax = dataMap.get("laneMax");
+            String passTime = dataMap.get("passTime");
+
             WeightAndLwhEntity entity = new WeightAndLwhEntity();
             entity.setProcessStatus(1);
             entity.setLwhDate(lwhDate);

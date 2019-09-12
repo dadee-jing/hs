@@ -2,7 +2,6 @@ package com.hs.platform.station.schedule;
 
 
 import com.hs.platform.station.persistence.local.dao.ConfigDataRepository;
-import com.hs.platform.station.persistence.local.dao.FtpServerRepository;
 import com.hs.platform.station.persistence.local.dao.WeightDataRepository;
 import com.hs.platform.station.persistence.local.entity.ConfigData;
 import com.hs.platform.station.persistence.local.entity.WeightData;
@@ -26,18 +25,15 @@ public class UploadData {
     private static final Logger logger = LoggerFactory.getLogger(UploadData.class);
 
     private final ConfigDataRepository configDataRepository;
-    private final FtpServerRepository ftpServerRepository;
     private final WeightDataRepository weightDataRepository;
     private final RemoteWeightDataRepository remoteWeightDataRepository;
 
 
     @Autowired
     public UploadData(ConfigDataRepository configDataRepository,
-                      FtpServerRepository ftpServerRepository,
                       WeightDataRepository weightDataRepository,
                       RemoteWeightDataRepository remoteWeightDataRepository) {
         this.configDataRepository = configDataRepository;
-        this.ftpServerRepository = ftpServerRepository;
         this.weightDataRepository = weightDataRepository;
         this.remoteWeightDataRepository = remoteWeightDataRepository;
     }
@@ -67,7 +63,7 @@ public class UploadData {
                     remoteWeightDataData.setUploadTag(0);
                     // 文本数据
                     remoteWeightDataRepository.save(remoteWeightDataData);
-
+                    // 异步提交文件
                     ImageDownloadUtil.submitDownloadTask(weightData);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
