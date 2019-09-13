@@ -27,15 +27,18 @@ public class UploadData {
     private final ConfigDataRepository configDataRepository;
     private final WeightDataRepository weightDataRepository;
     private final RemoteWeightDataRepository remoteWeightDataRepository;
+    private final ImageDownloadUtil imageDownloadUtil;
 
 
     @Autowired
     public UploadData(ConfigDataRepository configDataRepository,
                       WeightDataRepository weightDataRepository,
-                      RemoteWeightDataRepository remoteWeightDataRepository) {
+                      RemoteWeightDataRepository remoteWeightDataRepository,
+                      ImageDownloadUtil imageDownloadUtil) {
         this.configDataRepository = configDataRepository;
         this.weightDataRepository = weightDataRepository;
         this.remoteWeightDataRepository = remoteWeightDataRepository;
+        this.imageDownloadUtil = imageDownloadUtil;
     }
 
     /**
@@ -51,36 +54,47 @@ public class UploadData {
     public void doUploadDbData() {
         //logger.info("uploading db-data to data center begin");
         // 下载20秒前数据，保证图片视频收集
-        Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
-        List<WeightData> weightDataList = weightDataRepository.findByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
-        if (null != weightDataList) {
-            weightDataList.forEach(weightData -> {
-                boolean successTag = true;
-                try {
-                    RemoteWeightDataData remoteWeightDataData = new RemoteWeightDataData();
-                    BeanUtils.copyProperties(remoteWeightDataData, weightData);
-                    remoteWeightDataData.setId(null);
-                    remoteWeightDataData.setUploadTag(0);
-                    // 文本数据
-                    remoteWeightDataRepository.save(remoteWeightDataData);
-                    // 异步提交文件
-                    ImageDownloadUtil.submitDownloadTask(weightData);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                    successTag = false;
-                }
-                weightData.setUploadTag(successTag ? 1 : 2);
-                weightDataRepository.save(weightData);
-            });
+        try {
+            logger.info("to upload");
+            Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
+            List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
+            if (null != weightDataList) {
+                weightDataList.forEach(weightData -> {
+                    boolean successTag = true;
+                    try {
+                        RemoteWeightDataData remoteWeightDataData = new RemoteWeightDataData();
+                        BeanUtils.copyProperties(remoteWeightDataData, weightData);
+                        remoteWeightDataData.setId(null);
+                        remoteWeightDataData.setUploadTag(0);
+                        // 文本数据
+                        remoteWeightDataRepository.save(remoteWeightDataData);
+                        // 同步提交文件
+                        imageDownloadUtil.submitDownloadTask(weightData);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                        successTag = false;
+                        logger.error("upload fail " + weightData.getTruckNumber());
+                    }
+                    weightData.setUploadTag(successTag ? 1 : 2);
+                    weightDataRepository.save(weightData);
+                });
+            }
+            logger.info("end upload");
+            //logger.info("uploading db-data to data center end");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
-        //logger.info("uploading db-data to data center end");
     }
 
     private String getDbConfigValue(String key) {
-        ConfigData configData = configDataRepository.findFirstByKey(key);
-        if (null != configData) {
-            return configData.getValue();
-        } else {
+        try {
+            ConfigData configData = configDataRepository.findFirstByKey(key);
+            if (null != configData) {
+                return configData.getValue();
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
             return null;
         }
     }

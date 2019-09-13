@@ -48,7 +48,7 @@ public class LWHClientHandler extends IoHandlerAdapter {
     public void messageReceived(IoSession session, Object message) throws Exception {
         try {
             String dataString = (String) message;
-            LOGGER.info("[duge_lwh_message]: " + dataString);
+            //LOGGER.info("[duge_lwh_message]: " + dataString);
             String[] dataArray = dataString.split(" ");
             Map<String, String> dataMap = new HashMap<>();
             for (int i = 0; i < dataArray.length; i++) {
