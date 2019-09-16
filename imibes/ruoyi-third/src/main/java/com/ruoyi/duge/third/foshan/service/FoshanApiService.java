@@ -20,15 +20,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getCarData2Info;
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getPic;
@@ -63,6 +57,7 @@ public class FoshanApiService implements ThirdApiService {
 //    @Scheduled(cron="*/15 * * * * ?")
     @Scheduled(cron="${foshan.scheduled}")
     public void submitVehicleData() {
+        if ("1".equals(configDataService.getConfigValue("do_foshan_scheduled"))) {
         log.info("佛山市局定时任务执行");
         List<WeightData> list= weightDataMapperService.selectNotUploadSj();
         for (WeightData weightData:list) {
@@ -73,9 +68,11 @@ public class FoshanApiService implements ThirdApiService {
                 log.info("上送成功！！！");
                 weightDataMapperService.updateData(weightData);}
         }
+        }
     }
     @Override
     public BaseThirdApiResponse submitVehicleData(BaseVehicleDataRequest request) {
+        BaseThirdApiResponse baseThirdApiResponse=new BaseThirdApiResponse();
         try {
             WeightData weightData = request.getWeightData();
             int picCount=0;
@@ -137,19 +134,17 @@ public class FoshanApiService implements ThirdApiService {
                             0, 0, 0, 0, picCount));
             if(picCount>0){
                     log.info("执行上送");
-                    sendMsgClient.sendMessage(foshanMessage);}
-            return BaseThirdApiResponse.builder()
-                    .businessStatus(BusinessStatus.SUCCESS)
-                    .build();
-
+                    sendMsgClient.sendMessage(foshanMessage);
+            baseThirdApiResponse.setBusinessStatus(BusinessStatus.SUCCESS);
+            return baseThirdApiResponse;}
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseThirdApiResponse.builder()
-                    .businessStatus(BusinessStatus.FAIL)
-                    .errorCode("SYSTEM ERROR")
-                    .errorMsg(e.getMessage())
-                    .build();
+            baseThirdApiResponse.setBusinessStatus(BusinessStatus.FAIL);
+            return baseThirdApiResponse;
         }
+        log.info("上送失败！！！");
+        baseThirdApiResponse.setBusinessStatus(BusinessStatus.FAIL);
+        return  baseThirdApiResponse;
     }
 
     public void submitByte(String sendva) {
