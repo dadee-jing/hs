@@ -78,7 +78,7 @@ public class ImageDownloadUtil {
             // 按照固定目录存放 ftppath/stationID/date/   ftp/1/20190717/
             String targetParentPath = "/" + stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd");
 
-            if (count.intValue() >= 100) {
+            if (count.intValue() >= 80) {
                 newlxFtpClient = resetFTPClient(newlxFtpClient, true);
                 shundeFtpClient = resetFTPClient(shundeFtpClient, false);
             } else {
@@ -116,7 +116,7 @@ public class ImageDownloadUtil {
                 count.increment();
             }
         } catch (Exception e) {
-            LOGGER.error("FILE TRANSFORM ERROR " + e.getMessage(), e);
+            LOGGER.error("FILE TRANSFORM ERROR " + e.getMessage());
         }
     }
 }

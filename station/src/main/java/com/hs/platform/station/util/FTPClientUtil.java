@@ -5,12 +5,9 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.SocketException;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 public class FTPClientUtil {
 
@@ -57,135 +54,16 @@ public class FTPClientUtil {
             try {
                 ftpClient.logout();
             } catch (IOException io) {
-                LOGGER.error("ftp client logout failed...{}");
+                LOGGER.error("ftp client logout failed...{}" + ftpClient.getPassiveHost());
             } finally {
                 try {
                     if (ftpClient.isConnected()) {
                         ftpClient.disconnect();
                     }
                 } catch (IOException io) {
-                    LOGGER.error("close ftp client failed...{}");
+                    LOGGER.error("close ftp client failed...{}" + ftpClient.getPassiveHost());
                 }
             }
-        }
-    }
-
-    /**
-     * 去 服务器的FTP路径下上读取文件
-     *
-     * @param ftpUserName
-     * @param ftpPassword
-     * @param ftpPath
-     * @param ftpHost
-     * @param ftpPort
-     * @param fileName
-     * @return
-     */
-    public static String readConfigFileForFTP(String ftpUserName, String ftpPassword, String ftpPath, String ftpHost,
-                                              int ftpPort, String fileName) {
-        StringBuffer resultBuffer = new StringBuffer();
-        InputStream in = null;
-        FTPClient ftpClient = null;
-        LOGGER.info("开始读取绝对路径" + ftpPath + "文件!");
-        try {
-            ftpClient = getFTPClient(ftpHost, ftpPassword, ftpUserName, ftpPort);
-            ftpClient.setControlEncoding("UTF-8"); // 中文支持
-            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-            ftpClient.enterLocalPassiveMode();
-            ftpClient.changeWorkingDirectory(ftpPath);
-            in = ftpClient.retrieveFileStream(fileName);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("没有找到" + ftpPath + "文件");
-            LOGGER.error(e.getMessage(), e);
-            return "下载配置文件失败，请联系管理员.";
-        } catch (SocketException e) {
-            LOGGER.error("连接FTP失败.");
-            LOGGER.error(e.getMessage(), e);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-            LOGGER.error("文件读取错误。");
-            LOGGER.error(e.getMessage(), e);
-            return "配置文件读取失败，请联系管理员.";
-        }
-        if (in != null) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String data = null;
-            try {
-                while ((data = br.readLine()) != null) {
-                    resultBuffer.append(data + "\n");
-                }
-            } catch (IOException e) {
-                LOGGER.error("文件读取错误。");
-                LOGGER.error(e.getMessage(), e);
-                return "配置文件读取失败，请联系管理员.";
-            } finally {
-                try {
-                    ftpClient.disconnect();
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage(), e);
-                }
-            }
-        } else {
-            LOGGER.error("in为空，不能读取。");
-            return "配置文件读取失败，请联系管理员.";
-        }
-        return resultBuffer.toString();
-    }
-
-    /**
-     * FTPClient 下载文件
-     *
-     * @param remotePath          : ftp上的地址:   /export/home/test.txt
-     * @param localPath：本地存放文件的地址 如：D:\EDI_TEST_FILE\00ec9bcfbcc441c699301fac111feb03\Sybase\fact\test.txt
-     */
-    public static void getFileByFtp(String remotePath, String localPath, FTPClient client) {
-        File localFile = new File(localPath);
-        OutputStream ous = null;
-        try {
-            ous = new FileOutputStream(localFile);
-            client.retrieveFile(remotePath, ous);
-        } catch (FileNotFoundException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            LOGGER.error(e.getMessage(), e);
-        } finally {
-            if (null != ous) {
-                try {
-                    ous.close();
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage(), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * 从FTP获取文件，并打水印
-     *
-     * @param remotePath
-     * @param targetPath
-     * @param client
-     * @param contents
-     */
-    public static void getFtpFileThenAddText(String remotePath, String targetPath, FTPClient client, List<String> contents) {
-        try (FileOutputStream outImgStream = new FileOutputStream(targetPath);
-             InputStream inputStream = client.retrieveFileStream(remotePath)) {
-            Image srcImg = ImageIO.read(inputStream);
-            int srcImgWidth = srcImg.getWidth(null);
-            int srcImgHeight = srcImg.getHeight(null);
-            BufferedImage bufImg = new BufferedImage(srcImgWidth, srcImgHeight, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = bufImg.createGraphics();
-            g.drawImage(srcImg, 0, 0, srcImgWidth, srcImgHeight, null);
-            Color color = new Color(255, 255, 255, 128);
-            g.setColor(color);
-            for (int i = 0; i < contents.size(); i++) {
-                g.drawString(contents.get(i), 10, 10 * (1 + i));
-            }
-            g.dispose();
-            ImageIO.write(bufImg, "jpg", outImgStream);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -207,7 +85,7 @@ public class FTPClientUtil {
                 try {
                     sourceClient.completePendingCommand();
                 } catch (IOException e) {
-                    LOGGER.error("completePendingCommand faile " + e.getMessage());
+                    LOGGER.error("completePendingCommand fail " + e.getMessage());
                 }
             } else {
                 LOGGER.error("empty:" + sourcePath);
