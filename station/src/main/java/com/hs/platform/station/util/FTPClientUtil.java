@@ -31,33 +31,41 @@ public class FTPClientUtil {
         FTPClient ftpClient = null;
         try {
             ftpClient = new FTPClient();
-            ftpClient.setDefaultTimeout(5 * 1000);
-            ftpClient.setConnectTimeout(5 * 1000);
+            ftpClient.setConnectTimeout(10 * 1000);
+            ftpClient.setDefaultTimeout(10 * 1000);
+            ftpClient.setDataTimeout(10 * 1000);
             ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
+            ftpClient.enterLocalPassiveMode();
             // 传文件，使用二进制
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
                 ftpClient.disconnect();
-                LOGGER.error("FTP FAIL ERROR RESPONSE");
+                LOGGER.error("FTP FAIL ERROR RESPONSE " + ftpHost);
             } else {
-                LOGGER.info(ftpHost + "FTP连接成功。");
+                LOGGER.info(ftpHost + " FTP连接成功。");
             }
-        } catch (SocketException e) {
-            LOGGER.error("FTP FAIL " + e.getMessage(), e);
-        } catch (IOException e) {
-            LOGGER.error("FTP FAIL " + e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.error("FTP FAIL " + ftpHost + e.getMessage());
         }
         return ftpClient;
     }
 
     //FTPClient 的关闭
     public static void ftpClose(FTPClient ftpClient) {
-        if (ftpClient.isConnected()) {
+        if (null != ftpClient) {
             try {
-                ftpClient.disconnect();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage(), e);
+                ftpClient.logout();
+            } catch (IOException io) {
+                LOGGER.error("ftp client logout failed...{}");
+            } finally {
+                try {
+                    if (ftpClient.isConnected()) {
+                        ftpClient.disconnect();
+                    }
+                } catch (IOException io) {
+                    LOGGER.error("close ftp client failed...{}");
+                }
             }
         }
     }
@@ -194,14 +202,18 @@ public class FTPClientUtil {
                 createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
                 targetClient.changeWorkingDirectory("/");
                 targetClient.storeFile(targetPath, inputStream);
-                // 同个connect，执行多个任务，每条任务需要complete command
-                sourceClient.completePendingCommand();
                 LOGGER.info("ok:" + sourcePath);
+                // 同个connect，执行多个任务，每条任务需要complete command
+                try {
+                    sourceClient.completePendingCommand();
+                } catch (IOException e) {
+                    LOGGER.error("completePendingCommand faile " + e.getMessage());
+                }
             } else {
                 LOGGER.error("empty:" + sourcePath);
             }
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("transform file fail " + e.getMessage());
         }
     }
 

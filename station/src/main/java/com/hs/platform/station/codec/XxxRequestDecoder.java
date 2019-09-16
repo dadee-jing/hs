@@ -52,7 +52,7 @@ public class XxxRequestDecoder extends CumulativeProtocolDecoder {
             in.reset();
             if (length > in.remaining()) {
                 // 剩余包体长度小于新流向报文标注的预期长度，不作处理，扔回队列继续拼凑
-                LOGGER.warn("newlx package incomplete");
+                //LOGGER.warn("newlx package incomplete");
                 return false;
             }
             // 根据文档按顺序读入
@@ -95,7 +95,7 @@ public class XxxRequestDecoder extends CumulativeProtocolDecoder {
             }
             return in.remaining() > 0;
         }
-        LOGGER.warn("newlx package incomplete");
+        //LOGGER.warn("newlx package incomplete");
         return false;
     }
 
