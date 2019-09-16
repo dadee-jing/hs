@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "rs_monitor_heiyan_log")
 public class BlacksmokevehicleInfo {
 

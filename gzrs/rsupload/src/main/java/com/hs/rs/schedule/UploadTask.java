@@ -100,7 +100,6 @@ public class UploadTask {
         ArrayNode datas = objectMapper.createArrayNode();
         JsonNode node = objectMapper.convertValue(data, JsonNode.class);
         datas.add(node);
-
         try {
             String datasStr = objectMapper.writeValueAsString(datas);
             LOGGER.info("datas:" + datasStr);
@@ -134,15 +133,15 @@ public class UploadTask {
         });
     }
 
-    // 看看文档，站点，遥感线信息 只需要提交一次
-    @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
+    // 看看文档，遥感线信息 只需要提交一次
+   @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
     public void uploadLine() {
         List<Line> lineList = lineRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         String requestBody = wrapperXml(transformService.transLineDto(lineList.get(0)), "monitoringline");
         String responseStr = callApi(requestBody);
     }
 
-    // 看看文档，站点，遥感线信息 只需要提交一次
+    // 看看文档，站点信息 只需要提交一次
     @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
     public void uploadStation() {
         List<Station> stationList = stationRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
@@ -150,6 +149,10 @@ public class UploadTask {
         callApi(requestBody);
 
     }
+
+    /**
+     * 上传遥感监测数据
+     */
     public void uploadMonitorData() {
         List<MonitorDataLog> monitorDataLogList = monitorDataRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         monitorDataLogList.forEach(monitorDataLog -> {
@@ -189,7 +192,7 @@ public class UploadTask {
 
     }
     public void uploadVehicleInfo() {
-        List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNullOrderByUpLoadStatusDesc();
         vehicleInfoList.forEach(vehicleInfo -> {
             try {
                 String requestBody = wrapperXml(transformService.transVehicleInfoDto(vehicleInfo), "vehicle");
@@ -207,6 +210,10 @@ public class UploadTask {
         });
 
     }
+
+    /**
+     * 上传车辆轨道信息
+     */
     public void uploadVehicleTrajectory() {
         List<VehicleTrajectory> vehicleTrajectoryList = vehicleTrajectoryRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         vehicleTrajectoryList.forEach(vehicleTrajectory -> {
@@ -227,22 +234,22 @@ public class UploadTask {
     }
     //工作日的上传时间段为： 18：00~8：00
     //@Scheduled(cron="*/10 * 18,19,20,21,22,23,24,1,2,3,4,5,6,7 * * MON-FRI")
-    @Scheduled(cron="${workday}")
+   @Scheduled(cron="${workday}")
     public void workDay(){
-        uploadBlacksomkevehicle();
-        uploadMonitorData();
+        uploadVehicleTrajectory();
         uploadTrafficFlow();
         uploadVehicleInfo();
-        uploadVehicleTrajectory();
+        uploadMonitorData();
+        uploadBlacksomkevehicle();
     }
     //非工作日全天传输
     //@Scheduled(cron="*/10 * * * * SAT-SUN")
     @Scheduled(cron="${nonworkday}")
     public void  nonWorkDay(){
-        uploadBlacksomkevehicle();
-        uploadMonitorData();
+        uploadVehicleTrajectory();
         uploadTrafficFlow();
         uploadVehicleInfo();
-        uploadVehicleTrajectory();
+        uploadMonitorData();
+        uploadBlacksomkevehicle();
     }
 }

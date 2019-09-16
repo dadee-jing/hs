@@ -19,6 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "rs_vehicle_info")
 @Entity
+@ToString
 @IdClass(VehicleInfoMultiKeys.class)
 public class VehicleInfo {
     /**

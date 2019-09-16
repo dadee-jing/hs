@@ -19,6 +19,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "rs_monitor_data_log")
 public class MonitorDataLog {
     /**
