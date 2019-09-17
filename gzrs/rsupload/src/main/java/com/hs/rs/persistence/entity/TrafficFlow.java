@@ -20,6 +20,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Table(name = "rs_traffic_flow")
 @Entity
 public class TrafficFlow {

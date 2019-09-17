@@ -22,6 +22,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "rs_vehicle_trajectory")
 public class VehicleTrajectory {
 

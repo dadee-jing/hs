@@ -17,7 +17,7 @@ spring:
                 #url: jdbc:mysql://47.106.120.239:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true
                 #url: jdbc:mysql://localhost:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true
                 #url: jdbc:sqlserver://192.168.1.158:1433;SelectMethod=cursor;DatabaseName=HSRYDB
-                url: jdbc:sqlserver://192.168.1.140:1433;SelectMethod=cursor;DatabaseName=HSRYDB
+                url: jdbc:sqlserver://192.168.1.145:1433;SelectMethod=cursor;DatabaseName=HSRYDB
                 username: sa
                 password: abc123
             # 从库数据源
