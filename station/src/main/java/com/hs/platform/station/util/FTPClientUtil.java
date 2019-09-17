@@ -5,9 +5,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 public class FTPClientUtil {
 
@@ -67,31 +65,34 @@ public class FTPClientUtil {
         }
     }
 
+    public static ByteArrayInputStream parse(final OutputStream out) {
+        ByteArrayOutputStream baos = (ByteArrayOutputStream) out;
+        return new ByteArrayInputStream(baos.toByteArray());
+    }
+
     public static void ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient, FTPClient targetClient) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             sourceClient.changeWorkingDirectory("/");
+            sourceClient.retrieveFile(sourcePath, outputStream);
         } catch (Exception e) {
             e.printStackTrace();
+            LOGGER.error("pull file fail " + sourcePath + e.getMessage());
+            return;
         }
-        // inputStream自动关闭
-        try (InputStream inputStream = sourceClient.retrieveFileStream(sourcePath)) {
-            if (null != inputStream) {
-                //System.out.println(targetPath.substring(0, targetPath.lastIndexOf('/')));
-                createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
-                targetClient.changeWorkingDirectory("/");
-                targetClient.storeFile(targetPath, inputStream);
-                LOGGER.info("ok:" + sourcePath);
-                // 同个connect，执行多个任务，每条任务需要complete command
-                try {
-                    sourceClient.completePendingCommand();
-                } catch (IOException e) {
-                    LOGGER.error("completePendingCommand fail " + e.getMessage());
-                }
-            } else {
-                LOGGER.error("empty:" + sourcePath);
-            }
+        try (InputStream inputStream = parse(outputStream)) {
+            createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
+            targetClient.changeWorkingDirectory("/");
+            targetClient.storeFile(targetPath, inputStream);
+            LOGGER.info("ok:" + sourcePath);
         } catch (Exception e) {
-            LOGGER.error("transform file fail " + e.getMessage());
+            LOGGER.error("push file fail " + targetPath + e.getMessage());
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
