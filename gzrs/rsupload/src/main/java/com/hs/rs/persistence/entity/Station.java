@@ -1,12 +1,15 @@
 package com.hs.rs.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * 点位表 rs_station
@@ -39,7 +42,7 @@ public class Station {
     /**
      * 运行日期
      */
-    private String yxrq;
+    private Date yxrq;
     /**
      * 点位状态
      */

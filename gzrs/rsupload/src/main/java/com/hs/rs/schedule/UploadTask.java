@@ -32,7 +32,6 @@ public class UploadTask {
     private VehicleInfoRepository vehicleInfoRepository;
     private VehicleTrajectoryRepository vehicleTrajectoryRepository;
     private TransformService transformService;
-
     private ObjectMapper objectMapper;
     private final HttpCustomClient httpCustomClient;
     private ConcurrentHashMap<String, String> header = new ConcurrentHashMap<>();
@@ -40,6 +39,9 @@ public class UploadTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(UploadTask.class);
     private static final String CONTENT_TYPE = "text/xml;charset=UTF-8";
     private static  String URL = null;
+    private ConcurrentHashMap<String, String> header1;
+    private static  String X_Auth_Token = "b8a066fc-cf8c-4f6a-866c-ece30a12d856";
+
     @Autowired
     public UploadTask(SysparastrRepository sysparastrRepository,
                       BlacksmokevehicleInfoRepository blacksmokevehicleInfoRepository,
@@ -69,6 +71,7 @@ public class UploadTask {
 
         header.put("Content-Type", CONTENT_TYPE);
         header.put("Accept-Charset", "utf-8");
+        header.put("X-Auth-Token", X_Auth_Token);
     }
 
     private String NewUrl() {
@@ -111,7 +114,28 @@ public class UploadTask {
         return null;
     }
 
+
+
+    // 看看文档，遥感线信息 只需要提交一次
+    //
+    @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
+    public void uploadLine() {
+        List<Line> lineList = lineRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        String requestBody = wrapperXml(transformService.transLineDto(lineList.get(0)), "monitoringline");
+        String responseStr = callApi(requestBody);
+    }
+
+    // 看看文档，站点信息 只需要提交一次
+    //  @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
+
+    public void uploadStation() {
+        List<Station> stationList = stationRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        String requestBody = wrapperXml(transformService.transStationDto(stationList.get(0)), "monitoringpoint");
+        callApi(requestBody);
+
+    }
     // 理解这个，其他按照这个写
+
     public void uploadBlacksomkevehicle() {
         List<BlacksmokevehicleInfo> blacksmokevehicleInfoList = blacksmokevehicleInfoRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
 //         逐条数据提交
@@ -133,26 +157,10 @@ public class UploadTask {
         });
     }
 
-    // 看看文档，遥感线信息 只需要提交一次
-   @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
-    public void uploadLine() {
-        List<Line> lineList = lineRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
-        String requestBody = wrapperXml(transformService.transLineDto(lineList.get(0)), "monitoringline");
-        String responseStr = callApi(requestBody);
-    }
-
-    // 看看文档，站点信息 只需要提交一次
-    @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
-    public void uploadStation() {
-        List<Station> stationList = stationRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
-        String requestBody = wrapperXml(transformService.transStationDto(stationList.get(0)), "monitoringpoint");
-        callApi(requestBody);
-
-    }
-
     /**
      * 上传遥感监测数据
      */
+
     public void uploadMonitorData() {
         List<MonitorDataLog> monitorDataLogList = monitorDataRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         monitorDataLogList.forEach(monitorDataLog -> {
@@ -160,6 +168,7 @@ public class UploadTask {
                 String requestBody = wrapperXml(transformService.transMonitorDataDto(monitorDataLog), "monitoringdata");
                 String responseStr = callApi(requestBody);
                 JsonNode response = objectMapper.readTree(responseStr);
+                System.out.println(response.get("status"));
                 if(response.get("status").equals(1)) {
                     monitorDataLog.setUpLoadStatus(1);
                 } else {
@@ -191,6 +200,7 @@ public class UploadTask {
         });
 
     }
+
     public void uploadVehicleInfo() {
         List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNullOrderByUpLoadStatusDesc();
         vehicleInfoList.forEach(vehicleInfo -> {
@@ -214,6 +224,7 @@ public class UploadTask {
     /**
      * 上传车辆轨道信息
      */
+
     public void uploadVehicleTrajectory() {
         List<VehicleTrajectory> vehicleTrajectoryList = vehicleTrajectoryRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         vehicleTrajectoryList.forEach(vehicleTrajectory -> {

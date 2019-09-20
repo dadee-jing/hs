@@ -42,6 +42,7 @@ public class TransformService {
     public StationDto transStationDto(Station source) {
         StationDto target = new StationDto();
         BeanUtils.copyProperties(source, target);
+        target.setYxrq(DateFormatUtils.format(source.getYxrq(), "YYYY-MM-DD HH:mm:ss"));
         return target;
     }
 

@@ -67,9 +67,6 @@ public class StructUtil {
         fillArray(result, currPos, picDateBytes);//抓拍日期信息
         fillArray(result, currPos, picLengthBytes);//图片长度
         fillArray(result, currPos, fileBytes); //图片本身
-        System.out.println("picFile:" + picFile.length());
-        System.out.println("fileBytes:" + fileBytes.length);
-        System.out.println("picstru:" + result.length);
         return result;
     }
 
