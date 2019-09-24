@@ -82,13 +82,8 @@ public class WeightService {
         entity.setFtpPriorHead(FtpPriorHead);
         entity.setFtpPlate(FtpPlate);
         entity.setFtpFullView(FtpFullView);
-        //发起下载图片的任务
-        //ImageDownloadUtil.submitDownloadTask(entity);
-
-
-
+        entity.setWeightTag(true);
         WeightAndLWHContainer.processData(entity);
-
     }
 
 }

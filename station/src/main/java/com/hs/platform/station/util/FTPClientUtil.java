@@ -70,15 +70,14 @@ public class FTPClientUtil {
         return new ByteArrayInputStream(baos.toByteArray());
     }
 
-    public static void ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient, FTPClient targetClient) {
+    public static int ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient, FTPClient targetClient) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             sourceClient.changeWorkingDirectory("/");
             sourceClient.retrieveFile(sourcePath, outputStream);
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.error("pull file fail " + sourcePath + e.getMessage());
-            return;
+            return 1;
         }
         try (InputStream inputStream = parse(outputStream)) {
             createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
@@ -87,6 +86,7 @@ public class FTPClientUtil {
             LOGGER.info("ok:" + sourcePath);
         } catch (Exception e) {
             LOGGER.error("push file fail " + targetPath + e.getMessage());
+            return 2;
         } finally {
             try {
                 outputStream.close();
@@ -94,6 +94,7 @@ public class FTPClientUtil {
                 e.printStackTrace();
             }
         }
+        return 0;
     }
 
     /**

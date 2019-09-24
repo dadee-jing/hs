@@ -50,6 +50,9 @@ public class WeightAndLwhEntity {
     private int processStatus;// 处理的当前状态 0 超重，1 超限（长宽高）
     private long timeoutMillseconds;//超时时间
     private String remarkInfo;//错误数据备注
+    private boolean weightTag = false;
+    private boolean sizeTag = false;
+    private boolean speedTag = false;
 
     public String getRemarkInfo() {
         return remarkInfo;
@@ -393,5 +396,29 @@ public class WeightAndLwhEntity {
 
     public void setStationId(Integer stationId) {
         this.stationId = stationId;
+    }
+
+    public boolean isWeightTag() {
+        return weightTag;
+    }
+
+    public void setWeightTag(boolean weightTag) {
+        this.weightTag = weightTag;
+    }
+
+    public boolean isSizeTag() {
+        return sizeTag;
+    }
+
+    public void setSizeTag(boolean sizeTag) {
+        this.sizeTag = sizeTag;
+    }
+
+    public boolean isSpeedTag() {
+        return speedTag;
+    }
+
+    public void setSpeedTag(boolean speedTag) {
+        this.speedTag = speedTag;
     }
 }
