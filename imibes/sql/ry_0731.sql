@@ -1840,3 +1840,27 @@ CREATE TABLE `weight_type_table_info` (
 -- Records of weight_type_table_info
 -- ----------------------------
 INSERT INTO `weight_type_table_info` VALUES ('1', '1', '2018-11-01 16:10:55');
+
+-- ----------------------------
+-- Table structure for refitted_vehicle_info
+-- ----------------------------
+DROP TABLE IF EXISTS `refitted_vehicle_info`;
+CREATE TABLE `refitted_vehicle_info`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `vehicle_length` int(11) DEFAULT NULL COMMENT '车辆长度',
+  `vehicle_width` int(11) DEFAULT NULL COMMENT '车辆宽度',
+  `vehicle_height` int(11) DEFAULT NULL COMMENT '车辆高度',
+  `vehicle_rail_height` int(11) DEFAULT NULL COMMENT '车辆栏板高度',
+  `original_vehicle_rail_height` int(11) DEFAULT NULL COMMENT '原车辆栏板高度',
+  `lane_number` int(11) DEFAULT NULL COMMENT '车道号',
+  `truck_number` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '号牌号码',
+  `truck_color` varchar(12) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '号牌颜色',
+  `time` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '时间',
+  `scene_picture_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '场景图片名称（年月日+时分秒+号牌号码+scene.jpg）',
+  `plate_picture_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '车牌图片名称（年月日+时分秒+号牌号码+plate.jpg）',
+  `graphic_model_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '三维图名称（年月日+时分秒+号牌号码+left.png）',
+  `limit_over_tag` int(3) DEFAULT NULL COMMENT '超限标记（0正常 1超限）',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
