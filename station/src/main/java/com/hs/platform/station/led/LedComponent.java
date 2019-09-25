@@ -40,7 +40,7 @@ public class LedComponent {
     public static void showMessageLed(String message) {
         executorService.execute(() ->
                 extSendUtil.sendText(nWndNo, message, color, fontSize, speed,
-                        ShowEffect.Random.getEffect(), stayTime, alignmentHori, alignmentVert)
+                        ShowEffect.Instant.getEffect(), stayTime, alignmentHori, alignmentVert)
         );
     }
 
