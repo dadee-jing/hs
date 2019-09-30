@@ -33,6 +33,8 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "站点",
+				pageSize:50,
+				pagination:false,
 				search: false,
 				showExport: false,
 				showToggle:false,
@@ -42,7 +44,7 @@
 		        },
 				{
 					field : 'id', 
-					title : '主键' 
+					title : '主键'
 				},
 				{
 					field : 'name', 
@@ -113,6 +115,18 @@
 				{
 					field : 'remark', 
 					title : '备注' 
+				},
+				{
+					field : 'state',
+					title : '状态',
+					formatter: function(value, row, index) {
+						if(value == 1){
+							return "<span style='color:green'> 连接成功</span>";
+						}
+						else{
+							return "<span style='color:red'> 连接失败</span>";
+						}
+					}
 				},
 		        {
 		            title: '操作',

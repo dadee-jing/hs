@@ -59,5 +59,9 @@ public interface StationInfoMapper
      * @return 结果
      */
 	public int deleteStationInfoByIds(String[] ids);
-	
+
+	/**
+	 * 查询站点ip信息
+	 */
+	public List<StationInfo> selectStationStateInfo();
 }

@@ -80,5 +80,10 @@ public class StationInfoServiceImpl implements IStationInfoService
 	{
 		return stationInfoMapper.deleteStationInfoByIds(Convert.toStrArray(ids));
 	}
-	
+
+	@Override
+	public List<StationInfo> selectStationStateInfo() {
+		return stationInfoMapper.selectStationStateInfo();
+	}
+
 }

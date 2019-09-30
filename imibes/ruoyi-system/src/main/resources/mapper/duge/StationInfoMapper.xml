@@ -27,10 +27,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="latitude_GCJ02"    column="latitude_GCJ02"    />
         <result property="longitude_BD09"    column="longitude_BD09"    />
         <result property="latitude_BD09"    column="latitude_BD09"    />
+        <result property="ip"    column="ip"    />
+        <result property="port"    column="port"    />
+        <result property="state"    column="state"    />
     </resultMap>
 	
 	<sql id="selectStationInfoVo">
-        select id, name, abbreviation, latitude, longitude, user_id, bureau, province, city, county, address, create_by, create_time, update_by, update_time, remark, longitude_WGS84,latitude_WGS84,longitude_GCJ02,latitude_GCJ02,longitude_BD09,latitude_BD09  from duge_station_info
+        select id, name, abbreviation, latitude, longitude, user_id, bureau, province, city, county, address, create_by,
+        create_time, update_by, update_time, remark, longitude_WGS84,latitude_WGS84,longitude_GCJ02,latitude_GCJ02,
+        longitude_BD09,latitude_BD09,ip ,port ,state  from duge_station_info
     </sql>
 	
     <select id="selectStationInfoList" parameterType="StationInfo" resultMap="StationInfoResult">
@@ -79,6 +84,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
 			<if test="updateTime != null  ">update_time,</if>
 			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="ip != null  and ip != ''  ">ip,</if>
+			<if test="port != null ">port,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null  ">#{id},</if>
@@ -97,6 +104,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
 			<if test="updateTime != null  ">#{updateTime},</if>
 			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="ip != null  and ip != ''  ">#{ip},</if>
+            <if test="port != null ">#{port},</if>
          </trim>
     </insert>
 	 
@@ -118,6 +127,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="ip != null  and ip != ''  ">ip = #{ip},</if>
+            <if test="port != null ">port = #{port},</if>
+            <if test="state != null ">state = #{state},</if>
         </trim>
         where id = #{id}
     </update>
@@ -132,5 +144,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
+    <select id="selectStationStateInfo" resultType="com.ruoyi.duge.domain.StationInfo">
+        select id, ip, port, state from duge_station_info
+    </select>
 </mapper>

@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectAuditRecordById" parameterType="Integer" resultMap="AuditRecordResult">
         <include refid="selectAuditRecordVo"/>
-        where id = #{id}
+        where sad.id = #{id}
     </select>
         
     <insert id="insertAuditRecord" parameterType="AuditRecord">

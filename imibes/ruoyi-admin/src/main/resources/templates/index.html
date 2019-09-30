@@ -19,6 +19,9 @@
     <link th:href="@{/ruoyi/css/ry-ui.css?v=3.0.0}" rel="stylesheet"/>
     <style type="text/css">
         .nav > li:hover .dropdown-menu {display: block;}
+        .skin-blue .content-tabs {
+		   border-bottom: solid 2px #000 !important;
+		   }
     </style>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden" th:classappend="${@config.getKey('sys.index.skinName')}">

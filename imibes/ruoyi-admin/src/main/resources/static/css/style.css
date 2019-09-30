@@ -701,14 +701,14 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
 }
 
 .btn-primary {
-    background-color: #1ab394;
-    border-color: #1ab394;
+    background-color: #000000;
+    border-color: #000000;
     color: #FFFFFF;
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active,  .btn-primary.active, .open .dropdown-toggle.btn-primary {
-    background-color: #18a689;
-    border-color: #18a689;
+    background-color: #000000;
+    border-color: #000000;
     color: #FFFFFF;
 }
 
@@ -6662,7 +6662,7 @@ body.rtls .top-navigation .footer.fixed, body.rtls.top-navigation .footer.fixed 
 }
 /*
  *
- *   SKIN blue 若依管理系统
+ *   SKIN blue 若依管理系
  *   NAME - blue/purple
  *
 */
@@ -6679,12 +6679,12 @@ body.rtls .top-navigation .footer.fixed, body.rtls.top-navigation .footer.fixed 
 }
 
 .skin-blue .spin-icon {
-    background: #0e9aef !important;
+    background: #408080!important;
 }
 
 .skin-blue .nav-header {
-    background: #0e9aef;
-    background: url('patterns/header-profile-skin-blue.png');
+    background: #000000;
+    /*background: url('patterns/header-profile-skin-blue.png');*/
 }
 
 .skin-blue.mini-navbar .nav-second-level {
@@ -6700,11 +6700,11 @@ body.rtls .top-navigation .footer.fixed, body.rtls.top-navigation .footer.fixed 
 }
 
 .skin-blue .nav>li.active {
-    background: #3a4459;
+    background: #000000;
 }
 
 .skin-blue .nav>li>a {
-    color: #9ea6b9;
+    color: #fff;
 }
 
 .skin-blue .nav>li.active>a {
@@ -6778,7 +6778,7 @@ body.skin-blue {
 }
 
 .skin-blue .navbar-default .nav>li>a:hover, .skin-blue .navbar-default .nav>li>a:focus {
-    background: #39aef5;
+    background: #21b8a5;
     color: #fff;
 }
 
@@ -6795,17 +6795,17 @@ body.skin-blue {
 }
 
 .skin-blue .page-tabs a.active {
-    background: #39aef5;
+    background: #000000;
     color: #fff;
 }
 
 .skin-blue .page-tabs a.active:hover, .skin-blue .page-tabs a.active i:hover {
-    background: #0e9aef;
+    background: #000000;
     color: #fff;
 }
 /*
  *
- *   SKIN Yellow 若依管理系统
+ *   SKIN Yellow 若依管理系
  *   NAME - Yellow/purple
  *
 */
@@ -7026,7 +7026,7 @@ body.skin-yellow {
 }
 
 .navbar-static-side {
-    background: #2f4050;
+    background: #000;
 }
 
 .nav-close {
@@ -7353,6 +7353,6 @@ body.skin-yellow {
 .bg-yellow{background-color: yellow}
 
 .table thead tr th div{
-    background: #39aef5;
+    background: #000000;
     color: #fff;
 }

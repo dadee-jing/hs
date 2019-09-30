@@ -1,6 +1,9 @@
 package com.ruoyi.duge.domain;
 
 import com.ruoyi.common.base.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -12,6 +15,9 @@ import java.util.Date;
  * @author ruoyi
  * @date 2018-11-22
  */
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StationInfo extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;
@@ -66,6 +72,38 @@ public class StationInfo extends BaseEntity
 	private Long hourOverCount;
 
 	private Integer index;
+
+	/** ip */
+	private String ip;
+	/** 端口 */
+	private Integer port;
+	/** 连通状态 */
+	private Integer state;
+
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public Integer getPort() {
+		return port;
+	}
+
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
 
 	public void setId(Integer id)
 	{
