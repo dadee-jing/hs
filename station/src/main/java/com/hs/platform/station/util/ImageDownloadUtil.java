@@ -66,7 +66,7 @@ public class ImageDownloadUtil {
                     if (StringUtils.isNotBlank(filePath)) {
                         int ret = FTPClientUtil.ftpToFtp(filePath, targetParentPath + '/' + filePath, newlxFtpClient, shundeFtpClient);
                         if (ret == 1) {
-                            resetFTPClient(shundeFtpClient, false);
+                            resetFTPClient(newlxFtpClient, true);
                         } else if (ret == 2) {
                             resetFTPClient(shundeFtpClient, false);
                         }
