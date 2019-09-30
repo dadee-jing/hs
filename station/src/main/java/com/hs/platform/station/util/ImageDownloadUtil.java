@@ -31,14 +31,6 @@ public class ImageDownloadUtil {
         shundeFtpClient = FTPClientUtil.getFTPClient(shunde_ftp_server_host, shunde_ftp_passwd, shunde_ftp_user, shunde_ftp_server_port);
     }
 
-    private FTPClient checkFTPClient(FTPClient ftpClient, boolean newlx) {
-        if (null != ftpClient && ftpClient.isConnected() && ftpClient.isAvailable()) {
-            return ftpClient;
-        } else {
-            return resetFTPClient(ftpClient, newlx);
-        }
-    }
-
     private FTPClient resetFTPClient(FTPClient ftpClient, boolean newlx) {
         LOGGER.info("to reset " + newlx);
         FTPClientUtil.ftpClose(ftpClient);
@@ -61,14 +53,6 @@ public class ImageDownloadUtil {
             // 按照固定目录存放 ftppath/stationID/date/   ftp/1/20190717/
             String targetParentPath = "/" + stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd");
 
-            if (count.intValue() >= 80) {
-                newlxFtpClient = resetFTPClient(newlxFtpClient, true);
-                shundeFtpClient = resetFTPClient(shundeFtpClient, false);
-            } else {
-                newlxFtpClient = checkFTPClient(newlxFtpClient, true);
-                shundeFtpClient = checkFTPClient(shundeFtpClient, false);
-            }
-
             if (null != newlxFtpClient && null != shundeFtpClient) {
                 String FtpHead = entity.getFtpHead();
                 String FtpAxle = entity.getFtpAxle();
@@ -81,7 +65,9 @@ public class ImageDownloadUtil {
                 pathList.forEach(filePath -> {
                     if (StringUtils.isNotBlank(filePath)) {
                         int ret = FTPClientUtil.ftpToFtp(filePath, targetParentPath + '/' + filePath, newlxFtpClient, shundeFtpClient);
-                        if (ret == 2) {
+                        if (ret == 1) {
+                            resetFTPClient(shundeFtpClient, false);
+                        } else if (ret == 2) {
                             resetFTPClient(shundeFtpClient, false);
                         }
                     }
