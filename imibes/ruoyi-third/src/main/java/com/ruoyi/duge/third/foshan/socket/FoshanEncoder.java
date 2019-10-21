@@ -19,6 +19,7 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
 
     @Override
     public void encode(IoSession session, Object message, ProtocolEncoderOutput out) throws Exception {
+        IoBuffer buffer = null;
         try {
             FoshanMessage foshanMessage = (FoshanMessage) message;
             byte[] result;
@@ -33,13 +34,17 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
 
             //       log.info("request:" + bytesToHexString(result));
 
-            IoBuffer buffer = IoBuffer.allocate(result.length, true);
+            buffer = IoBuffer.allocate(result.length, true);
             buffer.put(result);
             buffer.flip();
             out.write(buffer);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
+        } finally {
+            if(null != buffer){
+                buffer.clear();
+            }
         }
     }
 }
