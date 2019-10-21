@@ -11,4 +11,6 @@ import java.util.List;
 public interface WeightDataRepository extends JpaRepository<WeightData, Long> {
 
     public List<WeightData> findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(Integer uploadTag, Date date);
+
+    public List<WeightData> findTop10ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(Integer uploadTag, Date date);
 }

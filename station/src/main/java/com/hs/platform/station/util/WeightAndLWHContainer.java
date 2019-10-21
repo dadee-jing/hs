@@ -36,6 +36,7 @@ public class WeightAndLWHContainer {
         WeightAndLwhEntity previousEntity = mapContainer.get(carNumber);
         if (null != previousEntity) {
             if (previousEntity.isWeightTag() && previousEntity.isSizeTag()) {
+                LOGGER.info("clearAndInsertDB--" + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
                 mapContainer.remove(carNumber);
@@ -62,11 +63,31 @@ public class WeightAndLWHContainer {
         // 根据状态判断是由超重或超限调用(新流向-超重 0, 杜格-超限 1)
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
+        //无车牌的直接进入异常数据
+        if(carNumber == null || carNumber.equals("") || carNumber.contains("无车牌")){
+/*            String remarkInfo = "";
+            if (0 == processStatus) {
+                remarkInfo = "称重系统检测无车牌。";
+            } else {
+                remarkInfo = "长宽高系统检测无车牌。";
+            }
+            currentEntity.setRemarkInfo(remarkInfo);
+            DbUtil.insertExceptionData(currentEntity);*/
+            return;
+        }
+        //排除小于2t的
+/*        if(processStatus == 0 && currentEntity.getWeight() != null && currentEntity.getWeight().compareTo(new BigDecimal(2)) != 1){
+            if(mapContainer.contains(carNumber)){
+                mapContainer.remove(carNumber);
+            }
+            return;
+        }*/
         long timeout = System.currentTimeMillis() + 30000;
         // 若30秒后仍然不能补全外廓数据或称重数据，回被定时任务清理，写入异常数据表
         currentEntity.setTimeoutMillseconds(timeout);
         // 查询是否为第一部分数据
         WeightAndLwhEntity previousEntity = mapContainer.putIfAbsent(carNumber, currentEntity);
+        LOGGER.info("processData--" + carNumber + ",processStatus--" + processStatus + ",timeout--" + timeout);
         // 如果是第一次，不做任何操作
         if (null == previousEntity) {
             //插入内存队列，如果后续匹配不到，会删除内存中的数据并且插入异常数据到数据库
@@ -174,7 +195,7 @@ public class WeightAndLWHContainer {
                 previousEntity.setLaneMin(laneMin);
                 previousEntity.setLaneMax(laneMax);
                 previousEntity.setPassTime(passTime);
-                previousEntity.setSizeTag(currentEntity.isSpeedTag());
+                previousEntity.setSizeTag(currentEntity.isSizeTag());
             } else {
                 String plate = currentEntity.getPlate();
                 previousEntity.setPlate(plate);
@@ -183,9 +204,12 @@ public class WeightAndLWHContainer {
                 previousEntity.setSpeedTag(currentEntity.isSpeedTag());
             }
             // 删除内存中的数据
-            if (previousEntity.isSizeTag() && previousEntity.isWeightTag() && previousEntity.isSpeedTag()) {
+            //if (previousEntity.isSizeTag() && previousEntity.isWeightTag() && previousEntity.isSpeedTag()) {
+            if (previousEntity.isSizeTag() && previousEntity.isWeightTag()) {
+                LOGGER.info("mapContainer insert " + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
+                LOGGER.info("mapContainer put " + carNumber);
                 mapContainer.put(carNumber, previousEntity);
             }
         }
@@ -194,6 +218,7 @@ public class WeightAndLWHContainer {
     public static void completeEntity(WeightAndLwhEntity previousEntity, String carNumber) {
         mapContainer.remove(carNumber);
         DbUtil.insertWeightAndLWH(previousEntity);
-        LOGGER.info("insert DB :" + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" + previousEntity.getWeight() + "-" + previousEntity.getHeight());
+        LOGGER.info("insert DB :" + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
+                previousEntity.getWeight() + "-" + previousEntity.getHeight() + ",mapContainer:" + mapContainer.size());
     }
 }

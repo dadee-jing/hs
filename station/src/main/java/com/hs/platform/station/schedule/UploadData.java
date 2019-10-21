@@ -44,7 +44,8 @@ public class UploadData {
     /**
      * 本地库存储到汇聚中心库
      */
-    @Scheduled(cron = "${upload_task_cron}")
+    //@Scheduled(cron = "${upload_task_cron}")
+    @Scheduled(fixedRate = 5000)
     public void uploadDbData() {
         if ("1".equals(getDbConfigValue("do_upload_tag"))) {
             doUploadDbData();
@@ -55,10 +56,12 @@ public class UploadData {
         //logger.info("uploading db-data to data center begin");
         // 下载20秒前数据，保证图片视频收集
         try {
-            logger.info("to upload");
+            int flag = (int)((Math.random()*9+1)*1000);
+            logger.info("to upload " + flag);
             Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
-            List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
+            List<WeightData> weightDataList = weightDataRepository.findTop10ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
             if (null != weightDataList) {
+                logger.info("upload size " + weightDataList.size());
                 weightDataList.forEach(weightData -> {
                     boolean successTag = true;
                     try {
@@ -79,7 +82,7 @@ public class UploadData {
                     weightDataRepository.save(weightData);
                 });
             }
-            logger.info("end upload");
+            logger.info("end upload " + flag);
             //logger.info("uploading db-data to data center end");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

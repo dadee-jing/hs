@@ -4,6 +4,7 @@ import com.hs.platform.station.persistence.local.entity.WeightData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,9 +22,8 @@ public class ImageDownloadUtil {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ImageDownloadUtil.class);
 
-    private FTPClient newlxFtpClient = null;
-    private FTPClient shundeFtpClient = null;
-    private final LongAdder count = new LongAdder();
+    public static FTPClient newlxFtpClient = null;
+    public static  FTPClient shundeFtpClient = null;
 
     @PostConstruct
     void init() {
@@ -31,7 +31,15 @@ public class ImageDownloadUtil {
         shundeFtpClient = FTPClientUtil.getFTPClient(shunde_ftp_server_host, shunde_ftp_passwd, shunde_ftp_user, shunde_ftp_server_port);
     }
 
-    private FTPClient resetFTPClient(FTPClient ftpClient, boolean newlx) {
+    private FTPClient checkFTPClient(FTPClient ftpClient, boolean newlx) {
+        if (null != ftpClient && ftpClient.isConnected() && ftpClient.isAvailable()) {
+            return ftpClient;
+        } else {
+            return resetFTPClient(ftpClient, newlx);
+        }
+    }
+
+    public static FTPClient resetFTPClient(FTPClient ftpClient, boolean newlx) {
         LOGGER.info("to reset " + newlx);
         FTPClientUtil.ftpClose(ftpClient);
         FTPClient newOne;
@@ -40,7 +48,6 @@ public class ImageDownloadUtil {
         } else {
             newOne = FTPClientUtil.getFTPClient(shunde_ftp_server_host, shunde_ftp_passwd, shunde_ftp_user, shunde_ftp_server_port);
         }
-        count.reset();
         LOGGER.info("over reset " + newlx);
         return newOne;
     }
@@ -64,18 +71,24 @@ public class ImageDownloadUtil {
                 List<String> pathList = Arrays.asList(FtpHead, FtpAxle, FtpTail, FtpPriorHead, FtpPlate, FtpFullView);
                 pathList.forEach(filePath -> {
                     if (StringUtils.isNotBlank(filePath)) {
-                        int ret = FTPClientUtil.ftpToFtp(filePath, targetParentPath + '/' + filePath, newlxFtpClient, shundeFtpClient);
-                        if (ret == 1) {
-                            resetFTPClient(newlxFtpClient, true);
-                        } else if (ret == 2) {
-                            resetFTPClient(shundeFtpClient, false);
-                        }
+                        FTPClientUtil.ftpToFtp(filePath, targetParentPath + '/' + filePath, newlxFtpClient, shundeFtpClient);
                     }
                 });
-                count.increment();
             }
         } catch (Exception e) {
             LOGGER.error("FILE TRANSFORM ERROR " + e.getMessage());
+        }
+    }
+
+    /**
+     * 检查两个ftp连接
+     */
+    public static void checkFtpConnect(){
+        if (!FTPReply.isPositiveCompletion(newlxFtpClient.getReplyCode())) {
+            newlxFtpClient = ImageDownloadUtil.resetFTPClient(newlxFtpClient,true);
+        }
+        if (!FTPReply.isPositiveCompletion(shundeFtpClient.getReplyCode())) {
+            shundeFtpClient = ImageDownloadUtil.resetFTPClient(shundeFtpClient,false);
         }
     }
 }
