@@ -338,7 +338,7 @@
     <select id="selectNotUploadYhl" parameterType="WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
-            and upload_yhl &lt;&gt; 1
+            and upload_yhl in (0, 2)
         </where>
         order by upload_yhl
         limit 100
@@ -348,7 +348,7 @@
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &gt; date_add(now(), interval - 5 minute)
-            and upload_sj  &lt;&gt; 1
+            and upload_sj  in (0, 2)
             and station_id = 1
         </where>
         order by upload_sj
@@ -358,7 +358,7 @@
     <select id="selectNotUploadJj" parameterType="WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
-            and upload_jj &lt;&gt; 1
+            and upload_jj in (0, 2)
         </where>
         order by upload_jj
         limit 100
