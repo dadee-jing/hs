@@ -1,7 +1,6 @@
-package com.ruoyi.duge.domain;
+package com.hs.platform.station.upload_foshan.domaim;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.base.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 

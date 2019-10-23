@@ -12,6 +12,7 @@ win+R,regedit修改注册表，HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Contr
 
 设置timewait超时 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters,右键新建DWORD，key:name：TcpTimedWaitDelay, value:5
 
+
 新建目录 d:/deploy，将mysql安装程序，ry.sql ，station.jar， station_application.bat等部署所需拷到目录下
 
 执行vcredist_x64.exe,安装 windows visual c++ 2013库

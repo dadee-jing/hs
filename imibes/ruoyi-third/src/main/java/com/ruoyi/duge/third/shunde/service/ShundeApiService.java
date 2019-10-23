@@ -51,7 +51,7 @@ public class ShundeApiService implements ThirdApiService {
         }
     }
 
-    @Scheduled(cron = "${upload_yhl_task_cron}")
+//    @Scheduled(cron = "${upload_yhl_task_cron}")
     public void scanVehicleData() {
         if ("1".equals(configDataService.getConfigValue("upload_yhl"))) {
             List<WeightData> weightDataList = weightDataMapper.selectNotUploadYhl();

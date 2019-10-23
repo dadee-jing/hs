@@ -1,4 +1,4 @@
-package com.hs.platform.station.util;
+package com.ruoyi.duge.third.foshan.socket;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-
-import static com.hs.platform.station.Constants.*;
 
 public class FTPClientUtil {
 
@@ -159,9 +157,10 @@ public class FTPClientUtil {
         System.out.println(targetPath.substring(targetPath.lastIndexOf('/') + 1));
         //createDir(targetPath.substring(0, targetPath.lastIndexOf('/')), client);
     }
+
     public static InputStream getInputStream(String remote) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        newlxFtpClient = FTPClientUtil.getFTPClient(newlx_ftp_server_host, newlx_ftp_passwd, newlx_ftp_user, newlx_ftp_server_port);
+        newlxFtpClient = FTPClientUtil.getFTPClient("", "", "", 21);
         try {
             newlxFtpClient.changeWorkingDirectory("/");
             newlxFtpClient.retrieveFile(remote, outputStream);
@@ -170,6 +169,7 @@ public class FTPClientUtil {
         }
         return parse(outputStream);
     }
+
 
 //    public static void main(String[] args) throws IOException {
 //        File file = new File("d://1.jpg");

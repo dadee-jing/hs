@@ -1,16 +1,16 @@
-package com.ruoyi.duge.third.foshan.service;
-
+package com.hs.platform.station.upload_foshan;
+import com.hs.platform.station.upload_foshan.domaim.WeightData;
+import com.hs.platform.station.upload_foshan.model.BaseEquipmentStatusRequest;
+import com.hs.platform.station.upload_foshan.model.BaseThirdApiResponse;
+import com.hs.platform.station.upload_foshan.model.BaseVehicleDataRequest;
+import com.hs.platform.station.upload_foshan.service.IConfigDataService;
+import com.hs.platform.station.upload_foshan.service.IWeightDataMapperService;
+import com.hs.platform.station.upload_foshan.service.ThirdApiService;
+import com.hs.platform.station.upload_foshan.socket.FoshanMessage;
+import com.hs.platform.station.upload_foshan.socket.SendMsgClient;
+import com.hs.platform.station.util.FTPClientUtil;
 import com.ruoyi.common.enums.BusinessStatus;
-import com.ruoyi.duge.domain.WeightData;
-import com.ruoyi.duge.service.IConfigDataService;
-import com.ruoyi.duge.service.IWeightDataMapperService;
-import com.ruoyi.duge.third.foshan.socket.FTPClientUtil;
-import com.ruoyi.duge.third.foshan.socket.FoshanMessage;
-import com.ruoyi.duge.third.foshan.socket.SendMsgClient;
-import com.ruoyi.duge.third.model.BaseEquipmentStatusRequest;
-import com.ruoyi.duge.third.model.BaseThirdApiResponse;
-import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
-import com.ruoyi.duge.third.service.ThirdApiService;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,9 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static com.ruoyi.duge.third.foshan.socket.StructUtil.getCarData2Info;
-import static com.ruoyi.duge.third.foshan.socket.StructUtil.getPic;
+import static com.hs.platform.station.upload_foshan.socket.StructUtil.getCarData2Info;
+import static com.hs.platform.station.upload_foshan.socket.StructUtil.getPic;
+
 
 @Component
 public class FoshanApiService implements ThirdApiService {
@@ -50,7 +51,7 @@ public class FoshanApiService implements ThirdApiService {
     }
 
     @Scheduled(cron="*/3 * * * * ?")
-//    @Scheduled(cron = "${foshan.scheduled}")
+//  @Scheduled(cron = "${foshan.scheduled}")
     public void submitVehicleData() {
 //        if ("1".equals(configDataService.getConfigValue("do_foshan_scheduled"))) {
             System.out.println("佛山市局定时任务执行");

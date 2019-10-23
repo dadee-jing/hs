@@ -1,14 +1,14 @@
-package com.ruoyi.duge.third.foshan.socket;
+package com.hs.platform.station.upload_foshan.socket;
 
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.ruoyi.duge.third.foshan.socket.Byte2IntUtil.*;
+import static com.hs.platform.station.upload_foshan.socket.Byte2IntUtil.*;
 
 public class StructUtil {
 

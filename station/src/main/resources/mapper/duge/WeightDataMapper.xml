@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.duge.mapper.WeightDataMapper">
+<mapper namespace="com.hs.platform.station.upload_foshan.mapper.WeightDataMapper">
 
     <resultMap type="WeightData" id="WeightDataResult">
         <result property="id" column="id"/>
@@ -57,16 +57,17 @@
         <result property="uploadYhl" column="upload_yhl"/>
         <result property="uploadSj" column="upload_sj"/>
         <result property="uploadJj" column="upload_jj"/>
+        <result property="siteId" column="site_id"/>
     </resultMap>
 
     <sql id="selectDataVo">
-        select wd.id as id,dsi.name as station_name,limit_over_level, limit_mode, vehicle_type, weighting_id,
+        select wd.id as id,dsi.name as station_name,dsi.site_id as site_id,limit_over_level, limit_mode, vehicle_type, weighting_id,
          weighting_date, lane, direction, truck_number, truck_corlor, speed, axle_count, axle_type, weight,
           limit_weight,over_weight, axle_weight1, axle_weight2, axle_weight3, axle_weight4, axle_weight5,
            axle_weight6, axle_weight7, axle_weight8, sequence_tag, ftp_head, ftp_axle, ftp_tail, ftp_prior_head,
             ftp_plate, ftp_full_view, wd.create_by, wd.create_time, wd.update_by, wd.update_time, wd.remark,
              wd.device_code, station_id, lwh_date, plate, width, height, length, lane_mid, lane_min, lane_max,
-              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj from weight_data wd
+              pass_time, upload_tag, upload_sj, upload_jj from weight_data wd
         left join duge_station_info dsi on dsi.id = wd.station_id
     </sql>
 
@@ -349,7 +350,6 @@
         <where>
             wd.create_time &gt; date_add(now(), interval - 5 minute)
             and upload_sj  &lt;&gt; 1
-            and station_id = 1
         </where>
         order by upload_sj
         limit 5

@@ -7,22 +7,21 @@ import com.hs.platform.station.util.NoMatchUtil;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-@SpringBootApplication(scanBasePackages = {"com.hs.platform.station"})
-@org.springframework.context.annotation.Configuration
+@SpringBootApplication(scanBasePackages = {"com.hs.platform.station"} )
 @EnableScheduling
 @EnableAsync
+@MapperScan("com.hs.platform.station.upload_foshan.mapper")
 public class StationApplication {
 
     private static Logger LOGGER = LoggerFactory.getLogger(StationApplication.class);
