@@ -169,8 +169,6 @@ public class FTPClientUtil {
         }
         return parse(outputStream);
     }
-
-
 //    public static void main(String[] args) throws IOException {
 //        File file = new File("d://1.jpg");
 //        InputStream inputStream = new FileInputStream(file);

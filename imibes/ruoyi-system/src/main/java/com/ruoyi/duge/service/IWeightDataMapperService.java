@@ -59,5 +59,12 @@ public interface IWeightDataMapperService
 
 	public Map selectStationStatistics(com.ruoyi.duge.domain.WeightData data);
 
+
+	/**
+	 * 查询违法并且过时的数据
+	 * @return
+	 */
+	public List<WeightData> selectIllegalAndOverDate();
+
 	List<WeightData> selectNotUploadSj();
 }

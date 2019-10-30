@@ -1,5 +1,7 @@
 package com.ruoyi.duge.mapper;
 
+import com.ruoyi.duge.domain.WeightData;
+
 import java.util.List;
 import java.util.Map;
 
@@ -72,4 +74,10 @@ public interface WeightDataMapper {
     public List<Map<String, Object>> selectCountHourList(com.ruoyi.duge.domain.WeightData data);
 
     public Double selectSpeedAvg(com.ruoyi.duge.domain.WeightData data);
+
+    /**
+     * 查询违法并且过时的数据
+     * @return
+     */
+    public List<WeightData> selectIllegalAndOverDate();
 }
