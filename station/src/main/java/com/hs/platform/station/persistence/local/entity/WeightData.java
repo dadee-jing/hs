@@ -207,6 +207,9 @@ public class WeightData extends BaseEntity {
      */
     private Integer uploadTag;
 
+    //private Integer uploadSj;
+
+
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", getId())

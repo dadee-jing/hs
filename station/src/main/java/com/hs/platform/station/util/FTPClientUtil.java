@@ -1,20 +1,27 @@
 package com.hs.platform.station.util;
 
+import com.hs.platform.station.entity.FTPReUploadInfo;
+import com.hs.platform.station.schedule.ReUploadFailedData;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.*;
+import java.util.Date;
 
 import static com.hs.platform.station.Constants.*;
+import static com.hs.platform.station.Constants.newlx_ftp_server_port;
+import static com.hs.platform.station.third.foshan.socket.StructUtil.getPicByStream;
+import static com.hs.platform.station.util.ImageDownloadUtil.newlxFtpClient;
+import static com.hs.platform.station.util.ImageDownloadUtil.shundeFtpClient;
 
 public class FTPClientUtil {
 
     private static Logger LOGGER = LoggerFactory.getLogger(FTPClientUtil.class);
 
     private final static Object fileLock = new Object();
-    public static FTPClient newlxFtpClient = null;
+
     /**
      * 获取FTPClient对象
      *
@@ -72,23 +79,56 @@ public class FTPClientUtil {
         return new ByteArrayInputStream(baos.toByteArray());
     }
 
-    public static int ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient, FTPClient targetClient) {
+    public static byte[] ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient,
+                                  FTPClient targetClient, Date weightingDate) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             sourceClient.changeWorkingDirectory("/");
-            sourceClient.retrieveFile(sourcePath, outputStream);
+            Boolean sourceState = sourceClient.retrieveFile(sourcePath, outputStream);
+            LOGGER.info("sourceState:" + sourceState);
+            //sourceState false代表源文件丢失，执行上传后是0k的文件
+            if(!sourceState){
+                LOGGER.info("sourcePath:" + sourcePath);
+                return null;
+            }
         } catch (Exception e) {
-            LOGGER.error("pull file fail " + sourcePath + e.getMessage());
-            return 1;
+            //重新连接新流向ftp，将失败的加入列表
+            LOGGER.error("pull file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + sourcePath + e.getMessage());
+            newlxFtpClient = ImageDownloadUtil.resetFTPClient(newlxFtpClient,true);
+            if(ReUploadFailedData.ftpReUploadQueue.size() >= 100){
+                FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
+                ReUploadFailedData.ftpReUploadQueue.removeFirst();
+                ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
+            }
+            return null;
         }
         try (InputStream inputStream = parse(outputStream)) {
             createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
             targetClient.changeWorkingDirectory("/");
-            targetClient.storeFile(targetPath, inputStream);
-            LOGGER.info("ok:" + sourcePath);
+            Boolean targetState = targetClient.storeFile(targetPath, inputStream);
+            //targetState false 没有上传到服务器
+            LOGGER.info("ok:targetState:" + targetState + " " + sourcePath);
+            //将流转化成byte返回
+            try{
+                if(!sourcePath.contains("mp4")){
+                    InputStream shiJuInputStream = parse(outputStream);
+                    return getPicByStream(weightingDate, shiJuInputStream);
+                }
+                return null;
+            }
+            catch (Exception e){
+                LOGGER.error("getPicByStream error");
+            }
         } catch (Exception e) {
-            LOGGER.error("push file fail " + targetPath + e.getMessage());
-            return 2;
+            //重新连接顺德ftp，将失败的加入列表
+            LOGGER.error("push file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + targetPath + e.getMessage());
+            shundeFtpClient = ImageDownloadUtil.resetFTPClient(shundeFtpClient,false);
+            if(ReUploadFailedData.ftpReUploadQueue.size() >= 100) {
+                FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
+                ReUploadFailedData.ftpReUploadQueue.removeFirst();
+                ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
+            }
+            return null;
         } finally {
             try {
                 outputStream.close();
@@ -96,7 +136,7 @@ public class FTPClientUtil {
                 e.printStackTrace();
             }
         }
-        return 0;
+        return null;
     }
 
     /**
@@ -128,7 +168,7 @@ public class FTPClientUtil {
                         if (ftpClient.makeDirectory(subDirectory)) {
                             ftpClient.changeWorkingDirectory(subDirectory);
                         } else {
-                            LOGGER.info("创建目录失败");
+                            LOGGER.info("创建目录失败--" + remote);
                         }
                     }
                     start = end + 1;
@@ -139,6 +179,59 @@ public class FTPClientUtil {
                     }
                 }
             }
+        }
+    }
+
+
+    /**
+     * 定时任务执行的ftp操作
+     */
+    public static int reDoftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient, FTPClient targetClient) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            sourceClient.changeWorkingDirectory("/");
+            sourceClient.retrieveFile(sourcePath, outputStream);
+            Boolean sourceState = sourceClient.retrieveFile(sourcePath, outputStream);
+            LOGGER.info("re sourceState:" + sourceState);
+            if(!sourceState){
+                LOGGER.info("re sourcePath:" + sourcePath);
+                return 0;
+            }
+        } catch (Exception e) {
+            LOGGER.error("re pull file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + sourcePath + e.getMessage());
+            return 1;
+        }
+        try (InputStream inputStream = parse(outputStream)) {
+            createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
+            targetClient.changeWorkingDirectory("/");
+            Boolean targetState = targetClient.storeFile(targetPath, inputStream);
+            LOGGER.info("re ok:targetState:" + targetState + " " + sourcePath);
+        } catch (Exception e) {
+            LOGGER.error("re push file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + targetPath + e.getMessage());
+            return 2;
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    private static ByteArrayOutputStream cloneInputStream(InputStream input) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = input.read(buffer)) > -1) {
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+            return baos;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -159,17 +252,7 @@ public class FTPClientUtil {
         System.out.println(targetPath.substring(targetPath.lastIndexOf('/') + 1));
         //createDir(targetPath.substring(0, targetPath.lastIndexOf('/')), client);
     }
-    public static InputStream getInputStream(String remote) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        newlxFtpClient = FTPClientUtil.getFTPClient(newlx_ftp_server_host, newlx_ftp_passwd, newlx_ftp_user, newlx_ftp_server_port);
-        try {
-            newlxFtpClient.changeWorkingDirectory("/");
-            newlxFtpClient.retrieveFile(remote, outputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return parse(outputStream);
-    }
+
 
 //    public static void main(String[] args) throws IOException {
 //        File file = new File("d://1.jpg");

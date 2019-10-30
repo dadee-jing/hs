@@ -22,18 +22,20 @@ public class NoMatchUtil {
             // LocalDateTime localDateTime = LocalDateTime.now();
             // System.out.println("清理线程执行：" + localDateTime);
             // System.out.println("queue size：" + queue.size());
-            WeightAndLwhEntity entity = queue.poll();
-            if (null != entity) {
-                //判断此对象是否超时
-                long currentTime = System.currentTimeMillis();
-                long timeout = entity.getTimeoutMillseconds();
-                if (currentTime < timeout) {//如果未超时，重新入队
-                    queue.add(entity);
-                } else {
-                    LOGGER.info("queue time out size:" + queue.size() + ",plate:" + entity.getPlate() +
-                            "," + entity.getTruckNumber());
-                    //超时,删除 内存中的对象，并将异常数据插入数据库的表
-                    WeightAndLWHContainer.clearAndInsertDB(entity);
+            if(queue != null && queue.size() != 0){
+                WeightAndLwhEntity entity = queue.poll();
+                if (null != entity) {
+                    //判断此对象是否超时
+                    long currentTime = System.currentTimeMillis();
+                    long timeout = entity.getTimeoutMillseconds();
+                    if (currentTime < timeout) {//如果未超时，重新入队
+                        queue.add(entity);
+                    } else {
+                        LOGGER.info("queue time out size:" + queue.size() + ",plate:" + entity.getPlate() +
+                                "," + entity.getTruckNumber());
+                        //超时,删除 内存中的对象，并将异常数据插入数据库的表
+                        WeightAndLWHContainer.clearAndInsertDB(entity);
+                    }
                 }
             }
         };

@@ -15,6 +15,9 @@ public class DbUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbUtil.class);
 
+
+
+
     public static void insertExceptionData(WeightAndLwhEntity weight) {
 
         String sql = "insert into exception_data(limit_mode, vehicle_type, weighting_id, weighting_date, lane, direction, "
@@ -194,6 +197,24 @@ public class DbUtil {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static String getLimitUploadWeight() {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        String weight = "0";
+        try {
+            connection = DataSourceUtil.getDataSource().getConnection();
+            statement = connection.prepareStatement("select value from config_data a where a.key = ?");
+            statement.setString(1, "weight_upload_limit");
+            rs = statement.executeQuery();
+            rs.next();
+            weight = rs.getString("value") == null ? "0" : rs.getString("value");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return weight;
     }
 
     public static List<LedTableInfo> getLedInfoListByTime(String sql, Timestamp queryTime) {

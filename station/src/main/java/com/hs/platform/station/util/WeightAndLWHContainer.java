@@ -3,6 +3,7 @@ package com.hs.platform.station.util;
 import com.hs.platform.station.Constants;
 import com.hs.platform.station.entity.WeightAndLwhEntity;
 import com.hs.platform.station.led.LedComponent;
+import com.hs.platform.station.third.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.hs.platform.station.Constants.led_overWeight_percentage;
+import static com.hs.platform.station.util.DbUtil.getLimitUploadWeight;
 import static com.hs.platform.station.util.DbUtil.getWeightLimitMap;
 
 public class WeightAndLWHContainer {
@@ -21,6 +23,8 @@ public class WeightAndLWHContainer {
     private static final ConcurrentHashMap<String, WeightAndLwhEntity> mapContainer = new ConcurrentHashMap<>();
 
     private static Map<Integer, Long> weightLimitMap = getWeightLimitMap();
+
+    private static String weightLimit = getLimitUploadWeight();
 
     private static final double overWeightPercentage = led_overWeight_percentage;
 
@@ -32,9 +36,9 @@ public class WeightAndLWHContainer {
     public static void clearAndInsertDB(WeightAndLwhEntity currentEntity) {
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
-        //
         WeightAndLwhEntity previousEntity = mapContainer.get(carNumber);
         if (null != previousEntity) {
+            //称重与外廓匹配上就执行插入
             if (previousEntity.isWeightTag() && previousEntity.isSizeTag()) {
                 LOGGER.info("clearAndInsertDB--" + carNumber);
                 completeEntity(previousEntity, carNumber);
@@ -56,39 +60,25 @@ public class WeightAndLWHContainer {
 
     /**
      * 称重和外廓接收到数据后都会分别调用这个方法
-     *
+     * 注意：
+     *1、同一辆车，有可能连续进来两次称重数据
      * @param currentEntity
      */
     public static void processData(WeightAndLwhEntity currentEntity) {
         // 根据状态判断是由超重或超限调用(新流向-超重 0, 杜格-超限 1)
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
-        //无车牌的直接进入异常数据
+        //无车牌的直接进入丢弃
         if(carNumber == null || carNumber.equals("") || carNumber.contains("无车牌")){
-/*            String remarkInfo = "";
-            if (0 == processStatus) {
-                remarkInfo = "称重系统检测无车牌。";
-            } else {
-                remarkInfo = "长宽高系统检测无车牌。";
-            }
-            currentEntity.setRemarkInfo(remarkInfo);
-            DbUtil.insertExceptionData(currentEntity);*/
             return;
         }
-        //排除小于2t的
-/*        if(processStatus == 0 && currentEntity.getWeight() != null && currentEntity.getWeight().compareTo(new BigDecimal(2)) != 1){
-            if(mapContainer.contains(carNumber)){
-                mapContainer.remove(carNumber);
-            }
-            return;
-        }*/
         long timeout = System.currentTimeMillis() + 30000;
-        // 若30秒后仍然不能补全外廓数据或称重数据，回被定时任务清理，写入异常数据表
+        // 若30秒后仍然不能补全外廓数据或称重数据，会被定时任务清理，写入异常数据表
         currentEntity.setTimeoutMillseconds(timeout);
         // 查询是否为第一部分数据
         WeightAndLwhEntity previousEntity = mapContainer.putIfAbsent(carNumber, currentEntity);
         LOGGER.info("processData--" + carNumber + ",processStatus--" + processStatus + ",timeout--" + timeout);
-        // 如果是第一次，不做任何操作
+        // 第一次插入
         if (null == previousEntity) {
             //插入内存队列，如果后续匹配不到，会删除内存中的数据并且插入异常数据到数据库
             NoMatchUtil.addEntity(currentEntity);
@@ -119,13 +109,17 @@ public class WeightAndLWHContainer {
                     OverWeight = Weight.subtract(LimitWeight);
                     if (OverWeight.compareTo(new BigDecimal(0d)) <= 0) {
                         OverWeight = new BigDecimal(0d);
-                    } else { // 车辆实际重量大于限制重量
+                    }
+                    else {
+                        // 车辆实际重量大于限制重量
                         // 计算超重百分比
-                        BigDecimal actualOverWeightPercentage = OverWeight.divide(LimitWeight, 4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100d));
+                        BigDecimal actualOverWeightPercentage = OverWeight.divide(LimitWeight, 4, BigDecimal.ROUND_DOWN)
+                                .multiply(new BigDecimal(100d));
                         // 筛选超重百分比
                         if (actualOverWeightPercentage.compareTo(new BigDecimal(overWeightPercentage)) >= 0) {
                             // 发送到LED屏
-                            LedComponent.showMessageLed("【" + TruckNumber + "】您已超重\n限重：" + LimitWeight + "，总重：" + Weight.setScale(2, BigDecimal.ROUND_DOWN));
+                            LedComponent.showMessageLed("【" + TruckNumber + "】您已超重\n限重：" + LimitWeight +
+                                    "，总重：" + Weight.setScale(2, BigDecimal.ROUND_DOWN));
                         }
                     }
                 }
@@ -197,15 +191,15 @@ public class WeightAndLWHContainer {
                 previousEntity.setPassTime(passTime);
                 previousEntity.setSizeTag(currentEntity.isSizeTag());
             } else {
+                //补充测速雷达数据
                 String plate = currentEntity.getPlate();
                 previousEntity.setPlate(plate);
                 BigDecimal Speed = currentEntity.getSpeed();
                 previousEntity.setSpeed(Speed);
                 previousEntity.setSpeedTag(currentEntity.isSpeedTag());
             }
-            // 删除内存中的数据
-            //if (previousEntity.isSizeTag() && previousEntity.isWeightTag() && previousEntity.isSpeedTag()) {
-            if (previousEntity.isSizeTag() && previousEntity.isWeightTag()) {
+            // 称重，外廓，测速都匹配上了，执行插入。测速作为补充，最后没有匹配上也会插入
+            if (previousEntity.isSizeTag() && previousEntity.isWeightTag() && previousEntity.isSpeedTag()) {
                 LOGGER.info("mapContainer insert " + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
@@ -217,6 +211,13 @@ public class WeightAndLWHContainer {
 
     public static void completeEntity(WeightAndLwhEntity previousEntity, String carNumber) {
         mapContainer.remove(carNumber);
+        //小于设置重量的不插入weight_data
+        if(!StringUtils.isEmpty(weightLimit) && !weightLimit.equals("0")){
+            if(previousEntity.getWeight() != null && previousEntity.getWeight().compareTo(new BigDecimal(weightLimit)) != 1){
+                LOGGER.info("小于" +weightLimit+ "t,不做插入 " + carNumber);
+                return;
+            }
+        }
         DbUtil.insertWeightAndLWH(previousEntity);
         LOGGER.info("insert DB :" + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
                 previousEntity.getWeight() + "-" + previousEntity.getHeight() + ",mapContainer:" + mapContainer.size());

@@ -23,7 +23,6 @@ import java.util.List;
 public class UploadData {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadData.class);
-
     private final ConfigDataRepository configDataRepository;
     private final WeightDataRepository weightDataRepository;
     private final RemoteWeightDataRepository remoteWeightDataRepository;
@@ -47,20 +46,21 @@ public class UploadData {
     //@Scheduled(cron = "${upload_task_cron}")
     @Scheduled(fixedRate = 5000)
     public void uploadDbData() {
+        int flag = (int)((Math.random() * 9 + 1) * 1000);
+        logger.info("to upload " + flag);
         if ("1".equals(getDbConfigValue("do_upload_tag"))) {
             doUploadDbData();
         }
+        logger.info("end upload " + flag);
     }
 
     public void doUploadDbData() {
         //logger.info("uploading db-data to data center begin");
         // 下载20秒前数据，保证图片视频收集
         try {
-            int flag = (int)((Math.random()*9+1)*1000);
-            logger.info("to upload " + flag);
             Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
-            List<WeightData> weightDataList = weightDataRepository.findTop10ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
-            if (null != weightDataList) {
+            List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
+            if (null != weightDataList && weightDataList.size() != 0) {
                 logger.info("upload size " + weightDataList.size());
                 weightDataList.forEach(weightData -> {
                     boolean successTag = true;
@@ -82,7 +82,6 @@ public class UploadData {
                     weightDataRepository.save(weightData);
                 });
             }
-            logger.info("end upload " + flag);
             //logger.info("uploading db-data to data center end");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
