@@ -2,9 +2,11 @@ package com.hs.platform.station.util;
 
 import com.hs.platform.station.entity.FTPReUploadInfo;
 import com.hs.platform.station.schedule.ReUploadFailedData;
+import com.hs.platform.station.util.SFTP.FileSystemServiceImpl;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.*;
@@ -14,7 +16,6 @@ import static com.hs.platform.station.Constants.*;
 import static com.hs.platform.station.Constants.newlx_ftp_server_port;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.getPicByStream;
 import static com.hs.platform.station.util.ImageDownloadUtil.newlxFtpClient;
-import static com.hs.platform.station.util.ImageDownloadUtil.shundeFtpClient;
 
 public class FTPClientUtil {
 
@@ -35,6 +36,30 @@ public class FTPClientUtil {
         FTPClient ftpClient = null;
         try {
             ftpClient = new FTPClient();
+            ftpClient.setConnectTimeout(10 * 1000);
+            ftpClient.setDefaultTimeout(10 * 1000);
+            ftpClient.setDataTimeout(10 * 1000);
+            ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
+            ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
+            ftpClient.enterLocalPassiveMode();
+            // 传文件，使用二进制
+            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
+                ftpClient.disconnect();
+                LOGGER.error("FTP FAIL ERROR RESPONSE " + ftpHost);
+            } else {
+                LOGGER.info(ftpHost + " FTP连接成功。");
+            }
+        } catch (Exception e) {
+            LOGGER.error("FTP FAIL " + ftpHost + e.getMessage());
+        }
+        return ftpClient;
+    }
+
+    public static FTPSClient getSFTPClient(String ftpHost, String ftpPassword, String ftpUserName, int ftpPort) {
+        FTPSClient ftpClient = null;
+        try {
+            ftpClient = new FTPSClient();
             ftpClient.setConnectTimeout(10 * 1000);
             ftpClient.setDefaultTimeout(10 * 1000);
             ftpClient.setDataTimeout(10 * 1000);
@@ -80,7 +105,7 @@ public class FTPClientUtil {
     }
 
     public static byte[] ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient,
-                                  FTPClient targetClient, Date weightingDate) {
+                                  FileSystemServiceImpl fileSystemService, Date weightingDate) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             sourceClient.changeWorkingDirectory("/");
@@ -101,11 +126,15 @@ public class FTPClientUtil {
                 ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
             }
             return null;
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         try (InputStream inputStream = parse(outputStream)) {
-            createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
-            targetClient.changeWorkingDirectory("/");
-            Boolean targetState = targetClient.storeFile(targetPath, inputStream);
+            Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
             //targetState false 没有上传到服务器
             LOGGER.info("ok:targetState:" + targetState + " " + sourcePath);
             //将流转化成byte返回
@@ -122,7 +151,6 @@ public class FTPClientUtil {
         } catch (Exception e) {
             //重新连接顺德ftp，将失败的加入列表
             LOGGER.error("push file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + targetPath + e.getMessage());
-            shundeFtpClient = ImageDownloadUtil.resetFTPClient(shundeFtpClient,false);
             if(ReUploadFailedData.ftpReUploadQueue.size() >= 100) {
                 FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
                 ReUploadFailedData.ftpReUploadQueue.removeFirst();
@@ -186,7 +214,7 @@ public class FTPClientUtil {
     /**
      * 定时任务执行的ftp操作
      */
-    public static int reDoftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient, FTPClient targetClient) {
+    public static int reDoftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient, FileSystemServiceImpl fileSystemService) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             sourceClient.changeWorkingDirectory("/");
@@ -202,9 +230,7 @@ public class FTPClientUtil {
             return 1;
         }
         try (InputStream inputStream = parse(outputStream)) {
-            createDir(targetPath.substring(0, targetPath.lastIndexOf('/') + 1), targetClient);
-            targetClient.changeWorkingDirectory("/");
-            Boolean targetState = targetClient.storeFile(targetPath, inputStream);
+            Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
             LOGGER.info("re ok:targetState:" + targetState + " " + sourcePath);
         } catch (Exception e) {
             LOGGER.error("re push file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + targetPath + e.getMessage());

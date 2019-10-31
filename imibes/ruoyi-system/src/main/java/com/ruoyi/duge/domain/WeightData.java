@@ -44,7 +44,7 @@ public class WeightData extends BaseEntity {
     /**
      * 称重时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "GMT+8")
     private Date weightingDate;
     /**
      * 车道号
@@ -157,7 +157,7 @@ public class WeightData extends BaseEntity {
     /**
      * 超限采集时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "GMT+8")
     private Date lwhDate;
     /**
      * 超限车牌号

@@ -22,7 +22,7 @@ public class StorageManage {
     public StorageManage(IWeightDataMapperService weightDataMapperService) {
         this.weightDataMapperService = weightDataMapperService;
     }
-    @Scheduled(cron="*/3 * * * * ?")
+    //@Scheduled(cron="*/3 * * * * ?")
     public void deleteIllegalAndOverDate(){
         log.info("deleteIllegalAndOverDate start");
         System.out.println("deleteIllegalAndOverDate start");

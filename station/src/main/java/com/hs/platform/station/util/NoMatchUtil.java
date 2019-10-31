@@ -31,8 +31,7 @@ public class NoMatchUtil {
                     if (currentTime < timeout) {//如果未超时，重新入队
                         queue.add(entity);
                     } else {
-                        LOGGER.info("queue time out size:" + queue.size() + ",plate:" + entity.getPlate() +
-                                "," + entity.getTruckNumber());
+                        LOGGER.info("queue time out size:" + queue.size() + ",plate:" + entity.getPlate() +"," + entity.getTruckNumber());
                         //超时,删除 内存中的对象，并将异常数据插入数据库的表
                         WeightAndLWHContainer.clearAndInsertDB(entity);
                     }
