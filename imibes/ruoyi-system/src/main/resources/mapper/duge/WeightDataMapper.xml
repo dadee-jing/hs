@@ -384,14 +384,32 @@
     <select id="selectSpeedAvg" parameterType="WeightData" resultType="Double">
         SELECT avg(speed) FROM weight_data WHERE weighting_date >  #{params.timeStr}
     </select>
-
+    <!--报警图片视频数据-->
     <select id="selectIllegalAndOverDate" parameterType="WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
-            wd.create_time &gt;  wd.create_time &gt; date_add(now(), interval - 2*356*24*60 minute)
+            wd.create_time &gt; date_add(now(), interval - 2*356*24*60 minute)
             and wd.over_weight  > 0
         </where>
         limit 10
+    </select>
+    <!--其余正常图片视频数据-->
+    <select id="selectOverDate" parameterType="WeightData" resultMap="WeightDataResult">
+        select * from  weight_data where create_time &gt; date_add(now(), interval -15*24*60 minute)
+        and over_weight  = 0
+        and truck_number in
+        (select truck_number from weight_data  where create_time > date_add(now(), interval - 14*24*60 minute)
+        and over_weight  = 0)
+        LIMIT 10
+    </select>
+    <!--报警车辆对应其过车数据-->
+    <select id="selectIllegalOrOverDate" parameterType="WeightData" resultMap="WeightDataResult">
+        select * from  weight_data where create_time &gt; date_add(now(), interval -91*24*60 minute)
+        and over_weight  = 0
+        and truck_number in
+        (select truck_number from weight_data  where create_time > date_add(now(), interval - 90*24*60 minute)
+        and over_weight  > 0)
+        LIMIT 10
     </select>
 
 </mapper>

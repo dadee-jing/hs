@@ -100,4 +100,14 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
         return dataMapper.selectNotUploadSj();
     }
 
+    @Override
+    public List<WeightData> selectOverDate() {
+        return dataMapper.selectOverDate();
+    }
+
+    @Override
+    public List<WeightData> selectIllegalOrOverDate() {
+        return dataMapper.selectIllegalOrOverDate();
+    }
+
 }

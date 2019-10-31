@@ -75,9 +75,10 @@ public interface WeightDataMapper {
 
     public Double selectSpeedAvg(com.ruoyi.duge.domain.WeightData data);
 
-    /**
-     * 查询违法并且过时的数据
-     * @return
-     */
+    /**报警图片视频数据*/
     public List<WeightData> selectIllegalAndOverDate();
+    /**其余正常图片视频数据*/
+    List<WeightData> selectOverDate();
+    /**报警车辆对应其过车数据*/
+    List<WeightData> selectIllegalOrOverDate();
 }

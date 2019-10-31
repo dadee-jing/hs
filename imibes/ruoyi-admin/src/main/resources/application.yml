@@ -140,6 +140,8 @@ upload_yhl_task_cron: 0/5 * * * * ?
 foshan.baseDir: XXX/XXX
 #上传佛山定时任务执行
 foshan.scheduled: 0/5 * * * * ?
+#定时清理过期文件任务执行
+storagemanage.scheduled: 0/3 * * * * ?
 #ftp基本配置
 ftp:
   host : 192.168.1.130

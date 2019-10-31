@@ -67,4 +67,7 @@ public interface IWeightDataMapperService
 	public List<WeightData> selectIllegalAndOverDate();
 
 	List<WeightData> selectNotUploadSj();
+
+	List<WeightData> selectOverDate();
+	List<WeightData> selectIllegalOrOverDate();
 }
