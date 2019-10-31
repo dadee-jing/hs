@@ -49,7 +49,7 @@ public class FoshanApiService implements ThirdApiService {
                 .weightData(weightData).build());
     }
 
-//    @Scheduled(cron="*/3 * * * * ?")
+    //@Scheduled(cron="*/3 * * * * ?")
 //    @Scheduled(cron = "${foshan.scheduled}")
     public void submitVehicleData() {
 //        if ("1".equals(configDataService.getConfigValue("do_foshan_scheduled"))) {

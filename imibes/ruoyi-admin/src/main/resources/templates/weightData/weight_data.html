@@ -295,7 +295,12 @@
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-warning btn-xs" href="#" onclick="$.operate.detail(\'' + row.id + '\',\'1000px\')"><i class="fa fa-search"></i>详细</a>');
+/*                        actions.push('<a class="btn btn-warning btn-xs" href="#" ' +
+                            'onclick="$.operate.detail(\'' + row.id + '\',\'1000px\')"><i class="fa fa-search"></i>详细</a>');*/
+/*                        actions.push('<a class="btn btn-warning btn-xs" href="/duge/weightData/detail/' + row.id + '" target="_Blank" >' +
+                            '<i class="fa fa-search"></i>详细</a>');         */
+                        actions.push('<a class="btn btn-warning btn-xs" href="#" ' +
+                            'onclick="weightDetail(' + row.id + ')"><i class="fa fa-search"></i>详细</a>');
                         return actions.join('');
                     }
                 }]
@@ -305,6 +310,26 @@
         setInterval('$.table.search()', 1000 * 120);
         $(".fixed-table-toolbar").hide()
     });
+
+    function weightDetail(id) {
+        var dataUrl = "/duge/weightData/detail/"+id,
+            menuName = "车辆详情",
+            dataIndex = 100;
+        var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
+        $('.menuTab',parent.document).removeClass('active');
+
+        // 添加选项卡对应的iframe
+        var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+        $('.mainContent',parent.document).find('iframe.RuoYi_iframe',parent.document).hide().parents('.mainContent',parent.document).append(str1);
+
+        //$.modal.loading("数据加载中，请稍后...");
+        $('.mainContent iframe:visible',parent.document).load(function () {
+            $.modal.closeLoading();
+        });
+        // 添加选项卡
+        $('.menuTabs .page-tabs-content',parent.document).append(str);
+        //scrollToTab($('.menuTab.active'));
+    }
 
     function selectStation() {
         var prefix = ctx + "module/stationInfo";

@@ -8,10 +8,9 @@
 
 添加强制路由，cmd，执行口令 route add 19.0.0.0 mask 255.0.0.0 19.201.27.254 -p
 
-win+R,regedit修改注册表，HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\Tds\tcp ，双击PortNumber文件，切换到十进制，默认是3389，将他修改为10000；HKEY_LOCAL_MACHINE\SYSTEM\CurrentContro1Set\Control\Tenninal Server\WinStations\RDP-Tcp，修改PortNumber的值为10000;
-
-设置timewait超时 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters,右键新建DWORD，key:name：TcpTimedWaitDelay, value:5
-
+win+R,regedit修改注册表，HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\Tds\tcp ，
+双击PortNumber文件，切换到十进制，默认是3389，将他修改为10000；
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentContro1Set\Control\Tenninal Server\WinStations\RDP-Tcp，修改PortNumber的值为10000;
 
 新建目录 d:/deploy，将mysql安装程序，ry.sql ，station.jar， station_application.bat等部署所需拷到目录下
 
@@ -33,6 +32,7 @@ win+R,regedit修改注册表，HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Contr
 
 修改数据库config_data表中do_upload_tag项，值为1时表示打开上传
 
-确认无问题后，右键station_application.bat新建快捷方式，并拷贝到开始 启动目录，确保上送程序设置为开机启动
+确认无问题后，右键station_application.bat新建快捷
+方式，并拷贝到开始 启动目录，确保上送程序设置为开机启动
 
 重启工控机，确认自启动程序生效

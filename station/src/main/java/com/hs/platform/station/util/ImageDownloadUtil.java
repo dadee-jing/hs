@@ -5,10 +5,12 @@ import com.hs.platform.station.persistence.local.entity.ConfigData;
 import com.hs.platform.station.persistence.local.entity.WeightData;
 import com.hs.platform.station.third.foshan.service.FoshanApiService;
 import com.hs.platform.station.third.foshan.socket.FoshanMessage;
+import com.hs.platform.station.util.SFTP.FileSystemServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,33 +33,30 @@ public class ImageDownloadUtil {
     private static Logger LOGGER = LoggerFactory.getLogger(ImageDownloadUtil.class);
 
     public static FTPClient newlxFtpClient = null;
-    public static  FTPClient shundeFtpClient = null;
+    //public static FTPSClient shundeFtpClient = null;
     @Autowired
     private ConfigDataRepository configDataRepository;
+    @Autowired
+    private FileSystemServiceImpl fileSystemService;
 
     @PostConstruct
     void init() {
         newlxFtpClient = FTPClientUtil.getFTPClient(newlx_ftp_server_host, newlx_ftp_passwd, newlx_ftp_user, newlx_ftp_server_port);
-        shundeFtpClient = FTPClientUtil.getFTPClient(shunde_ftp_server_host, shunde_ftp_passwd, shunde_ftp_user, shunde_ftp_server_port);
-    }
-
-    private FTPClient checkFTPClient(FTPClient ftpClient, boolean newlx) {
-        if (null != ftpClient && ftpClient.isConnected() && ftpClient.isAvailable()) {
-            return ftpClient;
-        } else {
-            return resetFTPClient(ftpClient, newlx);
-        }
+       // shundeFtpClient = FTPClientUtil.getSFTPClient(shunde_ftp_server_host, shunde_ftp_passwd, shunde_ftp_user, shunde_ftp_server_port);
     }
 
     public static FTPClient resetFTPClient(FTPClient ftpClient, boolean newlx) {
         LOGGER.info("to reset " + newlx);
         FTPClientUtil.ftpClose(ftpClient);
-        FTPClient newOne;
-        if (newlx) {
-            newOne = FTPClientUtil.getFTPClient(newlx_ftp_server_host, newlx_ftp_passwd, newlx_ftp_user, newlx_ftp_server_port);
-        } else {
-            newOne = FTPClientUtil.getFTPClient(shunde_ftp_server_host, shunde_ftp_passwd, shunde_ftp_user, shunde_ftp_server_port);
-        }
+        FTPClient newOne = FTPClientUtil.getFTPClient(newlx_ftp_server_host, newlx_ftp_passwd, newlx_ftp_user, newlx_ftp_server_port);
+        LOGGER.info("over reset " + newlx);
+        return newOne;
+    }
+
+    public static FTPSClient resetFTPClient(FTPSClient ftpClient, boolean newlx) {
+        LOGGER.info("to reset " + newlx);
+        FTPClientUtil.ftpClose(ftpClient);
+        FTPSClient newOne  = FTPClientUtil.getSFTPClient(shunde_ftp_server_host, shunde_ftp_passwd, shunde_ftp_user, shunde_ftp_server_port);
         LOGGER.info("over reset " + newlx);
         return newOne;
     }
@@ -68,9 +67,9 @@ public class ImageDownloadUtil {
 
             final String stationId = station_id + "";
             // 按照固定目录存放 ftppath/stationID/date/   ftp/1/20190717/
-            String targetParentPath = "/" + stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd");
+            String targetParentPath = stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd");
 
-            if (null != newlxFtpClient && null != shundeFtpClient) {
+            if (null != newlxFtpClient && null != fileSystemService) {
                 String FtpHead = entity.getFtpHead();
                 String FtpAxle = entity.getFtpAxle();
                 String FtpTail = entity.getFtpTail();
@@ -96,7 +95,7 @@ public class ImageDownloadUtil {
             String filePath = pathList.get(i);
             if (StringUtils.isNotBlank(filePath)) {
                 byte[] pic = FTPClientUtil.ftpToFtp(filePath, targetParentPath + '/' + filePath,
-                        newlxFtpClient, shundeFtpClient,weightData.getWeightingDate());
+                        newlxFtpClient, fileSystemService,weightData.getWeightingDate());
                 if(pic != null){
                     if(i == 0){
                         foshanMessage.setPic1(pic);
@@ -155,13 +154,6 @@ public class ImageDownloadUtil {
             newlxFtpClient = ImageDownloadUtil.resetFTPClient(newlxFtpClient,true);
         }
         return newlxFtpClient;
-    }
-
-    public static FTPClient checkShundeFtpConnect(){
-        if (!FTPReply.isPositiveCompletion(shundeFtpClient.getReplyCode())) {
-            shundeFtpClient = ImageDownloadUtil.resetFTPClient(shundeFtpClient,false);
-        }
-        return shundeFtpClient;
     }
 
 }

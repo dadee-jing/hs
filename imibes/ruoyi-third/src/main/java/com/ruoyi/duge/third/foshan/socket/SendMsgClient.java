@@ -56,7 +56,7 @@ public class SendMsgClient {
         connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));// 设置默认访问地址
     }
 
-    @Scheduled(fixedDelay = 1000 * 30, initialDelay = 10000)
+    //@Scheduled(fixedDelay = 1000 * 30, initialDelay = 10000)
     public void heartbeat() {
         sendMessage(FoshanMessage.builder().messageType(FoshanMessage.HEART_BEAT_MSG).build());
     }

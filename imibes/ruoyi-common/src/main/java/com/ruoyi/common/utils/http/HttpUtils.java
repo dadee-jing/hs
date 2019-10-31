@@ -128,11 +128,11 @@ public class HttpUtils
         }
         catch (IOException e)
         {
-            log.error("调用HttpUtils.sendPost IOException, url=" + url + ",param=" + param, e);
+            //log.error("调用HttpUtils.sendPost IOException, url=" + url + ",param=" + param, e);
         }
         catch (Exception e)
         {
-            log.error("调用HttpsUtil.sendPost Exception, url=" + url + ",param=" + param, e);
+            //log.error("调用HttpsUtil.sendPost Exception, url=" + url + ",param=" + param, e);
         }
         finally
         {

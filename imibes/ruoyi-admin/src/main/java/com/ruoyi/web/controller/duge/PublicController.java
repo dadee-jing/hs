@@ -11,6 +11,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @Controller
 @RequestMapping("/public")
 public class PublicController extends BaseController {
@@ -26,11 +28,18 @@ public class PublicController extends BaseController {
     public AjaxResult outerAddSave(@RequestBody com.ruoyi.duge.domain.WeightData data) {
         int result;
         try {
+            data.setId(null);
+            data.setCreateTime(new Date());
+            data.setUpdateTime(new Date());
             result = dataService.insertData(data);
         } catch (DuplicateKeyException e) {
             result = 1;
+            System.out.println("DuplicateKeyException");
         } catch (Exception e) {
             result = 0;
+        }
+        if(result == 1){
+            System.out.println("insert "+ data.getStationId() + " " + data.getWeightingDate() + " " + data.getTruckNumber() );
         }
         return toAjax(result);
     }
