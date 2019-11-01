@@ -59,15 +59,16 @@ public interface IWeightDataMapperService
 
 	public Map selectStationStatistics(com.ruoyi.duge.domain.WeightData data);
 
-
+	List<WeightData> selectNotUploadJj();
+	List<WeightData> selectNotUploadSj();
 	/**
 	 * 查询违法并且过时的数据
 	 * @return
 	 */
-	public List<WeightData> selectIllegalAndOverDate();
-
-	List<WeightData> selectNotUploadSj();
-
-	List<WeightData> selectOverDate();
-	List<WeightData> selectIllegalOrOverDate();
+	List<WeightData> selectIllegalAndOverDate();
+	List<String> selectTruckNumberByTime();
+	List<WeightData> selectIsIllegalByTruckNumber(String truckNumber);
+	List<WeightData> selectByTruckNumber(String truckNumber);
+	List<String> selectTruckNumberOver90Date();
+	List<WeightData> selectByTruckNumberOver90Date(String truckNum);
 }

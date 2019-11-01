@@ -91,6 +91,11 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     }
 
     @Override
+    public List<WeightData> selectNotUploadJj() {
+        return dataMapper.selectNotUploadJj();
+    }
+
+    @Override
     public List<WeightData> selectIllegalAndOverDate() {
         return dataMapper.selectIllegalAndOverDate();
     }
@@ -100,14 +105,31 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
         return dataMapper.selectNotUploadSj();
     }
 
+
+
     @Override
-    public List<WeightData> selectOverDate() {
-        return dataMapper.selectOverDate();
+    public List<String> selectTruckNumberByTime() {
+        return dataMapper.selectTruckNumberByTime();
     }
 
     @Override
-    public List<WeightData> selectIllegalOrOverDate() {
-        return dataMapper.selectIllegalOrOverDate();
+    public List<WeightData> selectIsIllegalByTruckNumber(String truckNumber) {
+        return dataMapper.selectIsIllegalByTruckNumber(truckNumber);
+    }
+
+    @Override
+    public List<WeightData> selectByTruckNumber(String truckNumber) {
+        return dataMapper.selectByTruckNumber(truckNumber);
+    }
+
+    @Override
+    public List<String> selectTruckNumberOver90Date() {
+        return dataMapper.selectTruckNumberOver90Date();
+    }
+
+    @Override
+    public List<WeightData> selectByTruckNumberOver90Date(String truckNum) {
+        return dataMapper.selectByTruckNumberOver90Date(truckNum);
     }
 
 }

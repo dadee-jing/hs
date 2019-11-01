@@ -57,6 +57,7 @@
         <result property="uploadYhl" column="upload_yhl"/>
         <result property="uploadSj" column="upload_sj"/>
         <result property="uploadJj" column="upload_jj"/>
+        <result property="markDel" column="mark_del"/>
     </resultMap>
 
     <sql id="selectDataVo">
@@ -358,10 +359,12 @@
     <select id="selectNotUploadJj" parameterType="WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
-            and upload_jj &lt;&gt; 1
+            wd.create_time &gt; date_add(now(), interval - 5 minute)
+            and upload_jj &lt; 1
+            and station_id = 1
         </where>
-        order by upload_jj
-        limit 100
+        order by create_time DESC
+        limit 10
     </select>
 
     <select id="selectStationStatistics" parameterType="WeightData" resultType="hashMap">
@@ -393,23 +396,42 @@
         </where>
         limit 10
     </select>
-    <!--其余正常图片视频数据-->
-    <select id="selectOverDate" parameterType="WeightData" resultMap="WeightDataResult">
-        select * from  weight_data where create_time &gt; date_add(now(), interval -15*24*60 minute)
-        and over_weight  = 0
-        and truck_number in
-        (select truck_number from weight_data  where create_time > date_add(now(), interval - 14*24*60 minute)
-        and over_weight  = 0)
+
+    <!--抽取时间区间内单个站点无报警的十辆车的车牌-->
+    <select id="selectTruckNumberByTime" resultType="String">
+        select truck_number  from weight_data  where create_time &lt; date_add(now(), interval - 14*24*60 minute)
+        and over_weight=0
+        and mark_del= 0
+        ORDER BY  create_time DESC
         LIMIT 10
     </select>
-    <!--报警车辆对应其过车数据-->
-    <select id="selectIllegalOrOverDate" parameterType="WeightData" resultMap="WeightDataResult">
-        select * from  weight_data where create_time &gt; date_add(now(), interval -91*24*60 minute)
-        and over_weight  = 0
-        and truck_number in
-        (select truck_number from weight_data  where create_time > date_add(now(), interval - 90*24*60 minute)
-        and over_weight  > 0)
-        LIMIT 10
+    <!--根据车牌号查这辆车时间区间内是否有其他报警数据-->
+    <select id="selectIsIllegalByTruckNumber" parameterType="String" resultMap="WeightDataResult">
+        select *  from weight_data  where create_time &lt; date_add(now(), interval - 14*24*60 minute)
+        AND  create_time > date_add(now(), interval - 15*24*60 minute)
+        and over_weight  > 0
+        and truck_number = #{truckNumber}
+    </select>
+    <!--查这辆车时间区间内所有数据-->
+    <select id="selectByTruckNumber" parameterType="String" resultMap="WeightDataResult">
+        select *  from weight_data  where create_time &lt; date_add(now(), interval - 14*24*60 minute)
+        AND create_time > date_add(now(), interval - 15*24*60 minute)
+        and truck_number = #{truckNumber}
     </select>
 
+    <!--查询报警车辆对应其过车数据车牌号-->
+    <select id="selectTruckNumberOver90Date" resultType="String">
+        select truck_number  from weight_data  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
+        AND create_time > date_add(now(), interval - 91*24*60 minute)
+        and over_weight=0
+        and mark_del= 0
+        ORDER BY  create_time DESC
+        LIMIT 10
+    </select>
+    <!--查这辆车时间区间内所有数据-->
+    <select id="selectByTruckNumberOver90Date" parameterType="String" resultMap="WeightDataResult">
+        select *  from weight_data  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
+        AND create_time > date_add(now(), interval - 91*24*60 minute)
+        and truck_number = #{truckNumber}
+    </select>
 </mapper>
