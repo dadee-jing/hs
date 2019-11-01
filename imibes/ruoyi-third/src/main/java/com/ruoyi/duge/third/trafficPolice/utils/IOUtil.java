@@ -62,8 +62,8 @@ public class IOUtil {
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/peccancy/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-            MergedImages.Merged(img,img1,img,img3,targetPath,txt);
-
+        LOGGER.info(wd.getTruckNumber()+targetPath);
+        MergedImages.Merged(img,img1,img,img3,targetPath,txt);
         return imageName.toString();
     }
     public static String normalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
@@ -94,7 +94,8 @@ public class IOUtil {
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-            MergedImages.Merged(img,img1,img,img3,targetPath,txt);
+        LOGGER.info(wd.getTruckNumber()+targetPath);
+        MergedImages.Merged(img,img1,img,img3,targetPath,txt);
         return imageName.toString();
     }
     static Integer parseColor(String colorStr) {

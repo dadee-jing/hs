@@ -207,6 +207,20 @@ public class WeightData extends BaseEntity {
      */
     private Integer siteId;
 
+    /**
+     * 标记图片、视频数据是否删除 0：未删  1：已删
+     * @return
+     */
+    private Integer markDel;
+
+    public Integer getMarkDel() {
+        return markDel;
+    }
+
+    public void setMarkDel(Integer markDel) {
+        this.markDel = markDel;
+    }
+
     public Integer getSiteId() {
         return siteId;
     }
