@@ -30,6 +30,7 @@ public class TrafficPoliceApiService {
                  int overLevel = overRate > 0 ? overRate >= 0.3 ? 2 : 1 : 0;
                  if (overLevel > 0){
                      IOUtil.IllegalImages(weightData, stationInfo);
+
                  }else {
                      IOUtil.normalImages(weightData,stationInfo);
                  }

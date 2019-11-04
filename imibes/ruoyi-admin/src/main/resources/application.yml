@@ -25,7 +25,7 @@ server:
     max-threads: 800
     # Tomcat启动初始化的线程数，默认值25
     min-spare-threads: 30
- 
+
 # 日志配置
 logging:
   level:
@@ -147,6 +147,7 @@ storagemanage.scheduled2year: 0 1 * * * ?
 
 #上传交警定时任务执行
 trafficpolice.scheduled: 0/5 * * * * ?
+
 #ftp基本配置
 ftp:
   host : 192.168.1.130

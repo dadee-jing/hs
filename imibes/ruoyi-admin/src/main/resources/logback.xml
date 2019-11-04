@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
-	<property name="log.path" value="/home/ruoyi/logs" />
+	<property name="log.path" value="/datavol/logs" />
 	<property name="log.pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - [%method,%line] - %msg%n" />
-
 	<!-- 控制台输出 -->
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>${log.pattern}</pattern>
 		</encoder>
 	</appender>
-	
 	<!-- 系统日志输出 -->
 	<appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
 	    <file>${log.path}/sys-info.log</file>
@@ -29,7 +26,6 @@
             <onMismatch>DENY</onMismatch>
         </filter>
 	</appender>
-	
 	<appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
 	    <file>${log.path}/sys-error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -46,7 +42,6 @@
             <onMismatch>DENY</onMismatch>
         </filter>
     </appender>
-	
 	<!-- 用户访问日志输出  -->
     <appender name="sys-user" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${log.path}/sys-user.log</file>
@@ -60,25 +55,73 @@
             <pattern>${log.pattern}</pattern>
         </encoder>
     </appender>
-	
-	<!-- 显示形成的sql、使用的参数、结果集 -->
-	<!--
-		<logger name="java.sql" level="debug" />
-		<logger name="org.springframework.jdbc" level="debug" />
-	-->
 
-	<logger name="com.ruoyi" level="info" />
+    <appender name="yihualuAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys-yihualu.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/yihualu.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <Pattern>${log.pattern}</Pattern>
+        </encoder>
+    </appender>
+    <appender name="dugeAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys-duge.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/duge.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <Pattern>${log.pattern}</Pattern>
+        </encoder>
+    </appender>
+    <appender name="trafficPoliceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys-trafficPolice.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/trafficPolice.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <Pattern>${log.pattern}</Pattern>
+        </encoder>
+    </appender>
+    <appender name="storageManageAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys-storageManage.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/storageManage.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <Pattern>${log.pattern}</Pattern>
+        </encoder>
+    </appender>
+    <!--A易华录oracle写入-->
+    <logger name="com.ruoyi.duge.third.shunde" level="info" additivity="false">
+        <appender-ref ref="yihualuAppender" />
+    </logger>
+    <!--B public接口接收站点过车日志-->
+    <logger name="com.ruoyi.web.controller.duge" level="info" additivity="false">
+        <appender-ref ref="dugeAppender" />
+    </logger>
+    <!--C交警日志-->
+    <logger name="com.ruoyi.duge.third.trafficPolice" level="info" additivity="false">
+        <appender-ref ref="trafficPoliceAppender" />
+    </logger>
+    <!--D删除文件定时任务-->
+    <logger name="com.ruoyi.duge.third.storageManage" level="info" additivity="false">
+        <appender-ref ref="storageManageAppender" />
+    </logger>
 
+    <logger name="com.ruoyi" level="info" />
 	<root level="info">
 		<appender-ref ref="console" />
 	</root>
-	
 	<!--系统操作日志-->
     <root level="info">
         <appender-ref ref="file_info" />
         <appender-ref ref="file_error" />
     </root>
-	
 	<!--系统用户操作日志-->
     <logger name="sys-user" level="info">
         <appender-ref ref="sys-user"/>

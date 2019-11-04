@@ -5,7 +5,10 @@ import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.third.foshan.service.FoshanApiService;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
 import com.ruoyi.duge.third.shunde.service.ShundeApiService;
+import com.ruoyi.duge.third.trafficPolice.utils.IOUtil;
 import com.ruoyi.web.core.base.BaseController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
@@ -16,7 +19,7 @@ import java.util.Date;
 @Controller
 @RequestMapping("/public")
 public class PublicController extends BaseController {
-
+    private static Logger LOGGER = LoggerFactory.getLogger(PublicController.class);
     @Autowired
     private com.ruoyi.duge.service.IWeightDataMapperService dataService;
 
@@ -39,7 +42,7 @@ public class PublicController extends BaseController {
             result = 0;
         }
         if(result == 1){
-            System.out.println("insert "+ data.getStationId() + " " + data.getWeightingDate() + " " + data.getTruckNumber() );
+            LOGGER.info("insert "+ data.getStationId() + " " + data.getWeightingDate() + " " + data.getTruckNumber());
         }
         return toAjax(result);
     }

@@ -1,4 +1,4 @@
-package com.ruoyi.duge.third.StorageManage;
+package com.ruoyi.duge.third.storageManage;
 
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.duge.domain.WeightData;

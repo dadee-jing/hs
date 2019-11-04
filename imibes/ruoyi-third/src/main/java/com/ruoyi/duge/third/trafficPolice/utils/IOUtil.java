@@ -2,7 +2,6 @@ package com.ruoyi.duge.third.trafficPolice.utils;
 
 import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.WeightData;
-import com.sun.imageio.plugins.common.ImageUtil;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class IOUtil {
-    private static Logger LOGGER = LoggerFactory.getLogger(ImageUtil.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(IOUtil.class);
     static SimpleDateFormat format0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddHHmmss" );
     static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
@@ -62,7 +61,7 @@ public class IOUtil {
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/peccancy/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-        LOGGER.info(wd.getTruckNumber()+targetPath);
+        LOGGER.info("upload the IllegalImages of "+wd.getTruckNumber()+ ",targetPath="+targetPath);
         MergedImages.Merged(img,img1,img,img3,targetPath,txt);
         return imageName.toString();
     }
@@ -94,7 +93,7 @@ public class IOUtil {
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
-        LOGGER.info(wd.getTruckNumber()+targetPath);
+        LOGGER.info("upload the normalImages of "+wd.getTruckNumber()+ ",targetPath="+targetPath);
         MergedImages.Merged(img,img1,img,img3,targetPath,txt);
         return imageName.toString();
     }
