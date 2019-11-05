@@ -55,7 +55,7 @@ public class LWHClientHandler extends IoHandlerAdapter {
             String[] dataArray = dataString.split(" ");
             Map<String, String> dataMap = new HashMap<>();
             for (int i = 0; i < dataArray.length; i++) {
-                if (i % 2 == 0) {
+                if (i % 2 == 0 && i + 1 < dataArray.length) {
                     dataMap.put(dataArray[i], dataArray[i + 1]);
                 }
             }

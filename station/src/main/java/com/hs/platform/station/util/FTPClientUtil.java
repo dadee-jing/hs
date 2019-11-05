@@ -15,6 +15,7 @@ import java.util.Date;
 import static com.hs.platform.station.Constants.*;
 import static com.hs.platform.station.Constants.newlx_ftp_server_port;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.getPicByStream;
+import static com.hs.platform.station.util.ImageDownloadUtil.checkNewlxFtpConnect;
 import static com.hs.platform.station.util.ImageDownloadUtil.newlxFtpClient;
 
 public class FTPClientUtil {
@@ -108,6 +109,8 @@ public class FTPClientUtil {
                                   FileSystemServiceImpl fileSystemService, Date weightingDate) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
+            //上传前先检查新流向ftp
+            sourceClient = checkNewlxFtpConnect();
             sourceClient.changeWorkingDirectory("/");
             Boolean sourceState = sourceClient.retrieveFile(sourcePath, outputStream);
             LOGGER.info("sourceState:" + sourceState);
@@ -120,10 +123,10 @@ public class FTPClientUtil {
             //重新连接新流向ftp，将失败的加入列表
             LOGGER.error("pull file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + sourcePath + e.getMessage());
             newlxFtpClient = ImageDownloadUtil.resetFTPClient(newlxFtpClient,true);
-            if(ReUploadFailedData.ftpReUploadQueue.size() >= 100){
-                FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
+            FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
+            ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
+            if(ReUploadFailedData.ftpReUploadQueue.size() > 100){
                 ReUploadFailedData.ftpReUploadQueue.removeFirst();
-                ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
             }
             return null;
         } finally {
@@ -151,10 +154,10 @@ public class FTPClientUtil {
         } catch (Exception e) {
             //重新连接顺德ftp，将失败的加入列表
             LOGGER.error("push file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + targetPath + e.getMessage());
-            if(ReUploadFailedData.ftpReUploadQueue.size() >= 100) {
-                FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
+            FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
+            ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
+            if(ReUploadFailedData.ftpReUploadQueue.size() > 100) {
                 ReUploadFailedData.ftpReUploadQueue.removeFirst();
-                ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
             }
             return null;
         } finally {

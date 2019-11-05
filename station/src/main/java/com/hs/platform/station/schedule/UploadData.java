@@ -8,6 +8,7 @@ import com.hs.platform.station.persistence.local.dao.WeightDataRepository;
 import com.hs.platform.station.persistence.local.entity.ConfigData;
 import com.hs.platform.station.persistence.local.entity.WeightData;
 import com.hs.platform.station.persistence.remote.entity.RemoteWeightDataData;
+import com.hs.platform.station.third.common.utils.StringUtils;
 import com.hs.platform.station.util.ImageDownloadUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -35,7 +36,6 @@ public class UploadData {
     private final ImageDownloadUtil imageDownloadUtil;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-
     @Autowired
     public UploadData(ConfigDataRepository configDataRepository,
                       WeightDataRepository weightDataRepository,
@@ -48,7 +48,6 @@ public class UploadData {
     /**
      * 本地库存储到汇聚中心库
      */
-    //@Scheduled(cron = "${upload_task_cron}")
     @Scheduled(fixedRate = 5000)
     public void uploadDbData() {
         int flag = (int) ((Math.random() * 9 + 1) * 1000);
@@ -60,12 +59,15 @@ public class UploadData {
     }
 
     public void doUploadDbData() {
-        //logger.info("uploading db-data to data center begin");
         // 下载20秒前数据，保证图片视频收集
         try {
             Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
             List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
             if (null != weightDataList && weightDataList.size() != 0) {
+                String remoteUploadUrl = getDbConfigValue("remote_weight_upload_url");
+                if(StringUtils.isEmpty(remoteUploadUrl)){
+                    logger.error("远程上传车辆数据url未配置");
+                }
                 logger.info("upload size " + weightDataList.size());
                 weightDataList.forEach(weightData -> {
                     boolean successTag = true;
@@ -75,7 +77,7 @@ public class UploadData {
                         remoteWeightDataData.setId(null);
                         remoteWeightDataData.setUploadTag(0);
                         // 文本数据
-                        successTag = post("http://19.202.173.152:8080/public/weightData/add", remoteWeightDataData);
+                        successTag = post(remoteUploadUrl, remoteWeightDataData);
                         // 同步提交文件
                         imageDownloadUtil.submitDownloadTask(weightData);
                         if(successTag){
@@ -90,7 +92,6 @@ public class UploadData {
                     weightDataRepository.save(weightData);
                 });
             }
-            //logger.info("uploading db-data to data center end");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

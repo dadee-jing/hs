@@ -64,7 +64,7 @@ public class StationApplication {
             LOGGER.info("LWH client connect : " + lwhServerHost + " : " + lwhServerPort + " success.");
 
             // 开启匹配线程
-            NoMatchUtil.notMatchInsertDB();
+            //NoMatchUtil.notMatchInsertDB();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }

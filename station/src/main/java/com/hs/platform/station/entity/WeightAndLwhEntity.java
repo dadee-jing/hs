@@ -53,6 +53,15 @@ public class WeightAndLwhEntity {
     private boolean weightTag = false;
     private boolean sizeTag = false;
     private boolean speedTag = false;
+    private int uploadTag;//上传到服务器，0待上传,1已上传或不上传
+
+    public int getUploadTag() {
+        return uploadTag;
+    }
+
+    public void setUploadTag(int uploadTag) {
+        this.uploadTag = uploadTag;
+    }
 
     public String getRemarkInfo() {
         return remarkInfo;

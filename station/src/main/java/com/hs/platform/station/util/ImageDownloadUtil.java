@@ -151,6 +151,7 @@ public class ImageDownloadUtil {
      */
     public static FTPClient checkNewlxFtpConnect(){
         if (!FTPReply.isPositiveCompletion(newlxFtpClient.getReplyCode())) {
+            LOGGER.info("check nlxftp reconnect");
             newlxFtpClient = ImageDownloadUtil.resetFTPClient(newlxFtpClient,true);
         }
         return newlxFtpClient;
