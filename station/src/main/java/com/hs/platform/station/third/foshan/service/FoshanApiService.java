@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.hs.platform.station.third.foshan.socket.StructUtil.*;
 
@@ -41,7 +42,7 @@ public class FoshanApiService
     private final ConfigDataRepository configDataRepository;
     private final WeightDataRepository weightDataRepository;
 
-    private static LinkedList<FoshanMessage> shiJuQueue = new LinkedList<>();
+    private static ConcurrentLinkedQueue<FoshanMessage> shiJuQueue = new ConcurrentLinkedQueue<>();
     public static Boolean uploadShiJu = false;
 
     @Autowired
@@ -53,7 +54,7 @@ public class FoshanApiService
     }
 
     public static void addEntity(FoshanMessage entity) {
-        shiJuQueue.addLast(entity);
+        shiJuQueue.add(entity);
         log.info("FoshanMessage add size:" + shiJuQueue.size());
         //log.info("FoshanEntity:" + entity);
     }

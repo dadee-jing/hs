@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 @Component
@@ -21,14 +22,14 @@ public class ReUploadFailedData {
     private FileSystemServiceImpl fileSystemService;
 
     private static Logger LOGGER = LoggerFactory.getLogger(ReUploadFailedData.class);
-    public static LinkedList<FTPReUploadInfo> ftpReUploadQueue = new LinkedList<>();
+    public static ConcurrentLinkedQueue<FTPReUploadInfo> ftpReUploadQueue = new ConcurrentLinkedQueue<>();
     //改用限定大小的list
     /**
      * 重新上传新流向失败的数据
      */
     @Scheduled(cron = "0 0/5 * * * ?")
     public void reUploadNewlxData() {
-        if(ftpReUploadQueue != null && ftpReUploadQueue.size() != 0){
+        if(ftpReUploadQueue != null && ftpReUploadQueue.size() > 0){
             LOGGER.info("reUploadStart:" + ftpReUploadQueue.size());
             //每次处理10条
             int i = 0;

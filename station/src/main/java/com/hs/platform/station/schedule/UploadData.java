@@ -121,7 +121,7 @@ public class UploadData {
             JsonNode jsonNode = objectMapper.readTree(content);
             return null != jsonNode.findValue("code") && jsonNode.findValue("code").intValue() == 0;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return false;
         }
     }

@@ -14,15 +14,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.hs.platform.station.Constants.led_overWeight_percentage;
-import static com.hs.platform.station.util.DbUtil.getLimitUploadWeight;
-import static com.hs.platform.station.util.DbUtil.getWeightLimitMap;
+import static com.hs.platform.station.util.DbUtil.*;
 
 public class WeightAndLWHContainer {
 
     private static Logger LOGGER = LoggerFactory.getLogger(WeightAndLWHContainer.class);
     private static final ConcurrentHashMap<String, WeightAndLwhEntity> mapContainer = new ConcurrentHashMap<>();
     private static Map<Integer, Long> weightLimitMap = getWeightLimitMap();
-    private static String weightLimit = getLimitUploadWeight();
+    private static String weightLimit = getConfigValue("weight_upload_limit");
+    private static String onlyWeightUploadTag = getConfigValue("only_weight_upload");
     private static final double overWeightPercentage = led_overWeight_percentage;
 
     /**
@@ -41,6 +41,12 @@ public class WeightAndLWHContainer {
                 LOGGER.info("clearAndInsertDB--" + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
+                //配置文件，只有称重数据也执行上传
+                if(previousEntity.isWeightTag() && onlyWeightUploadTag.equals("1")){
+                    LOGGER.info("only weight upload " + carNumber);
+                    completeEntity(previousEntity, carNumber);
+                    return;
+                }
                 mapContainer.remove(carNumber);
                 //插入数据库做备份
                 int previousStatus = previousEntity.getProcessStatus();
@@ -62,7 +68,7 @@ public class WeightAndLWHContainer {
      */
     public static void processData(WeightAndLwhEntity currentEntity) {
         // 根据状态判断是由超重或超限调用(新流向-超重 0, 杜格-超限 1)
-        //同一辆车，有可能连续进来两次称重数据
+        //称重,测速可能多次触发
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
         //无车牌的直接进入丢弃
@@ -218,7 +224,7 @@ public class WeightAndLWHContainer {
             }
         }
         DbUtil.insertWeightAndLWH(previousEntity);
-        LOGGER.info("insert DB :" + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
+        LOGGER.info("insertDB :" + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
                 previousEntity.getWeight() + "-" + previousEntity.getHeight() + ",mapContainer:" + mapContainer.size());
     }
 }
