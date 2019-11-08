@@ -1,7 +1,6 @@
 package com.ruoyi.duge.third.foshan.socket;
 
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +57,8 @@ public class StructUtil {
         System.arraycopy(toAdd, 0, result, currPos.getAndAdd(toAdd.length), toAdd.length);
     }
 
-    public static byte[] getPic(Date picDate, InputStream inputStream) {
-        byte[] fileBytes = resize(1700, 1000, inputStream);
+    public static byte[] getPic(Date picDate, File picFile) {
+        byte[] fileBytes = resize(1700, 1000, picFile);
         byte[] picDateBytes = getTime2t(picDate);
         byte[] picLengthBytes = getLongBytes(fileBytes.length);
         byte[] result = new byte[9 + 4 + fileBytes.length];
@@ -246,37 +245,37 @@ public class StructUtil {
     }
 
 
-//    public static void main(String[] args) {
-//        byte[] car = getCarData2Info(158, 2, new Date(), 2, null,
-//                1.13f, 31.4f,
-//                4.65f, 1.97f, 1.48f,
-//                0.0f, 0.0f,
-//                "粤A5RM08", 0, 0, 0,
-//                0, 0, 0, 0, 2);
-//        byte[] pic1 = getPic(new Date(), "");
-//        byte[] pic2 = getPic(new Date(), "");
-//        //byte[] msg = combineMsg(0x5020, car, pic1, pic2);
-//        byte[] msg = combineMsg(0x5020, car, pic1, pic2, pic1, pic1, pic1);
-//        byte[] result = combineAll(msg);
-//
-//        byte[] lengthBytes = new byte[4];
-//        System.arraycopy(result, 14, lengthBytes, 0, 4);
-//        System.out.println("len:" + byteArrayToInt(lengthBytes));
-//        System.out.println("last:" + bytesToHexString(new byte[]{result[byteArrayToInt(lengthBytes) + 18]}));
-//        System.out.println("all_size:" + result.length);
-//        System.out.println(bytesToHexString(result));
-//
-//        //byte[] msg2 = combineMsg(0x5002, null, null,null);
-//        //byte[] result2 = combineAll(msg2);
-//        //System.out.println(bytesToHexString(result2));
-//
-//        System.out.println(bytesToHexString(float2byte(3.449f)));
-//        System.out.println(bytesToHexString(getFloatBytes(3.449f)));
-//
-//        byte[] fileBytes = getFileBytes(new File("d:\\6.jpg"));
-//        System.out.println(bytesToHexString(fileBytes));
-//        System.out.println(bytesToHexString(replaceTag(fileBytes)));
-//    }
+    public static void main(String[] args) {
+        byte[] car = getCarData2Info(158, 2, new Date(), 2, null,
+                1.13f, 31.4f,
+                4.65f, 1.97f, 1.48f,
+                0.0f, 0.0f,
+                "粤A5RM08", 0, 0, 0,
+                0, 0, 0, 0, 2);
+        byte[] pic1 = getPic(new Date(), new File("d:\\6.jpg"));
+        byte[] pic2 = getPic(new Date(), new File("d:\\6.jpg"));
+        //byte[] msg = combineMsg(0x5020, car, pic1, pic2);
+        byte[] msg = combineMsg(0x5020, car, pic1, pic2, pic1, pic1, pic1);
+        byte[] result = combineAll(msg);
+
+        byte[] lengthBytes = new byte[4];
+        System.arraycopy(result, 14, lengthBytes, 0, 4);
+        System.out.println("len:" + byteArrayToInt(lengthBytes));
+        System.out.println("last:" + bytesToHexString(new byte[]{result[byteArrayToInt(lengthBytes) + 18]}));
+        System.out.println("all_size:" + result.length);
+        System.out.println(bytesToHexString(result));
+
+        //byte[] msg2 = combineMsg(0x5002, null, null,null);
+        //byte[] result2 = combineAll(msg2);
+        //System.out.println(bytesToHexString(result2));
+
+        System.out.println(bytesToHexString(float2byte(3.449f)));
+        System.out.println(bytesToHexString(getFloatBytes(3.449f)));
+
+        byte[] fileBytes = getFileBytes(new File("d:\\6.jpg"));
+        System.out.println(bytesToHexString(fileBytes));
+        System.out.println(bytesToHexString(replaceTag(fileBytes)));
+    }
 
     public static BufferedImage resizeImage(int x, int y, BufferedImage bfi) {
         BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
@@ -285,11 +284,11 @@ public class StructUtil {
         return bufferedImage;
     }
 
-    public static byte[] resize(int x, int y, InputStream inputStream) {
+    public static byte[] resize(int x, int y, File picFile) {
         byte[] b = null;
+
         try {
-            BufferedImage bfi = ImageIO.read(inputStream);
-            inputStream.close();
+            BufferedImage bfi = ImageIO.read(picFile);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             if (bfi.getHeight() > x || bfi.getWidth() > y) {
                 BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
@@ -309,7 +308,4 @@ public class StructUtil {
         }
         return b;
     }
-
-
-
 }
