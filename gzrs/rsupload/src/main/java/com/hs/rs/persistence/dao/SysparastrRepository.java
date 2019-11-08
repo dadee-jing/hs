@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface SysparastrRepository extends JpaRepository<Sysparastr, String> {
         Sysparastr findFirstByTypeNameEn(String typeNameEn);
-
 }

@@ -1,5 +1,6 @@
 package com.hs.rs.schedule;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,13 +12,16 @@ import com.hs.rs.model.Envelope;
 import com.hs.rs.persistence.dao.*;
 import com.hs.rs.persistence.entity.*;
 import com.hs.rs.service.TransformService;
+import jdk.nashorn.internal.parser.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -40,7 +44,7 @@ public class UploadTask {
     private static final String CONTENT_TYPE = "text/xml;charset=UTF-8";
     private static  String URL = null;
     private ConcurrentHashMap<String, String> header1;
-    private static  String X_Auth_Token = "b8a066fc-cf8c-4f6a-866c-ece30a12d856";
+    private static  String X_Auth_Token = "29770277-5734-461b-932a-b78a68e21fa6";
 
     @Autowired
     public UploadTask(SysparastrRepository sysparastrRepository,
@@ -68,7 +72,6 @@ public class UploadTask {
         this.transformService = transformService;
         this.objectMapper = objectMapper;
         this.httpCustomClient = httpCustomClient;
-
         header.put("Content-Type", CONTENT_TYPE);
         header.put("Accept-Charset", "utf-8");
         header.put("X-Auth-Token", X_Auth_Token);
@@ -84,13 +87,12 @@ public class UploadTask {
         }
         return urls;
     }
-
     private String callApi(String strBody) {
         try {
             LOGGER.info("post " + URL);
             LOGGER.info("header " + objectMapper.writeValueAsString(header));
             LOGGER.info("body " + strBody);
-            String result = httpCustomClient.doPost(URL, header, strBody);
+            String result = httpCustomClient.doPost(URL+"/blacksmokevehicle", header, strBody);
             LOGGER.info("response " + result);
             return result;
         } catch (Exception e) {
@@ -114,25 +116,21 @@ public class UploadTask {
         return null;
     }
 
-
-
     // 看看文档，遥感线信息 只需要提交一次
-    //
-    @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
     public void uploadLine() {
         List<Line> lineList = lineRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         String requestBody = wrapperXml(transformService.transLineDto(lineList.get(0)), "monitoringline");
         String responseStr = callApi(requestBody);
+        System.out.println("responseStr======"+responseStr);
     }
 
     // 看看文档，站点信息 只需要提交一次
-    //  @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
 
     public void uploadStation() {
         List<Station> stationList = stationRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         String requestBody = wrapperXml(transformService.transStationDto(stationList.get(0)), "monitoringpoint");
-        callApi(requestBody);
-
+        String responseStr = callApi(requestBody);
+        System.out.println("responseStr======"+responseStr);
     }
     // 理解这个，其他按照这个写
 
@@ -143,6 +141,7 @@ public class UploadTask {
             try {
                 String requestBody = wrapperXml(transformService.transBlacksmokevehicleDto(blacksmokevehicleInfo), "blacksmokevehicle");
                 String responseStr = callApi(requestBody);
+                System.out.println("responseStr======"+responseStr);
                 JsonNode response = objectMapper.readTree(responseStr);
                 // 根据文档判断 数据是否提交成功
                 if(response.get("status").equals(1)) {  //  看文档实现
@@ -157,29 +156,6 @@ public class UploadTask {
         });
     }
 
-    /**
-     * 上传遥感监测数据
-     */
-
-    public void uploadMonitorData() {
-        List<MonitorDataLog> monitorDataLogList = monitorDataRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
-        monitorDataLogList.forEach(monitorDataLog -> {
-            try {
-                String requestBody = wrapperXml(transformService.transMonitorDataDto(monitorDataLog), "monitoringdata");
-                String responseStr = callApi(requestBody);
-                JsonNode response = objectMapper.readTree(responseStr);
-                System.out.println(response.get("status"));
-                if(response.get("status").equals(1)) {
-                    monitorDataLog.setUpLoadStatus(1);
-                } else {
-                    monitorDataLog.setUpLoadStatus(2);
-                }
-                monitorDataRepository.save(monitorDataLog);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     public void uploadTrafficFlow() {
         List<TrafficFlow> trafficFlowList = trafficFlowRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
@@ -198,15 +174,15 @@ public class UploadTask {
                 e.printStackTrace();
             }
         });
-
     }
-
     public void uploadVehicleInfo() {
         List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNullOrderByUpLoadStatusDesc();
         vehicleInfoList.forEach(vehicleInfo -> {
             try {
+                vehicleInfo.setHpzl(parsePlateType(vehicleInfo.getCpys(),vehicleInfo.getHphm()));
                 String requestBody = wrapperXml(transformService.transVehicleInfoDto(vehicleInfo), "vehicle");
                 String responseStr = callApi(requestBody);
+                System.out.println("responseStr===="+responseStr);
                 JsonNode response = objectMapper.readTree(responseStr);
                 if(response.get("status").equals(1)) {
                     vehicleInfo.setUpLoadStatus(1);
@@ -218,13 +194,33 @@ public class UploadTask {
                 e.printStackTrace();
             }
         });
-
     }
+    /**
+     * 上传遥感监测数据
+     */
 
+    public void uploadMonitorData() {
+        List<MonitorDataLog> monitorDataLogList = monitorDataRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        monitorDataLogList.forEach(monitorDataLog -> {
+            try {
+                String requestBody = wrapperXml(transformService.transMonitorDataDto(monitorDataLog), "monitoringdata");
+                String responseStr = callApi(requestBody);
+                System.out.println("responseStr===="+responseStr);
+                JsonNode response = objectMapper.readTree(responseStr);
+                if(response.get("status").equals(1)) {
+                    monitorDataLog.setUpLoadStatus(1);
+                } else {
+                    monitorDataLog.setUpLoadStatus(2);
+                }
+                monitorDataRepository.save(monitorDataLog);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
     /**
      * 上传车辆轨道信息
      */
-
     public void uploadVehicleTrajectory() {
         List<VehicleTrajectory> vehicleTrajectoryList = vehicleTrajectoryRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         vehicleTrajectoryList.forEach(vehicleTrajectory -> {
@@ -262,5 +258,45 @@ public class UploadTask {
         uploadVehicleInfo();
         uploadMonitorData();
         uploadBlacksomkevehicle();
+    }
+    static String parsePlateType(String colorStr,String truckNumber){
+        switch (colorStr) {
+            case "黄":
+                if(truckNumber.contains("学")){
+                    return "16";
+                }else {
+                    return "01";
+                }
+            case "蓝":
+                return "02";
+            case "黑":
+                if(truckNumber.contains("使")){
+                    return "03";
+                }else if(truckNumber.contains("领")){
+                    return "04";
+                }else if(truckNumber.contains("港")){
+                    return  "26";
+                }else if(truckNumber.contains("澳")){
+                    return "27";
+                }
+            case "白":
+                if(truckNumber.contains("警")){
+                    return "23";
+                }else {
+                    return "20";
+                }
+            default:
+                return "99";
+        }
+    }
+    @Scheduled(fixedDelay = 1000000, initialDelay = 5000)
+    public String getToken(){
+        Map<String,String> map=new HashMap<>();
+        map.put("account","aG9uZ3NoZW5nMDAx");
+        map.put("pwdcode","aG9uZ3NoZW5nMDAx");
+        String data= JSON.toJSONString(map);
+       String token= HttpCustomClient.doPost("http://10.194.164.75:8083/ygjc/login",data,4000);
+       System.out.println("token="+token);
+       return token;
     }
 }

@@ -1,11 +1,14 @@
 package com.hs.rs.common.httphelper;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.Asserts;
 import org.apache.http.util.EntityUtils;
@@ -113,12 +116,9 @@ public class HttpCustomClient {
         // 创建http对象
         HttpPost httpPost = new HttpPost(url);
         packageHeader(headers, httpPost);
-
         setBody(requestBody, httpPost);
-
         return getResult(httpPost);
     }
-
     /**
      * 发送put请求；不带请求参数
      *
@@ -215,7 +215,7 @@ public class HttpCustomClient {
     }
 
     private static void setBody(String requestBody, HttpEntityEnclosingRequestBase httpMethod) {
-        logger.info("request body:" + requestBody);
+//        logger.info("request body:" + requestBody);
         // 封装请求参数
         if (StringUtils.hasText(requestBody)) {
             StringEntity stringEntity = new StringEntity(requestBody, ENCODING);
@@ -228,13 +228,47 @@ public class HttpCustomClient {
         logger.info(httpRequest.toString());
         try (CloseableHttpResponse httpResponse = httpClient.execute(httpRequest)) {
             Asserts.notNull(httpResponse, "Empty Response");
-            logger.info(httpResponse.toString());
             Asserts.notNull(httpResponse.getEntity(), "Empty Response Entity");
             String responseBody = EntityUtils.toString(httpResponse.getEntity(), ENCODING);
-            logger.info("response body:" + responseBody);
-            return responseBody;
+            Map<String,String> map=XMLUtil.xmlToMap(responseBody);
+            return map.get("soap:Body");
         } catch (Exception e) {
             throw HttpCustomException.instance(e.getMessage());
         }
+    }
+
+    public static String doPost(String url, String data,int timeout){
+        CloseableHttpClient httpClient =  HttpClients.createDefault();
+        //超时设置
+
+        RequestConfig requestConfig =  RequestConfig.custom().setConnectTimeout(timeout) //连接超时
+                .setConnectionRequestTimeout(timeout)//请求超时
+                .setSocketTimeout(timeout)
+                .setRedirectsEnabled(true)  //允许自动重定向
+                .build();
+        HttpPost httpPost  = new HttpPost(url);
+        httpPost.setConfig(requestConfig);
+        httpPost.addHeader("Content-Type","application/json; charset=UTF-8");
+        if(data != null && data instanceof  String){ //使用字符串传参
+            StringEntity stringEntity = new StringEntity(data,"UTF-8");
+            httpPost.setEntity(stringEntity);
+        }
+        try{
+            CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            if(httpResponse.getStatusLine().getStatusCode() == 200){
+                String result = EntityUtils.toString(httpEntity);
+                return result;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try{
+                httpClient.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

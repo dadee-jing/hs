@@ -1,7 +1,9 @@
 package com.hs.rs.persistence.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,8 +50,12 @@ public class VehicleTrajectory {
     /**
      * 通过日期
      */
-//    private Date tgsj;
-    private String tgsj;
+
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss",
+            timezone = "GMT+8"
+    )
+     private Date tstime;
     /**
      * 车辆速度
      */

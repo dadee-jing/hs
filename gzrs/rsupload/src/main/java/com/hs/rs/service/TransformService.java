@@ -7,10 +7,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class TransformService {
-
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public BlacksmokevehicleDto transBlacksmokevehicleDto(BlacksmokevehicleInfo source) {
         BlacksmokevehicleDto target = new BlacksmokevehicleDto();
         BeanUtils.copyProperties(source, target);
@@ -24,12 +26,12 @@ public class TransformService {
     public LineDto transLineDto(Line source) {
         LineDto target = new LineDto();
         BeanUtils.copyProperties(source, target);
-        target.setCsyyxq(DateFormatUtils.format(source.getCsyyxq(), "YYYY-MM-DD HH:mm:ss"));
-        target.setQtcsyyxq(DateFormatUtils.format(source.getQtcsyyxq(), "YYYY-MM-DD HH:mm:ss"));
-        target.setYdjyxq(DateFormatUtils.format(source.getYdjyxq(), "YYYY-MM-DD HH:mm:ss"));
-        target.setSxxtyxq(DateFormatUtils.format(source.getSxxtyxq(), "YYYY-MM-DD HH:mm:ss"));
-        target.setPdjyxq(DateFormatUtils.format(source.getPdjyxq(), "YYYY-MM-DD HH:mm:ss"));
-        target.setQxzyxq(DateFormatUtils.format(source.getQxzyxq(), "YYYY-MM-DD HH:mm:ss"));
+        target.setCsyyxq(format.format(source.getCsyyxq()));
+        target.setQtcsyyxq(format.format(source.getQtcsyyxq()));
+        target.setYdjyxq(format.format(source.getYdjyxq()));
+        target.setSxxtyxq(format.format(source.getSxxtyxq()));
+        target.setPdjyxq(format.format(source.getPdjyxq()));
+        target.setQxzyxq(format.format(source.getQxzyxq()));
         return target;
     }
 
@@ -51,7 +53,7 @@ public class TransformService {
         BeanUtils.copyProperties(source, target);
         target.setLlbh(source.getJlbh());
         target.setCjsd(String.valueOf(source.getCjsd()));
-        target.setTtrq(DateFormatUtils.format(source.getTjrq(), "yyyy-MM-dd HH:mm:ss"));
+        target.setTtrq(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         target.setTxcls(String.valueOf(source.getTxcls()));
         target.setPjsd(String.valueOf(source.getPjsd()));
         target.setPjpdcd(String.valueOf(source.getPjpdcd()));
@@ -74,9 +76,7 @@ public class TransformService {
         VehicleTrajectoryDto target = new VehicleTrajectoryDto();
         BeanUtils.copyProperties(source, target);
         DecimalFormat df = new DecimalFormat("0.00");
-//        target.setTgsj(DateFormatUtils.format(source.getTgsj(), "YYYY-MM-DD HH:mm:ss"));
-        target.setTgsj("0");
-
+        target.setTgsj(format.format(source.getTstime()));
         target.setClsd(df.format(source.getClsd()));
         target.setSbzxd(String.valueOf(source.getSbzxd()));
         return target;
