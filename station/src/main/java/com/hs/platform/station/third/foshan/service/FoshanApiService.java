@@ -58,7 +58,7 @@ public class FoshanApiService
         //log.info("FoshanEntity:" + entity);
     }
 
-    @Scheduled(cron = "${foshan.scheduled}")
+    @Scheduled(fixedRate = 5000)
     public void submitShiJuData() {
         if ("1".equals(getDbConfigValue("do_foshan_scheduled"))) {
             log.info("市局定时任务执行开始");
