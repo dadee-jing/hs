@@ -8,12 +8,14 @@ import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.hs.platform.station.third.foshan.socket.SockeUtil.bytesToHexString;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.combineAll;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.combineMsg;
 
 public class FoshanEncoder extends ProtocolEncoderAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(StructUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(FoshanEncoder.class);
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -31,7 +33,7 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
                 result = Byte2IntUtil.hexStringToByte(foshanMessage.getMessageBody());
             }
 
-            //       log.info("request:" + bytesToHexString(result));
+            //log.info("FoshanEncoder:" + bytesToHexString(result));
 
             buffer = IoBuffer.allocate(result.length, true);
             buffer.put(result);

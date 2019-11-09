@@ -86,4 +86,8 @@ public class StationInfoServiceImpl implements IStationInfoService
 		return stationInfoMapper.selectStationStateInfo();
 	}
 
+	@Override
+	public String getStationLatesCarRecordTime(Integer stationId){
+		return stationInfoMapper.getStationLatesCarRecordTime(stationId);
+	}
 }

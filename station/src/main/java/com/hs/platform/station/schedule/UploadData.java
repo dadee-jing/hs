@@ -50,12 +50,14 @@ public class UploadData {
      */
     @Scheduled(fixedRate = 5000)
     public void uploadDbData() {
+        long startTime = System.currentTimeMillis();
         int flag = (int) ((Math.random() * 9 + 1) * 1000);
         logger.info("to upload " + flag);
         if ("1".equals(getDbConfigValue("do_upload_tag"))) {
             doUploadDbData();
         }
-        logger.info("end upload " + flag);
+        long endTime = System.currentTimeMillis();
+        logger.info("end upload " + flag + ",uploadDbData cost:" + (endTime - startTime));
     }
 
     public void doUploadDbData() {

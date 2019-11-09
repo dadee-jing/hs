@@ -26,7 +26,7 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
         // TODO Auto-generated method stub
         super.messageReceived(session, message);
         if (!"receive_online".equals(message.toString())) {
-            System.out.println("接收到的消息是：" + message.toString());
+            LOGGER.info("接收到的消息是：" + message.toString());
         }
     }
 
@@ -61,4 +61,5 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
         // TODO Auto-generated method stub
         super.sessionOpened(session);
     }
+
 }

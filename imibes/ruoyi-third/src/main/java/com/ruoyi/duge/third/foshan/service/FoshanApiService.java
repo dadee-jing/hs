@@ -50,9 +50,9 @@ public class FoshanApiService implements ThirdApiService {
     }
 
     //@Scheduled(cron="*/3 * * * * ?")
-//    @Scheduled(cron = "${foshan.scheduled}")
+    @Scheduled(cron = "${foshan.scheduled}")
     public void submitVehicleData() {
-//        if ("1".equals(configDataService.getConfigValue("do_foshan_scheduled"))) {
+        if ("1".equals(configDataService.getConfigValue("do_foshan_scheduled"))) {
             System.out.println("佛山市局定时任务执行");
             List<WeightData> list = weightDataMapperService.selectNotUploadSj();
             for (WeightData weightData : list) {
@@ -65,7 +65,7 @@ public class FoshanApiService implements ThirdApiService {
                 }
             }
         }
-//    }
+    }
 
     @Override
     public BaseThirdApiResponse submitVehicleData(BaseVehicleDataRequest request) {

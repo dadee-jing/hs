@@ -23,10 +23,12 @@ public class NoMatchDataUpload {
      */
     @Scheduled(fixedRate = 5000)
     public void uploadNoMatchData() {
+        long startTime = System.currentTimeMillis();
         int flag = (int) ((Math.random() * 9 + 1) * 1000);
         LOGGER.info("to uploadNoMatchData " + flag);
         doUploadNoMatchData();
-        LOGGER.info("end uploadNoMatchData " + flag);
+        long endTime = System.currentTimeMillis();
+        LOGGER.info("end uploadNoMatchData " + flag + ",uploadNoMatchData cost:" + (endTime - startTime));
     }
 
     /**

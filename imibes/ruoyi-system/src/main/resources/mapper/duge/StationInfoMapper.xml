@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.duge.mapper.StationInfoMapper">
     
-    <resultMap type="StationInfo" id="StationInfoResult">
+    <resultMap type="com.ruoyi.duge.domain.StationInfo" id="StationInfoResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
         <result property="abbreviation"    column="abbreviation"    />
@@ -30,15 +30,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="ip"    column="ip"    />
         <result property="port"    column="port"    />
         <result property="state"    column="state"    />
+        <result property="remarkInfo"    column="remark_info"    />
     </resultMap>
 	
 	<sql id="selectStationInfoVo">
         select id, name, abbreviation, latitude, longitude, user_id, bureau, province, city, county, address, create_by,
         create_time, update_by, update_time, remark, longitude_WGS84,latitude_WGS84,longitude_GCJ02,latitude_GCJ02,
-        longitude_BD09,latitude_BD09,ip ,port ,state  from duge_station_info
+        longitude_BD09,latitude_BD09,ip ,port ,state,remark_info  from duge_station_info
     </sql>
 	
-    <select id="selectStationInfoList" parameterType="StationInfo" resultMap="StationInfoResult">
+    <select id="selectStationInfoList" parameterType="com.ruoyi.duge.domain.StationInfo" resultMap="StationInfoResult">
         <include refid="selectStationInfoVo"/>
         <where>  
             <if test="id != null "> and id = #{id}</if>
@@ -65,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
         
-    <insert id="insertStationInfo" parameterType="StationInfo">
+    <insert id="insertStationInfo" parameterType="com.ruoyi.duge.domain.StationInfo">
         insert into duge_station_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null  ">id,</if>
@@ -109,7 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 	 
-    <update id="updateStationInfo" parameterType="StationInfo">
+    <update id="updateStationInfo" parameterType="com.ruoyi.duge.domain.StationInfo">
         update duge_station_info
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null  and name != ''  ">name = #{name},</if>
@@ -130,6 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ip != null  and ip != ''  ">ip = #{ip},</if>
             <if test="port != null ">port = #{port},</if>
             <if test="state != null ">state = #{state},</if>
+            <if test="remarkInfo != null ">remark_info = #{remarkInfo},</if>
         </trim>
         where id = #{id}
     </update>
@@ -148,4 +150,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectStationStateInfo" resultType="com.ruoyi.duge.domain.StationInfo">
         select id, ip, port, state from duge_station_info
     </select>
+
+    <select id="getStationLatesCarRecordTime" resultType="string" parameterType="integer">
+        select weighting_date from weight_data
+        where station_id = #{stationId}
+        order by weighting_date desc limit 1
+    </select>
+
 </mapper>

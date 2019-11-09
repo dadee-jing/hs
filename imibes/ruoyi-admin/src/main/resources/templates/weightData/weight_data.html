@@ -15,6 +15,9 @@
                                 <label>车牌： </label><input style="width: 140px" type="text" name="truckNumber"/>
                             </li>
                             <li>
+                                <label>车道： </label><input style="width: 140px" type="text" name="laneMid"/>
+                            </li>
+                            <li>
                                 <label>站点： </label>
                                 <input id='station-input' style="width: 140px" type="text" onclick="selectStation()" readonly="true" name="stationName"/>
                                 <input id='station-hide' type="hidden" readonly="true" name="stationId"/>
@@ -97,6 +100,10 @@
                     title : '车牌颜色'
                 },
                 {
+                    field : 'laneMid',
+                    title : '中间车道号 ',
+                },
+                {
                     field : 'axleCount',
                     title : '轴数',
                     visible:false
@@ -124,7 +131,13 @@
                     title: '超重比率',
                     formatter: function(value, row, index){
                         //超重除以限重
-                        var rate =(row.overWeight/row.limitWeight);
+                        var rate;
+                        if(row.limitWeight != 0){
+                            rate =(row.overWeight/row.limitWeight);
+                        }
+                        else{
+                            rate = 0.00;
+                        }
                         var rateText = (rate*100).toFixed(2) + '%';
                         if(rate > 0.5 ) {
                             return '<span class="bg-red" style="color: white">' + rateText +'</span>'
@@ -163,7 +176,8 @@
                 },
                 {
                     field : 'weightingDate',
-                    title : '采集时间'
+                    title : '采集时间',
+                    sortable: true
                 },
                 {
                     field : 'direction',
@@ -179,11 +193,6 @@
                     field : 'plate',
                     visible:false,
                     title : '超限车牌号'
-                },
-                {
-                    field : 'laneMid',
-                    title : '中间车道号 ',
-                    visible:false,
                 },
                 {
                     field : 'laneMin',

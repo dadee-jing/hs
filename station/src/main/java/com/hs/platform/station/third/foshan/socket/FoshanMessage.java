@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class FoshanMessage {
 
     public static final int HEART_BEAT_MSG = 0x5002;

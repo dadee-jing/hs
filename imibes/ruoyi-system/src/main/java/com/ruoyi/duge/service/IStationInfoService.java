@@ -56,4 +56,7 @@ public interface IStationInfoService
 	 * 查询站点ip信息
 	 */
 	public List<StationInfo> selectStationStateInfo();
+
+	String getStationLatesCarRecordTime(Integer stationId);
+
 }

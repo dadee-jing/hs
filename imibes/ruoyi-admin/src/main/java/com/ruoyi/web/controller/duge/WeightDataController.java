@@ -66,6 +66,12 @@ public class WeightDataController extends BaseController {
         mmap.put("overWeightMin", 0);
         return "/weightData/weight_data";
     }
+    
+    @GetMapping("/lwh")
+    public String lwhData(ModelMap mmap) {
+        mmap.put("overWeightMin", -1);
+        return "/weightData/weight_data_lwh";
+    }
 
     /**
      * 查询重量数据列表
