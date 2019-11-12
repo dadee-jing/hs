@@ -3,7 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.duge.mapper.WeightDataMapper">
-
     <resultMap type="WeightData" id="WeightDataResult">
         <result property="id" column="id"/>
         <result property="stationName" column="station_name"/>
@@ -407,21 +406,21 @@
     </select>
     <!--根据车牌号查这辆车时间区间内是否有其他报警数据-->
     <select id="selectIsIllegalByTruckNumber" parameterType="String" resultMap="WeightDataResult">
-        select *  from weight_data  where create_time &lt; date_add(now(), interval - 14*24*60 minute)
-        AND  create_time > date_add(now(), interval - 15*24*60 minute)
+        select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
+        AND  create_time > date_add(now(), interval - 41*24*60 minute)
         and over_weight  > 0
         and truck_number = #{truckNumber}
     </select>
     <!--查这辆车时间区间内所有数据-->
     <select id="selectByTruckNumber" parameterType="String" resultMap="WeightDataResult">
-        select *  from weight_data  where create_time &lt; date_add(now(), interval - 14*24*60 minute)
-        AND create_time > date_add(now(), interval - 15*24*60 minute)
+        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
+        AND create_time > date_add(now(), interval - 41*24*60 minute)
         and truck_number = #{truckNumber}
     </select>
 
     <!--查询报警车辆对应其过车数据车牌号-->
     <select id="selectTruckNumberOver90Date" resultType="String">
-        select truck_number  from weight_data  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
+        select truck_number  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and over_weight=0
         and mark_del= 0
@@ -430,8 +429,124 @@
     </select>
     <!--查这辆车时间区间内所有数据-->
     <select id="selectByTruckNumberOver90Date" parameterType="String" resultMap="WeightDataResult">
-        select *  from weight_data  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
+        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and truck_number = #{truckNumber}
     </select>
+
+    <select id="selectBefore40Days" parameterType="WeightData" resultMap="WeightDataResult">
+        select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
+        and create_time > date_add(now(), interval - 41*24*60 minute)
+        ORDER BY  create_time DESC
+        LIMIT 100
+    </select>
+    <insert id="insertIntoWeightDataBefore40Days" parameterType="WeightData">
+        insert into weight_data_before_40days
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="limitOverLevel != null  ">limit_over_level,</if>
+            <if test="limitMode != null  ">limit_mode,</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">vehicle_type,</if>
+            <if test="weightingId != null  ">weighting_id,</if>
+            <if test="weightingDate != null  ">weighting_date,</if>
+            <if test="lane != null  ">lane,</if>
+            <if test="direction != null  and direction != ''  ">direction,</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">truck_number,</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">truck_corlor,</if>
+            <if test="speed != null  ">speed,</if>
+            <if test="axleCount != null  ">axle_count,</if>
+            <if test="axleType != null  and axleType != ''  ">axle_type,</if>
+            <if test="weight != null  ">weight,</if>
+            <if test="limitWeight != null  ">limit_weight,</if>
+            <if test="overWeight != null  ">over_weight,</if>
+            <if test="axleWeight1 != null  ">axle_weight1,</if>
+            <if test="axleWeight2 != null  ">axle_weight2,</if>
+            <if test="axleWeight3 != null  ">axle_weight3,</if>
+            <if test="axleWeight4 != null  ">axle_weight4,</if>
+            <if test="axleWeight5 != null  ">axle_weight5,</if>
+            <if test="axleWeight6 != null  ">axle_weight6,</if>
+            <if test="axleWeight7 != null  ">axle_weight7,</if>
+            <if test="axleWeight8 != null  ">axle_weight8,</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">sequence_tag,</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">ftp_head,</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">ftp_axle,</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">ftp_tail,</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">ftp_prior_head,</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">ftp_plate,</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">ftp_full_view,</if>
+            <if test="createBy != null  and createBy != ''  ">create_by,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+            <if test="updateTime != null  ">update_time,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code,</if>
+            <if test="stationId != null  ">station_id,</if>
+            <if test="lwhDate != null  ">lwh_date,</if>
+            <if test="plate != null  and plate != ''  ">plate,</if>
+            <if test="width != null  and width != ''  ">width,</if>
+            <if test="height != null  and height != ''  ">height,</if>
+            <if test="length != null  and length != ''  ">length,</if>
+            <if test="laneMid != null  and laneMid != ''  ">lane_mid,</if>
+            <if test="laneMin != null  and laneMin != ''  ">lane_min,</if>
+            <if test="laneMax != null  and laneMax != ''  ">lane_max,</if>
+            <if test="passTime != null  and passTime != ''  ">pass_time,</if>
+            <if test="uploadTag != null  ">upload_tag,</if>
+            <if test="uploadYhl != null  ">upload_yhl,</if>
+            <if test="uploadSj != null  ">upload_sj,</if>
+            <if test="uploadJj != null  ">upload_jj,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="limitOverLevel != null  ">#{limitOverLevel},</if>
+            <if test="limitMode != null  ">#{limitMode},</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">#{vehicleType},</if>
+            <if test="weightingId != null  ">#{weightingId},</if>
+            <if test="weightingDate != null  ">#{weightingDate},</if>
+            <if test="lane != null  ">#{lane},</if>
+            <if test="direction != null  and direction != ''  ">#{direction},</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">#{truckNumber},</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">#{truckCorlor},</if>
+            <if test="speed != null  ">#{speed},</if>
+            <if test="axleCount != null  ">#{axleCount},</if>
+            <if test="axleType != null  and axleType != ''  ">#{axleType},</if>
+            <if test="weight != null  ">#{weight},</if>
+            <if test="limitWeight != null  ">#{limitWeight},</if>
+            <if test="overWeight != null  ">#{overWeight},</if>
+            <if test="axleWeight1 != null  ">#{axleWeight1},</if>
+            <if test="axleWeight2 != null  ">#{axleWeight2},</if>
+            <if test="axleWeight3 != null  ">#{axleWeight3},</if>
+            <if test="axleWeight4 != null  ">#{axleWeight4},</if>
+            <if test="axleWeight5 != null  ">#{axleWeight5},</if>
+            <if test="axleWeight6 != null  ">#{axleWeight6},</if>
+            <if test="axleWeight7 != null  ">#{axleWeight7},</if>
+            <if test="axleWeight8 != null  ">#{axleWeight8},</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">#{sequenceTag},</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">#{ftpHead},</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">#{ftpAxle},</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">#{ftpTail},</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">#{ftpPriorHead},</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">#{ftpPlate},</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">#{ftpFullView},</if>
+            <if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+            <if test="updateTime != null  ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">#{deviceCode},</if>
+            <if test="stationId != null  ">#{stationId},</if>
+            <if test="lwhDate != null  ">#{lwhDate},</if>
+            <if test="plate != null  and plate != ''  ">#{plate},</if>
+            <if test="width != null  and width != ''  ">#{width},</if>
+            <if test="height != null  and height != ''  ">#{height},</if>
+            <if test="length != null  and length != ''  ">#{length},</if>
+            <if test="laneMid != null  and laneMid != ''  ">#{laneMid},</if>
+            <if test="laneMin != null  and laneMin != ''  ">#{laneMin},</if>
+            <if test="laneMax != null  and laneMax != ''  ">#{laneMax},</if>
+            <if test="passTime != null  and passTime != ''  ">#{passTime},</if>
+            <if test="uploadTag != null  ">#{uploadTag},</if>
+            <if test="uploadYhl != null  ">#{uploadYhl},</if>
+            <if test="uploadSj != null  ">#{uploadSj},</if>
+            <if test="uploadJj != null  ">#{uploadJj},</if>
+        </trim>
+    </insert>
 </mapper>

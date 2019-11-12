@@ -132,4 +132,14 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
         return dataMapper.selectByTruckNumberOver90Date(truckNum);
     }
 
+    @Override
+    public List<WeightData> selectBefore40Days() {
+        return dataMapper.selectBefore40Days();
+    }
+
+    @Override
+    public int insertIntoWeightDataBefore40Days(WeightData weightData) {
+      return   dataMapper.insertIntoWeightDataBefore40Days(weightData);
+    }
+
 }

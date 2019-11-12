@@ -85,4 +85,8 @@ public interface WeightDataMapper {
    /**报警车辆对应其过车数据*/
     List<String> selectTruckNumberOver90Date();
     List<WeightData> selectByTruckNumberOver90Date(String truckNum);
+
+    List<WeightData> selectBefore40Days();
+
+    public int insertIntoWeightDataBefore40Days(WeightData weightData);
 }

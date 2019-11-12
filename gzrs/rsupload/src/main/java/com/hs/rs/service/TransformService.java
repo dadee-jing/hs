@@ -18,11 +18,9 @@ public class TransformService {
         BeanUtils.copyProperties(source, target);
         //target.setLgmhd(String.valueOf(source.getLgmhd()));
         target.setLgmhd("100");
-        target.setJcsj(DateFormatUtils.format(source.getJcsj(), "YYYY-MM-DD HH:mm:ss"));
+        target.setJcsj(format.format(source.getJcsj()));
         return target;
     }
-
-
     public LineDto transLineDto(Line source) {
         LineDto target = new LineDto();
         BeanUtils.copyProperties(source, target);
@@ -37,6 +35,7 @@ public class TransformService {
 
     public MonitorDataDto transMonitorDataDto(MonitorDataLog source) {
         MonitorDataDto target = new MonitorDataDto();
+        target.setJcsj(format.format(source.getTstime()));
         BeanUtils.copyProperties(source, target);
         return target;
     }
@@ -44,7 +43,7 @@ public class TransformService {
     public StationDto transStationDto(Station source) {
         StationDto target = new StationDto();
         BeanUtils.copyProperties(source, target);
-        target.setYxrq(DateFormatUtils.format(source.getYxrq(), "YYYY-MM-DD HH:mm:ss"));
+        target.setYxrq(format.format(source.getYxrq()));
         return target;
     }
 
@@ -53,7 +52,7 @@ public class TransformService {
         BeanUtils.copyProperties(source, target);
         target.setLlbh(source.getJlbh());
         target.setCjsd(String.valueOf(source.getCjsd()));
-        target.setTtrq(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        target.setTtrq(format.format(source.getTjrq()));
         target.setTxcls(String.valueOf(source.getTxcls()));
         target.setPjsd(String.valueOf(source.getPjsd()));
         target.setPjpdcd(String.valueOf(source.getPjpdcd()));
