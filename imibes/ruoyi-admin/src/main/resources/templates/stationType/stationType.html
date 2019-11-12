@@ -14,8 +14,11 @@
 			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="module:stationInfo:remove">
 				<i class="fa fa-remove"></i> 删除
 			</a>
+			<a class="btn btn-info" id="expandAllBtn">
+				<i class="fa fa-exchange"></i> 展开/折叠
+			</a>
 		</div>
-			
+
 		<div class="col-sm-12 select-table table-striped" >
 			<table id="bootstrap-table" data-mobile-responsive="true"></table>
 		</div>
@@ -24,11 +27,14 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('module:stationInfo:edit')}]];
         var removeFlag = [[${@permission.hasPermi('module:stationInfo:remove')}]];
-        var prefix = ctx + "module/stationInfo";
+        var prefix = ctx + "module/stationType";
 
         $(function() {
             var options = {
-                url: prefix + "/list",
+				code: "deptId",
+				parentCode: "parentId",
+				uniqueId: "typeId",
+                url: prefix + "/list2",
                 createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
@@ -43,90 +49,21 @@
 		            checkbox: true
 		        },
 				{
-					field : 'id', 
+					field : 'typeId',
 					title : '主键'
 				},
 				{
-					field : 'name', 
-					title : '站点名称'
+					field : 'typeName',
+					title : '分类名称'
 				},
 				{
-					field : 'abbreviation', 
-					title : '缩写' ,
+					field : 'orderNum',
+					title : '排序' ,
 					visible:false
 				},
 				{
-					field : 'latitude', 
-					title : '纬度' 
-				},
-				{
-					field : 'longitude', 
-					title : '经度' 
-				},
-				{
-					field : 'userId', 
-					title : '负责人' ,
-					visible:false
-				},
-				{
-					field : 'bureau', 
-					title : '公路局名称' ,
-					visible:false
-				},
-				{
-					field : 'province', 
-					title : '省' ,
-					visible:false
-				},
-				{
-					field : 'city', 
-					title : '市' ,
-					visible:false
-				},
-				{
-					field : 'county', 
-					title : '区' ,
-					visible:false
-				},
-				{
-					field : 'address', 
-					title : '详细地址' 
-				},
-				{
-					field : 'createBy', 
-					title : '创建者' ,
-					visible:false
-				},
-				{
-					field : 'createTime', 
-					title : '创建时间' ,
-					visible:false
-				},
-				{
-					field : 'updateBy', 
-					title : '更新者' ,
-					visible:false
-				},
-				{
-					field : 'updateTime', 
-					title : '更新时间' ,
-					visible:false
-				},
-				{
-					field : 'remarkInfo',
-					title : '最近过车记录时间'
-				},
-				{
-					field : 'state',
-					title : '状态',
-					formatter: function(value, row, index) {
-						if(value == 1){
-							return "<span style='color:green'> 连接成功</span>";
-						}
-						else{
-							return "<span style='color:red'> 连接失败</span>";
-						}
-					}
+					field : 'createTime',
+					title : '创建时间'
 				},
 		        {
 		            title: '操作',

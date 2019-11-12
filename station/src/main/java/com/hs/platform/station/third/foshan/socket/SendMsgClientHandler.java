@@ -26,7 +26,7 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
         // TODO Auto-generated method stub
         super.messageReceived(session, message);
         if (!"receive_online".equals(message.toString())) {
-            System.out.println("接收到的消息是：" + message.toString());
+            LOGGER.info("接收到的消息是：" + message.toString());
         }
     }
 
@@ -34,7 +34,7 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
     public void messageSent(IoSession session, Object message) throws Exception {
         // TODO Auto-generated method stub
         super.messageSent(session, message);
-        LOGGER.info("向服务器发送消息成功！！！！" + message.toString());
+        LOGGER.info("向服务器发送消息成功！");
     }
 
     @Override

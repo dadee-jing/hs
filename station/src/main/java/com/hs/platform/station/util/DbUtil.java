@@ -200,22 +200,22 @@ public class DbUtil {
         return result;
     }
 
-    public static String getLimitUploadWeight() {
+    public static String getConfigValue(String key) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet rs = null;
-        String weight = "0";
+        String value = "";
         try {
             connection = DataSourceUtil.getDataSource().getConnection();
             statement = connection.prepareStatement("select value from config_data a where a.key = ?");
-            statement.setString(1, "weight_upload_limit");
+            statement.setString(1, key);
             rs = statement.executeQuery();
             rs.next();
-            weight = rs.getString("value") == null ? "0" : rs.getString("value");
+            value = rs.getString("value") == null ? "" : rs.getString("value");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return weight;
+        return value;
     }
 
     public static List<LedTableInfo> getLedInfoListByTime(String sql, Timestamp queryTime) {

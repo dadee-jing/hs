@@ -31,6 +31,28 @@
        -->
     </appender>
 
+
+    <appender name="FoshanApiServiceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/foshan/FoshanApiService.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy" >
+            <FileNamePattern>${LOG_HOME}/foshan/FoshanApiService.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>800MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{30} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="com.hs.platform.station.third.foshan" level="info" additivity="false">
+        <appender-ref ref="FoshanApiServiceAppender" />
+    </logger>
+
     <!-- 日志输出级别 -->
     <root level="INFO">
         <!--<appender-ref ref="STDOUT"/>-->

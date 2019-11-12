@@ -1,0 +1,326 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="wrapper wrapper-content  gray-bg">
+<div class="row">
+    <div class="col-md-12" >
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="row ">
+                    <div class="col-md-12" style="margin-bottom: 10px;">
+                        <div data-toggle="buttons-checkbox" class="btn-group" id="station-list-div">
+                            <!--
+                            <button class="btn btn-primary btn-outline" type="button" onclick="siteClick('0')"><i class="fa fa-opencart"></i> 德胜大桥治超点</button>
+                            <button class="btn btn-primary btn-outline" type="button" onclick="siteClick('1')"><i class="fa fa-chrome"></i> 虎门大桥治超点</button>
+                            -->
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="allmap" style="height: 350px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" >
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>站点信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link" onclic="editSite()">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <article class="markdown-body entry-content" style="height: 195px;" itemprop="mainContentOfPage">
+                    <ul>
+                        <li><h4>站点信息：德胜大桥</h4></li>
+                        <li><h4>简称：DS</h4></li>
+                        <li><h4>位置：广东公路局广东省佛山市顺德区德胜大桥</h4></li>
+                        <li><h4>安装时间：2018.11.05 17:45</h4></li>
+                        <li><h4>坐标：113.316719，22.80082</h4></li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="ibox">
+            <div class="ibox-title"><h5>设备信息</h5></div>
+            <div class="ibox-content">
+                <div id="main" style="width: 100%;height:200px;" class="flot-chart-content"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="ibox">
+            <div class="ibox-title"><h4>区域分析</h4></div>
+            <div class="ibox-content">
+                <div id="car_area" style="width:100%;height: 350px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="ibox">
+            <div class="ibox-title"><h4>重量分析</h4></div>
+            <div class="ibox-content">
+                <div id="car_weight" style="width:100%;height: 350px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="ibox">
+            <div class="ibox-title"><h4>车流分析</h4></div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="widget style1 navy-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-bar-chart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 累计总车流量 </span>
+                                    <h2 class="font-bold">109821321</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 lazur-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-truck fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 日车流量 </span>
+                                    <h2 class="font-bold">5265</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 yellow-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-desktop fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 月车流量 </span>
+                                    <h2 class="font-bold">125451</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 red-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-cube fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 日均流量 </span>
+                                    <h2 class="font-bold">300</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div id="car_flow" style="width:100%;height:300px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/echart/echarts.min.js}"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Ia1X0IjEjafqGcgLPSseLLZ4l1FRQsfY"></script>
+<script th:inline="javascript">
+    var map = new BMap.Map("allmap");
+    var point = new BMap.Point(113.316719, 22.80082);
+    map.centerAndZoom(point, 15);
+    var marker = new BMap.Marker(point);  // 创建标注
+    map.addOverlay(marker);               // 将标注添加到地图中
+
+    var siteClick = function(site) {
+        var sites= {
+          0: ['113.316719','22.80082'], 1:['113.605177','22.784381']
+        };
+        map.clearOverlays();
+        var new_point = new BMap.Point(sites[site][0], sites[site][1]);
+        var marker = new BMap.Marker(new_point);  // 创建标注
+        map.addOverlay(marker);              // 将标注添加到地图中
+        map.panTo(new_point);
+    };
+
+    var showMap = function(latitude, longitude) {
+        map.clearOverlays();
+        var new_point = new BMap.Point(latitude, longitude);
+        var marker = new BMap.Marker(new_point);  // 创建标注
+        map.addOverlay(marker);              // 将标注添加到地图中
+        map.panTo(new_point);
+    };
+
+    $.post(ctx + "module/stationInfo/list",function (data) {
+        for(var i=0; i<data.rows.length; ++i) {
+            $("#station-list-div").append("<button class=\"btn btn-primary btn-outline\" type=\"button\" " +
+                "onclick=\"showMap("+data.rows[i].latitude+","+data.rows[i].longitude+")\"><i class=\"fa\"></i> "+data.rows[i].name+"</button>")
+        }
+    });
+
+
+    /*仪表设备*/
+    var myChart = echarts.init(document.getElementById('main'));
+    option = {
+        title : {
+            text: '',
+            subtext: '',
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['视频设备','LED设备','仪表设备']
+        },
+        series : [
+            {
+                name: '访问来源',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[
+                    {value:335, name:'视频设备'},
+                    {value:310, name:'LED设备'},
+                    {value:234, name:'仪表设备'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+
+    /*区域图表*/
+    var carArea = echarts.init(document.getElementById('car_area'));
+    carAreaOption = {
+        title : {
+            text: '区域分析图',
+            subtext: '2018.11.27',
+            x:'left'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        // legend: {
+        //     x : 'center',
+        //     y : '10%',
+        //     data:['粤','陕','湘','川','冀','京','鲁','沪']
+        // },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {
+                    show: true,
+                    type: ['pie', 'funnel']
+                },
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        series : [
+            {
+                name:'车次',
+                type:'pie',
+                radius : [30, 110],
+                roseType : 'area',
+                data:[
+                    {value:10, name:'粤'},
+                    {value:5, name:'陕'},
+                    {value:15, name:'湘'},
+                    {value:25, name:'川'},
+                    {value:20, name:'冀'},
+                    {value:35, name:'京'},
+                    {value:30, name:'鲁'},
+                    {value:40, name:'沪'}
+                ]
+            }
+        ]
+    };
+    carArea.setOption(carAreaOption);
+
+    var carWeight = echarts.init(document.getElementById('car_weight'));
+    carWeightOpt = {
+        xAxis: {
+            type: 'category',
+            data: ['3吨以下', '3-5吨', '5-7吨', '7-9吨', '10吨以上']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        series: [{
+            data: [120, 500, 150, 80, 70],
+            type: 'bar',
+            name:'直接访问',
+            barWidth: '60%'
+        }]
+    };
+    carWeight.setOption(carWeightOpt);
+
+    var carFlow =echarts.init(document.getElementById("car_flow"));
+    var data = [];
+    var shwoData= [];
+    var d = new Date();
+    for(var i= 0; i < d.getDate(); i++ ){
+        data.push((d.getMonth()+1) + "." + (i+1));
+        shwoData.push(Math.random()* 1000);
+    }
+    var ocarFlowOption = {
+        grid: {
+            left: '1%',
+            right: '1%',
+            bottom: '1%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: data
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: shwoData,
+            type: 'line',
+            areaStyle: {}
+        }]
+    };
+    carFlow.setOption(ocarFlowOption);
+</script>
+</body>
+</html>

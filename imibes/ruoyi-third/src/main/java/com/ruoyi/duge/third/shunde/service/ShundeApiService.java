@@ -95,7 +95,7 @@ public class ShundeApiService implements ThirdApiService {
                     .plateNo(weightData.getTruckNumber())
                     .plateColor(parseColor(weightData.getTruckCorlor()))
                     .vehicleSpeed(null != weightData.getSpeed() ? weightData.getSpeed().doubleValue() : 0)
-                    .laneNo(NumberUtils.toInt(weightData.getLaneMid(), 1))
+                    .laneNo(NumberUtils.toInt(weightData.getLaneMid(), weightData.getLane()))
                     .axleNum(weightData.getAxleCount())
                     .vehicleWeight(null != weightData.getWeight() ? weightData.getWeight().doubleValue() : 0)
                     .vehicleHeight(getSizeValue(weightData.getHeight()))

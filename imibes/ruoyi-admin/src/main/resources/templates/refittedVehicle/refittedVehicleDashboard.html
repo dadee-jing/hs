@@ -93,7 +93,7 @@
         background-color: #0C0C10;
         margin: 0 auto;
         width: 90%;
-        font-size: 22px;
+        font-size: 14px;
         font-weight: bold;
         padding: 15px 0px 0px 15px;
         line-height: 2.5;
@@ -212,7 +212,7 @@
         <!--表格头部-->
         <div class="div_table_title">
             <!--<img th:src="@{/logo-little.png} " onerror="this.src='img/profile.jpg'"/>-->
-            <span>顺德一体化治超平台</span>
+            <span>违法车辆执法平台</span>
         </div>
         <!--表格-->
         <table id="bootstrap-table" data-mobile-responsive="true"></table>
@@ -225,9 +225,9 @@
         <div id="station_name"></div>
         <!--站点详细信息-->
         <div id="station_information">
-            <div>超限排名：<span id="ranking"></span></div>
+            <div>违法车辆数排名：<span id="ranking"></span></div>
             <div>最近一小时过车数：<span id="trafficFlow"></span></div>
-            <div>最近一小时超限：<span id="overCount"></span></div>
+            <div>最近一小时违法车数：<span id="overCount"></span></div>
             <div>平均车速：<span id="avg_speed"></span></div>
         </div>
         <!--站点图表详细信息-->
@@ -258,7 +258,7 @@
             <div class="chart_parentContainer">
                 <!--车速图表标题-->
                 <div class="chart_head">
-                    <div class="title">每小时超限数</div>
+                    <div class="title">每小时违法车数</div>
                 </div>
                 <!--车速图表容器-->
                 <div class="chart_container">
@@ -296,10 +296,10 @@
         colok.display($("#time"));
 
         // 表格数据处理
-        var prefix = "/module/stationInfo";
+        var prefix = "/refittedVehicle";
         // 使用原生bootstrap-table插件
         $('#bootstrap-table').bootstrapTable({
-            url: prefix + "/listWithData",                                   // 请求后台的URL
+            url: prefix + "/stations",                                   // 请求后台的URL
             contentType: "application/x-www-form-urlencoded",        // 编码类型
             method: 'post',                                          // 请求方式
             cache: false,                                           // 是否使用缓存
@@ -307,7 +307,7 @@
             columns: [
                 {
                     field: 'index',
-                    title: '超限排名',
+                    title: '排名',
                     align: 'center',
                     halign: 'center',
                     width: '20%',
@@ -379,6 +379,7 @@
 
     function clickRow(row) {
         map.setZoomAndCenter(12, [row.longitude_GCJ02, row.latitude_GCJ02]);
+        /*
         $.ajax({
             type: "POST",
             url: "/duge/weightData/stationData/" + row.id,
@@ -388,7 +389,9 @@
                 showInformation(row.name, row.index, data.speedAvg, data.dataList[0].trafficFlow, data.dataList[0].overCount);
                 showChartInfo(data.dataList);
             }
-        });
+        });*/
+        showInformation("榕西路口", 1, 51, 899, 8);
+        showChartInfo(null);
     }
 
     // 配置地图信息
@@ -419,11 +422,11 @@
     function showChartInfo(data) {
         // 车型分类图表配置项
 
-        var overCount = data[0].overCount;
-        var trafficFlow = data[0].trafficFlow;
+        var overCount = 8;
+        var trafficFlow = 899;
         var sortOption = {
             title: {
-                text: '超限比例',
+                text: '改装比例',
                 textStyle: {
                     color: 'white',
                     fontSize: 26,
@@ -438,7 +441,7 @@
             },
             series: [
                 {
-                    name: '超限比例',
+                    name: '改装比例',
                     type: 'pie',
                     radius: [23, 120],
                     center: ['50%', '55%'],
@@ -447,11 +450,11 @@
                     data: [
                         {
                             value: trafficFlow - overCount,
-                            name: '未超载车辆'
+                            name: '正常车辆'
                         },
                         {
                             value: overCount,
-                            name: '超载车辆'
+                            name: '违法车辆'
                         }
                     ],
                     label: {
@@ -523,7 +526,7 @@
                     data: function () {
                         var list = [];
                         for (var i = 23; i >= 0; i--) {
-                            list.push(data[i].dateTime.substring(11,13)+'h')
+                            list.push(i+'h')
                         }
                         return list;
                     }()
@@ -568,8 +571,8 @@
                     symbol: 'circle',
                     data: function () {
                         var list = [];
-                        for (var i = 23; i >=0 ; i--) {
-                            list.push(data[i].trafficFlow);
+                        for (var i = 0; i < 24; i++) {
+                            list.push(parseInt(500*Math.random()+1));
                         }
                         return list;
                     }(),
@@ -639,7 +642,7 @@
                     data: function () {
                         var list = [];
                         for (var i = 23; i >= 0; i--) {
-                            list.push(data[i].dateTime.substring(11,13)+'h')
+                            list.push(i+'h')
                         }
                         return list;
                     }()
@@ -679,13 +682,13 @@
             ],
             series: [
                 {
-                    name: '超限车辆数量',
+                    name: '过车车辆数量',
                     type: 'line',
                     symbol: 'circle',
                     data: function () {
                         var list = [];
-                        for (var i = 23; i >=0 ; i--) {
-                            list.push(data[i].overCount);
+                        for (var i = 0; i < 24; i++) {
+                            list.push(parseInt(20*Math.random()+1));
                         }
                         return list;
                     }(),

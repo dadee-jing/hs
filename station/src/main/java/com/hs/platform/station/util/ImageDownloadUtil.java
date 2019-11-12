@@ -1,7 +1,6 @@
 package com.hs.platform.station.util;
 
 import com.hs.platform.station.persistence.local.dao.ConfigDataRepository;
-import com.hs.platform.station.persistence.local.entity.ConfigData;
 import com.hs.platform.station.persistence.local.entity.WeightData;
 import com.hs.platform.station.third.foshan.service.FoshanApiService;
 import com.hs.platform.station.third.foshan.socket.FoshanMessage;
@@ -14,17 +13,12 @@ import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.LongAdder;
-
 import static com.hs.platform.station.Constants.*;
-import static com.hs.platform.station.third.foshan.service.FoshanApiService.mappingPlateColor;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.getCarData2Info;
 
 @Component
@@ -70,17 +64,33 @@ public class ImageDownloadUtil {
             String targetParentPath = stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd");
 
             if (null != newlxFtpClient && null != fileSystemService) {
-                String FtpHead = entity.getFtpHead();
-                String FtpAxle = entity.getFtpAxle();
-                String FtpTail = entity.getFtpTail();
-                String FtpPriorHead = entity.getFtpPriorHead();
-                String FtpPlate = entity.getFtpPlate();
-                String FtpFullView = entity.getFtpFullView();
+                String FtpHead = entity.getFtpHead();//侧
+                String FtpAxle = entity.getFtpAxle();//侧
+                String FtpTail = entity.getFtpTail();//后
+                String FtpPriorHead = entity.getFtpPriorHead();//前
+                String FtpPlate = entity.getFtpPlate();//车牌
+                String FtpFullView = entity.getFtpFullView();//视频
                 FoshanMessage foshanMessage = new FoshanMessage();
                 //前，后，侧，车牌，视频，市局无需视频
-                List<String> pathList = Arrays.asList(FtpPriorHead, FtpTail, FtpHead, FtpAxle, FtpPlate, FtpFullView);
                 //上传图片，组装对象
-                uploadFile(foshanMessage,pathList,targetParentPath,entity);
+                int picCount = 0;
+                if("1".equals(WeightAndLWHContainer.lwhUploadFileTag)){
+                    //单独执行上传侧拍
+                    if(StringUtils.isNotBlank(FtpAxle)){
+                        byte[] picSide = FTPClientUtil.localToFtp(FtpAxle,fileSystemService,entity.getWeightingDate());
+                        if(picSide != null && picSide.length != 0){
+                            foshanMessage.setPic4(picSide);
+                            picCount++;
+                        }
+                    }
+                    List<String> pathList = Arrays.asList(FtpPriorHead, FtpTail, FtpPlate, FtpFullView);
+                    uploadFile(foshanMessage,pathList,targetParentPath,entity,picCount);
+                }
+                else{
+                    List<String> pathList = Arrays.asList(FtpPriorHead, FtpTail,FtpPlate, FtpHead, FtpAxle, FtpFullView);
+                    uploadFile(foshanMessage,pathList,targetParentPath,entity,picCount);
+                }
+
                 //加入队列
                 FoshanApiService.addEntity(foshanMessage);
             }
@@ -89,8 +99,8 @@ public class ImageDownloadUtil {
         }
     }
 
-    private void uploadFile(FoshanMessage foshanMessage,List<String> pathList, String targetParentPath, WeightData weightData) {
-        int picCount = 0;
+    private void uploadFile(FoshanMessage foshanMessage,List<String> pathList, String targetParentPath,
+                            WeightData weightData,int picCount) {
         for(int i = 0; i < pathList.size(); i++){
             String filePath = pathList.get(i);
             if (StringUtils.isNotBlank(filePath)) {
@@ -120,7 +130,6 @@ public class ImageDownloadUtil {
                 }
             }
         }
-        //组装对象
         combineFoshanMessage(foshanMessage,weightData,picCount);
     }
 
@@ -155,6 +164,23 @@ public class ImageDownloadUtil {
             newlxFtpClient = ImageDownloadUtil.resetFTPClient(newlxFtpClient,true);
         }
         return newlxFtpClient;
+    }
+
+    public int mappingPlateColor(String colorChs) {
+        switch (colorChs) {
+            case "蓝":
+                return 0;
+            case "黄":
+                return 1;
+            case "黑":
+                return 3;
+            case "白":
+                return 2;
+            case "绿":
+                return 4;
+            default:
+                return 9;
+        }
     }
 
 }

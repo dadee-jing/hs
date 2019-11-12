@@ -127,10 +127,10 @@
             <if test="uploadSj != null ">and upload_sj = #{uploadSj}</if>
             <if test="uploadJj != null ">and upload_jj = #{uploadJj}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-                and date_format(weighting_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+                and date_format(weighting_date,'%Y-%m-%d %H:%i') &gt;= date_format(#{params.beginTime},'%Y-%m-%d %H:%i')
             </if>
             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-                and date_format(weighting_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+                and date_format(weighting_date,'%Y-%m-%d %H:%i') &lt;= date_format(#{params.endTime},'%Y-%m-%d %H:%i')
             </if>
             <if test="params.overWeightMin != null and params.overWeightMin != '' and params.overWeightMin > -1">and over_weight >
                 #{params.overWeightMin}

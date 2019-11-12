@@ -64,12 +64,29 @@ public class LWHClientHandler extends IoHandlerAdapter {
             WeightAndLwhEntity entity = new WeightAndLwhEntity();
             entity.setPlate(plate);
             String speed = dataMap.get("speed");
+            String pathTag = dataMap.get("pathTag");
+            if(StringUtils.isEmpty(plate) || plate.contains("无车牌")){
+                return;
+            }
             if (StringUtils.isNotBlank(speed)) {
                 LOGGER.info("speed hit:" + plate + " " + speed);
                 entity.setProcessStatus(2);
                 entity.setSpeed(new BigDecimal(speed));
                 entity.setSpeedTag(true);
-            } else {
+            }
+            //配置文件配置是否从外廓传图片
+            else if ((StringUtils.isNotBlank(pathTag)) && (pathTag.equals("1"))) {
+                if("1".equals(WeightAndLWHContainer.lwhUploadFileTag)){
+                    String sidePath = dataMap.get("sidePath");
+                    if (StringUtils.isNotBlank(sidePath)) {
+                        LOGGER.info("sidePath hit:" + plate);
+                        entity.setProcessStatus(3);
+                        entity.setSidePath(sidePath);
+                        entity.setPathTag(true);
+                    }
+                }
+            }
+            else {
                 String timeString = dataMap.get("time");
                 String processTime = timeString.substring(0, 4) + "-" + timeString.substring(4, 6) + "-"
                         + timeString.substring(6, 8) + " " + timeString.substring(8, 10) + ":" + timeString.substring(10, 12)

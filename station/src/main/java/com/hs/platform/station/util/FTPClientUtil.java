@@ -3,6 +3,7 @@ package com.hs.platform.station.util;
 import com.hs.platform.station.entity.FTPReUploadInfo;
 import com.hs.platform.station.schedule.ReUploadFailedData;
 import com.hs.platform.station.util.SFTP.FileSystemServiceImpl;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
@@ -107,6 +108,7 @@ public class FTPClientUtil {
 
     public static byte[] ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient,
                                   FileSystemServiceImpl fileSystemService, Date weightingDate) {
+        long startTime = System.currentTimeMillis();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             //上传前先检查新流向ftp
@@ -124,9 +126,9 @@ public class FTPClientUtil {
             LOGGER.error("pull file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + sourcePath + e.getMessage());
             newlxFtpClient = ImageDownloadUtil.resetFTPClient(newlxFtpClient,true);
             FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
-            ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
+            ReUploadFailedData.ftpReUploadQueue.add(ftpReUploadInfo);
             if(ReUploadFailedData.ftpReUploadQueue.size() > 100){
-                ReUploadFailedData.ftpReUploadQueue.removeFirst();
+                ReUploadFailedData.ftpReUploadQueue.poll();
             }
             return null;
         } finally {
@@ -139,7 +141,8 @@ public class FTPClientUtil {
         try (InputStream inputStream = parse(outputStream)) {
             Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
             //targetState false 没有上传到服务器
-            LOGGER.info("ok:targetState:" + targetState + " " + sourcePath);
+            long endTime = System.currentTimeMillis();
+            LOGGER.info("ok:targetState:" + targetState + " " + targetPath + ",cost:" + (endTime - startTime));
             //将流转化成byte返回
             try{
                 if(!sourcePath.contains("mp4")){
@@ -155,9 +158,9 @@ public class FTPClientUtil {
             //重新连接顺德ftp，将失败的加入列表
             LOGGER.error("push file fail " + ReUploadFailedData.ftpReUploadQueue.size() + " " + targetPath + e.getMessage());
             FTPReUploadInfo ftpReUploadInfo = new FTPReUploadInfo(sourcePath,targetPath);
-            ReUploadFailedData.ftpReUploadQueue.addLast(ftpReUploadInfo);
+            ReUploadFailedData.ftpReUploadQueue.add(ftpReUploadInfo);
             if(ReUploadFailedData.ftpReUploadQueue.size() > 100) {
-                ReUploadFailedData.ftpReUploadQueue.removeFirst();
+                ReUploadFailedData.ftpReUploadQueue.poll();
             }
             return null;
         } finally {
@@ -280,6 +283,43 @@ public class FTPClientUtil {
         System.out.println(targetPath.substring(0, targetPath.lastIndexOf('/') + 1));
         System.out.println(targetPath.substring(targetPath.lastIndexOf('/') + 1));
         //createDir(targetPath.substring(0, targetPath.lastIndexOf('/')), client);
+    }
+
+    public static byte[] localToFtp(String sidePath, FileSystemServiceImpl fileSystemService,Date weightingDate) {
+        //转化为本地路径,本地路径获取文件，原路径执行上传
+        //sidePath:PicPlate/20191106_1541/粤A12345_1_side.jpg
+        //D:/Camera/Picture/2019/11/06/15/41/粤A12345_1_side.jpg
+        String sourcePath = "D:/Camera/Picture/" + sidePath.substring(9,17) + "/" + sidePath.substring(9,22) +
+                sidePath.substring(22,sidePath.length());
+        LOGGER.info("sideSourcePath:" + sourcePath);
+        InputStream input = null;
+        InputStream inputStream = null;
+        InputStream shiJuInputStream = null;
+        try {
+            input =  new FileInputStream(sourcePath);
+            ByteArrayOutputStream baos = cloneInputStream(input);
+            inputStream = new ByteArrayInputStream(baos.toByteArray());
+            shiJuInputStream = new ByteArrayInputStream(baos.toByteArray());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            LOGGER.error("getInputStream fail " + sourcePath);
+        }
+        try {
+            final String stationId = station_id + "";
+            String targetPath = stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd") + "/" + sidePath;
+            Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
+            LOGGER.info("localToFtp ok:targetState:" + targetState + " " + sourcePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("uploadFile fail " + sourcePath);
+        }
+        try{
+            byte[] pic =getPicByStream(weightingDate, shiJuInputStream);
+            return pic;
+        }catch (Exception e){
+            LOGGER.error("getPicByStream fail " + sourcePath);
+        }
+        return null;
     }
 
 

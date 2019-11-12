@@ -180,22 +180,27 @@ CREATE TABLE `duge_station_info` (
   `latitude_GCJ02` varchar(50) DEFAULT NULL,
   `longitude_BD09` varchar(50) DEFAULT NULL,
   `latitude_BD09` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='站点信息';
+  `ip` varchar(50) DEFAULT NULL COMMENT 'ip',
+  `port` int(10) DEFAULT NULL COMMENT '端口',
+  `state` int(2) DEFAULT '0' COMMENT '连通状态，0不通，1通',
+  `site_id` int(4) DEFAULT NULL COMMENT '上传市局站点Id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='站点信息';
 
 -- ----------------------------
 -- Records of duge_station_info
 -- ----------------------------
-INSERT INTO `duge_station_info` VALUES ('1', '五沙大桥-东侧（往大良方向）', 'WSD', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X501  K5＋900顺德区五沙大桥西侧上桥位（五沙方向）', '', null, '', null, '', '000003e9', '113.3282575600', '22.8109135700', '113.3336510000', '22.8081800000', '113.3402110884', '22.8139434571');
-INSERT INTO `duge_station_info` VALUES ('2', '五沙大桥-西侧（往五沙方向）', 'WSX', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X501 K8＋100左顺德区五沙大桥东侧上桥位（往大良方向）', '', null, '', null, '', null, '113.3418746300', '22.8185526000', '113.3473090000', '22.8158600000', '113.3538941319', '22.8215446312');
-INSERT INTO `duge_station_info` VALUES ('3', '三善大桥-下桥位（往顺德方向）', 'SSX', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G325  K14＋500顺德区三善大桥下桥位附近（往顺德方向）', '', null, '', null, '', null, '113.2808478400', '22.8855975700', '113.2861830000', '22.8828340000', '113.2925990518', '22.8891588412');
-INSERT INTO `duge_station_info` VALUES ('4', '三善大桥-上桥位（往广州方向）', 'SSS', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G325  K14＋500顺德区三善大桥上桥位附近（往广州方向）', '', null, '', null, '', null, '113.2809018400', '22.8855555700', '113.2862370000', '22.8827920000', '113.2926530518', '22.8891168412');
-INSERT INTO `duge_station_info` VALUES ('5', '德胜大桥-上桥位（往容桂方向）', 'DSS', '113.316719', '22.80082', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）', '', null, '', null, '', '000003e9', '113.2997091300', '22.8049471900', '113.3050660000', '22.8021770000', '113.3115476422', '22.8082631319');
-INSERT INTO `duge_station_info` VALUES ('6', '德胜大桥-下桥位（往大良方向）', 'DSX', '113.316719', '22.80082', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）', '', null, '', null, '', '000003e9', '113.2995294000', '22.8048919500', '113.3048740000', '22.8021110000', '113.3113203215', '22.8083471618');
-INSERT INTO `duge_station_info` VALUES ('7', '乐龙大桥-南侧（往乐从方向）', 'LLN', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', '乐龙路乐龙大桥南侧上桥位附近（往乐从方向）', '', null, '', null, '', null, '113.0942771500', '22.8864718300', '113.0997530000', '22.8838660000', '113.1063098779', '22.8895422900');
-INSERT INTO `duge_station_info` VALUES ('8', '乐龙大桥-北侧（往龙江方向）', 'LLB', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', '乐龙路乐龙大桥北侧上桥位附近（往龙江方向）', '', null, '', null, '', null, '113.0977189500', '22.8912152500', '113.1031970000', '22.8886150000', '113.1097485908', '22.8942889788');
-INSERT INTO `duge_station_info` VALUES ('9', '三洪奇大桥-上桥位（往北滘方向）', 'SHQX', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G105  K2954＋500顺德区三洪奇大桥南下桥位附近（往伦教方向）', '', null, '', null, '', null, '113.2071029900', '22.8971377700', '113.2124540000', '22.8944000000', '113.2189867613', '22.9001573624');
-INSERT INTO `duge_station_info` VALUES ('10', '三洪奇大桥-下桥位（往伦教方向）', 'SHQS', '113.355856', '22.821707', '1', '广东公路局', '广东省', '佛山市', '顺德区', 'G105  K2954＋500顺德区三洪奇大桥南上桥位附近（往北滘方向）', '', null, '', null, '', null, '113.2073119900', '22.8971037700', '113.2126630000', '22.8943660000', '113.2191957613', '22.9001233624');
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (1, '五沙大桥-东侧（往大良方向）', 'WSD', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'X501  K5＋900顺德区五沙大桥西侧上桥位（五沙方向）', '', NULL, '', NULL, '', '000003e9', '113.3282575600', '22.8109135700', '113.3336510000', '22.8081800000', '113.3402110884', '22.8139434571', '19.201.27.225', 10000, 0, 163);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (2, '五沙大桥-西侧（往五沙方向）', 'WSX', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'X501 K8＋100左顺德区五沙大桥东侧上桥位（往大良方向）', '', NULL, '', NULL, '', NULL, '113.3418746300', '22.8185526000', '113.3473090000', '22.8158600000', '113.3538941319', '22.8215446312', '19.201.27.227', 10000, 0, 161);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (3, '三善大桥-下桥位（往顺德方向）', 'SSX', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'G325  K14＋500顺德区三善大桥下桥位附近（往顺德方向）', '', NULL, '', NULL, '', NULL, '113.2808478400', '22.8855975700', '113.2861830000', '22.8828340000', '113.2925990518', '22.8891588412', '19.201.27.229', 10000, 0, 167);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (4, '三善大桥-上桥位（往广州方向）', 'SSS', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'G325  K14＋500顺德区三善大桥上桥位附近（往广州方向）', '', NULL, '', NULL, '', NULL, '113.2809018400', '22.8855555700', '113.2862370000', '22.8827920000', '113.2926530518', '22.8891168412', '19.201.27.253', 10000, 0, 168);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (5, '德胜大桥-上桥位（往容桂方向）', 'DSS', '113.316719', '22.80082', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）', '', NULL, '', NULL, '', '000003e9', '113.2997091300', '22.8049471900', '113.3050660000', '22.8021770000', '113.3115476422', '22.8082631319', '19.201.27.233', 10000, 0, 159);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (6, '德胜大桥-下桥位（往大良方向）', 'DSX', '113.316719', '22.80082', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'X520  K6顺德区德胜大桥上桥位旧收费站附近（往容桂方向）', '', NULL, '', NULL, '', '000003e9', '113.2995294000', '22.8048919500', '113.3048740000', '22.8021110000', '113.3113203215', '22.8083471618', '19.201.27.231', 10000, 0, 160);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (7, '乐龙大桥-南侧（往乐从方向）', 'LLN', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', '乐龙路乐龙大桥南侧上桥位附近（往乐从方向）', '', NULL, '', NULL, '', NULL, '113.0942771500', '22.8864718300', '113.0997530000', '22.8838660000', '113.1063098779', '22.8895422900', '19.201.27.237', 10000, 0, 169);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (8, '乐龙大桥-北侧（往龙江方向）', 'LLB', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', '乐龙路乐龙大桥北侧上桥位附近（往龙江方向）', '', NULL, '', NULL, '', NULL, '113.0977189500', '22.8912152500', '113.1031970000', '22.8886150000', '113.1097485908', '22.8942889788', '19.201.27.235', 10000, 0, 170);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (9, '三洪奇大桥-上桥位（往北滘方向）', 'SHQS', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'G105  K2954＋500顺德区三洪奇大桥南下桥位附近（往伦教方向）', '', NULL, '', NULL, '', NULL, '113.2071029900', '22.8971377700', '113.2124540000', '22.8944000000', '113.2189867613', '22.9001573624', '19.201.27.245', 10000, 0, 164);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (10, '三洪奇大桥-下桥位（往伦教方向）', 'SHQX', '113.355856', '22.821707', 1, '广东公路局', '广东省', '佛山市', '顺德区', 'G105  K2954＋500顺德区三洪奇大桥南上桥位附近（往北滘方向）', '', NULL, '', NULL, '', NULL, '113.2073119900', '22.8971037700', '113.2126630000', '22.8943660000', '113.2191957613', '22.9001233624', '19.201.27.247', 10000, 0, 166);
+INSERT INTO `ry`.`duge_station_info`(`id`, `name`, `abbreviation`, `latitude`, `longitude`, `user_id`, `bureau`, `province`, `city`, `county`, `address`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `device_code`, `longitude_WGS84`, `latitude_WGS84`, `longitude_GCJ02`, `latitude_GCJ02`, `longitude_BD09`, `latitude_BD09`, `ip`, `port`, `state`, `site_id`) VALUES (11, '顺番公路-甘竹滩大桥（往龙江方向）', 'SFGL', '113.082437', '22.806989', 1, '广东公路局', '广东省', '佛山市', '顺德区', '顺番公路沙涌路口公交站路段（往龙江方向）', '', NULL, '', NULL, '', NULL, '113.082437', '22.806989', '113.082437', '22.806989', '113.082437', '22.806989', '19.201.27.225', 10000, 0, 171);
 
 -- ----------------------------
 -- Table structure for exception_data
@@ -1196,203 +1201,205 @@ CREATE TABLE `sys_logininfor` (
 -- Table structure for sys_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
-CREATE TABLE `sys_menu` (
+CREATE TABLE `sys_menu`  (
   `menu_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
-  `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
-  `parent_id` int(11) DEFAULT '0' COMMENT '父菜单ID',
-  `order_num` int(4) DEFAULT '0' COMMENT '显示顺序',
-  `url` varchar(200) DEFAULT '#' COMMENT '请求地址',
-  `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
-  `visible` char(1) DEFAULT '0' COMMENT '菜单状态（0显示 1隐藏）',
-  `perms` varchar(100) DEFAULT '' COMMENT '权限标识',
-  `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
-  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) DEFAULT '' COMMENT '备注',
-  PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2169 DEFAULT CHARSET=utf8 COMMENT='菜单权限表';
+  `menu_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单名称',
+  `parent_id` int(11) NULL DEFAULT 0 COMMENT '父菜单ID',
+  `order_num` int(4) NULL DEFAULT 0 COMMENT '显示顺序',
+  `url` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '#' COMMENT '请求地址',
+  `menu_type` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+  `visible` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' COMMENT '菜单状态（0显示 1隐藏）',
+  `perms` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '权限标识',
+  `icon` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '#' COMMENT '菜单图标',
+  `create_by` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '创建者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '备注',
+  PRIMARY KEY (`menu_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2171 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES ('1', '系统管理', '0', '5', '#', 'M', '0', '', 'fa fa-gear', 'admin', '2018-03-16 11:33:00', 'admin', '2018-11-21 08:51:30', '系统管理目录');
-INSERT INTO `sys_menu` VALUES ('2', '系统监控', '0', '7', '#', 'M', '0', '', 'fa fa-video-camera', 'admin', '2018-03-16 11:33:00', 'admin', '2018-11-26 21:32:12', '系统监控目录');
-INSERT INTO `sys_menu` VALUES ('3', '系统工具', '0', '8', '#', 'M', '0', '', 'fa fa-bars', 'admin', '2018-03-16 11:33:00', 'admin', '2018-11-26 21:32:21', '系统工具目录');
-INSERT INTO `sys_menu` VALUES ('100', '用户管理', '1', '1', '/system/user', 'C', '0', 'system:user:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '用户管理菜单');
-INSERT INTO `sys_menu` VALUES ('101', '角色管理', '1', '2', '/system/role', 'C', '0', 'system:role:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '角色管理菜单');
-INSERT INTO `sys_menu` VALUES ('102', '菜单管理', '1', '3', '/system/menu', 'C', '0', 'system:menu:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '菜单管理菜单');
-INSERT INTO `sys_menu` VALUES ('103', '部门管理', '1', '4', '/system/dept', 'C', '0', 'system:dept:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '部门管理菜单');
-INSERT INTO `sys_menu` VALUES ('104', '岗位管理', '1', '5', '/system/post', 'C', '0', 'system:post:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '岗位管理菜单');
-INSERT INTO `sys_menu` VALUES ('105', '字典管理', '1', '6', '/system/dict', 'C', '0', 'system:dict:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '字典管理菜单');
-INSERT INTO `sys_menu` VALUES ('106', '参数设置', '1', '7', '/system/config', 'C', '0', 'system:config:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '参数设置菜单');
-INSERT INTO `sys_menu` VALUES ('107', '通知公告', '1', '8', '/system/notice', 'C', '0', 'system:notice:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '通知公告菜单');
-INSERT INTO `sys_menu` VALUES ('108', '日志管理', '1', '9', '#', 'M', '0', '', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '日志管理菜单');
-INSERT INTO `sys_menu` VALUES ('109', '在线用户', '2', '1', '/monitor/online', 'C', '0', 'monitor:online:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '在线用户菜单');
-INSERT INTO `sys_menu` VALUES ('110', '定时任务', '2', '2', '/monitor/job', 'C', '0', 'monitor:job:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '定时任务菜单');
-INSERT INTO `sys_menu` VALUES ('111', '数据监控', '2', '3', '/monitor/data', 'C', '0', 'monitor:data:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '数据监控菜单');
-INSERT INTO `sys_menu` VALUES ('112', '表单构建', '3', '1', '/tool/build', 'C', '0', 'tool:build:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '表单构建菜单');
-INSERT INTO `sys_menu` VALUES ('113', '代码生成', '3', '2', '/tool/gen', 'C', '0', 'tool:gen:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '代码生成菜单');
-INSERT INTO `sys_menu` VALUES ('114', '系统接口', '3', '3', '/tool/swagger', 'C', '0', 'tool:swagger:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '系统接口菜单');
-INSERT INTO `sys_menu` VALUES ('500', '操作日志', '108', '1', '/monitor/operlog', 'C', '0', 'monitor:operlog:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '操作日志菜单');
-INSERT INTO `sys_menu` VALUES ('501', '登录日志', '108', '2', '/monitor/logininfor', 'C', '0', 'monitor:logininfor:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '登录日志菜单');
-INSERT INTO `sys_menu` VALUES ('1000', '用户查询', '100', '1', '#', 'F', '0', 'system:user:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1001', '用户新增', '100', '2', '#', 'F', '0', 'system:user:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1002', '用户修改', '100', '3', '#', 'F', '0', 'system:user:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1003', '用户删除', '100', '4', '#', 'F', '0', 'system:user:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1004', '用户导出', '100', '5', '#', 'F', '0', 'system:user:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1005', '重置密码', '100', '5', '#', 'F', '0', 'system:user:resetPwd', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1006', '角色查询', '101', '1', '#', 'F', '0', 'system:role:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1007', '角色新增', '101', '2', '#', 'F', '0', 'system:role:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1008', '角色修改', '101', '3', '#', 'F', '0', 'system:role:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1009', '角色删除', '101', '4', '#', 'F', '0', 'system:role:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1010', '角色导出', '101', '4', '#', 'F', '0', 'system:role:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1011', '菜单查询', '102', '1', '#', 'F', '0', 'system:menu:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1012', '菜单新增', '102', '2', '#', 'F', '0', 'system:menu:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1013', '菜单修改', '102', '3', '#', 'F', '0', 'system:menu:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1014', '菜单删除', '102', '4', '#', 'F', '0', 'system:menu:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1015', '部门查询', '103', '1', '#', 'F', '0', 'system:dept:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1016', '部门新增', '103', '2', '#', 'F', '0', 'system:dept:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1017', '部门修改', '103', '3', '#', 'F', '0', 'system:dept:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1018', '部门删除', '103', '4', '#', 'F', '0', 'system:dept:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1019', '岗位查询', '104', '1', '#', 'F', '0', 'system:post:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1020', '岗位新增', '104', '2', '#', 'F', '0', 'system:post:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1021', '岗位修改', '104', '3', '#', 'F', '0', 'system:post:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1022', '岗位删除', '104', '4', '#', 'F', '0', 'system:post:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1023', '岗位导出', '104', '4', '#', 'F', '0', 'system:post:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1024', '字典查询', '105', '1', '#', 'F', '0', 'system:dict:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1025', '字典新增', '105', '2', '#', 'F', '0', 'system:dict:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1026', '字典修改', '105', '3', '#', 'F', '0', 'system:dict:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1027', '字典删除', '105', '4', '#', 'F', '0', 'system:dict:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1028', '字典导出', '105', '4', '#', 'F', '0', 'system:dict:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1029', '参数查询', '106', '1', '#', 'F', '0', 'system:config:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1030', '参数新增', '106', '2', '#', 'F', '0', 'system:config:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1031', '参数修改', '106', '3', '#', 'F', '0', 'system:config:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1032', '参数删除', '106', '4', '#', 'F', '0', 'system:config:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1033', '参数导出', '106', '4', '#', 'F', '0', 'system:config:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1034', '公告查询', '107', '1', '#', 'F', '0', 'system:notice:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1035', '公告新增', '107', '2', '#', 'F', '0', 'system:notice:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1036', '公告修改', '107', '3', '#', 'F', '0', 'system:notice:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1037', '公告删除', '107', '4', '#', 'F', '0', 'system:notice:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1038', '操作查询', '500', '1', '#', 'F', '0', 'monitor:operlog:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1039', '操作删除', '500', '2', '#', 'F', '0', 'monitor:operlog:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1040', '详细信息', '500', '3', '#', 'F', '0', 'monitor:operlog:detail', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1041', '日志导出', '500', '3', '#', 'F', '0', 'monitor:operlog:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1042', '登录查询', '501', '1', '#', 'F', '0', 'monitor:logininfor:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1043', '登录删除', '501', '2', '#', 'F', '0', 'monitor:logininfor:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1044', '日志导出', '501', '2', '#', 'F', '0', 'monitor:logininfor:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1045', '在线查询', '109', '1', '#', 'F', '0', 'monitor:online:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1046', '批量强退', '109', '2', '#', 'F', '0', 'monitor:online:batchForceLogout', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1047', '单条强退', '109', '3', '#', 'F', '0', 'monitor:online:forceLogout', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1048', '任务查询', '110', '1', '#', 'F', '0', 'monitor:job:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1049', '任务新增', '110', '2', '#', 'F', '0', 'monitor:job:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1050', '任务修改', '110', '3', '#', 'F', '0', 'monitor:job:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1051', '任务删除', '110', '4', '#', 'F', '0', 'monitor:job:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1052', '状态修改', '110', '5', '#', 'F', '0', 'monitor:job:changeStatus', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1053', '任务导出', '110', '5', '#', 'F', '0', 'monitor:job:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1054', '生成查询', '113', '1', '#', 'F', '0', 'tool:gen:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('1055', '生成代码', '113', '2', '#', 'F', '0', 'tool:gen:code', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
-INSERT INTO `sys_menu` VALUES ('2000', '站点管理', '0', '3', '#', 'M', '0', '', 'fa fa-exchange', 'admin', '2018-11-14 14:32:15', 'admin', '2019-04-13 17:06:29', '');
-INSERT INTO `sys_menu` VALUES ('2001', '站点管理', '2000', '2', '/module/stationInfo', 'C', '0', 'stationInfo:manager', '#', 'admin', '2018-11-14 14:34:20', 'admin', '2018-11-26 21:43:35', '');
-INSERT INTO `sys_menu` VALUES ('2002', '车辆信息管理', '0', '12', '#', 'M', '1', '', 'fa fa-automobile', 'admin', '2018-11-14 17:20:52', 'admin', '2019-04-13 17:06:53', '');
-INSERT INTO `sys_menu` VALUES ('2003', '车辆管理', '2002', '1', '/report/reportCar', 'C', '0', '', '#', 'admin', '2018-11-14 17:21:10', 'admin', '2018-12-01 18:18:49', '');
-INSERT INTO `sys_menu` VALUES ('2004', '报表中心', '0', '2', '#', 'M', '0', '', 'fa fa-dashboard', 'admin', '2018-11-14 17:22:18', 'admin', '2019-04-13 17:06:37', '');
-INSERT INTO `sys_menu` VALUES ('2006', '站点比较', '2004', '2', '/report', 'C', '0', '', 'fa fa-map-signs', 'admin', '2018-11-19 22:34:40', 'admin', '2019-04-13 17:42:15', '');
-INSERT INTO `sys_menu` VALUES ('2008', '通行记录管理', '0', '1', '#', 'M', '0', '', 'fa fa-road', 'admin', '2018-11-21 08:46:24', 'admin', '2018-11-21 08:50:19', '');
-INSERT INTO `sys_menu` VALUES ('2009', '实时通行记录', '2008', '1', '/duge/weightData', 'C', '0', '', '#', 'admin', '2018-11-21 08:47:15', 'admin', '2018-11-21 08:49:25', '');
-INSERT INTO `sys_menu` VALUES ('2010', '站点信息', '2000', '1', '/module/stationInfo/stationDashboard', 'C', '0', 'stationInfo:view', '#', 'admin', '2018-11-26 21:13:34', 'admin', '2018-11-26 21:45:13', '');
-INSERT INTO `sys_menu` VALUES ('2011', '我的工作', '0', '11', '#', 'M', '1', '', 'fa fa-gavel', 'admin', '2018-11-26 21:31:33', 'admin', '2019-04-08 15:38:53', '');
-INSERT INTO `sys_menu` VALUES ('2012', '罚单处理', '2011', '1', '#', 'C', '0', 'system:user:list', '#', 'admin', '2018-11-26 21:35:59', 'admin', '2018-11-26 21:37:17', '');
-INSERT INTO `sys_menu` VALUES ('2013', '违章查询', '2011', '2', '#', 'C', '0', 'system:user:list', '#', 'admin', '2018-11-26 21:36:24', 'admin', '2018-11-26 21:37:48', '');
-INSERT INTO `sys_menu` VALUES ('2014', '设备', '3', '1', '/module/deviceData', 'C', '0', 'module:deviceData:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '设备菜单');
-INSERT INTO `sys_menu` VALUES ('2015', '设备查询', '2014', '1', '#', 'F', '0', 'module:deviceData:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2016', '设备新增', '2014', '2', '#', 'F', '0', 'module:deviceData:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2017', '设备修改', '2014', '3', '#', 'F', '0', 'module:deviceData:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2018', '设备删除', '2014', '4', '#', 'F', '0', 'module:deviceData:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2084', '遥感监测平台', '0', '4', '#', 'M', '1', '', 'fa fa-dashboard', 'admin', '2019-04-08 15:37:48', 'admin', '2019-04-11 18:10:12', '');
-INSERT INTO `sys_menu` VALUES ('2085', '点位环境空气质量记录', '2084', '1', '/yaogan/airQualityRecord', 'C', '0', 'yaogan:airQualityRecord:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '点位环境空气质量记录菜单');
-INSERT INTO `sys_menu` VALUES ('2086', '点位环境空气质量记录查询', '2085', '1', '#', 'F', '0', 'yaogan:airQualityRecord:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2087', '点位环境空气质量记录新增', '2085', '2', '#', 'F', '0', 'yaogan:airQualityRecord:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2088', '点位环境空气质量记录修改', '2085', '3', '#', 'F', '0', 'yaogan:airQualityRecord:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2089', '点位环境空气质量记录删除', '2085', '4', '#', 'F', '0', 'yaogan:airQualityRecord:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2090', '遥测设备检查', '2084', '1', '/yaogan/deviceCheckLog', 'C', '0', 'yaogan:deviceCheckLog:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备检查菜单');
-INSERT INTO `sys_menu` VALUES ('2091', '遥测设备检查查询', '2090', '1', '#', 'F', '0', 'yaogan:deviceCheckLog:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2092', '遥测设备检查新增', '2090', '2', '#', 'F', '0', 'yaogan:deviceCheckLog:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2093', '遥测设备检查修改', '2090', '3', '#', 'F', '0', 'yaogan:deviceCheckLog:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2094', '遥测设备检查删除', '2090', '4', '#', 'F', '0', 'yaogan:deviceCheckLog:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2095', '遥测设备动态检查过程数据', '2084', '1', '/yaogan/deviceDynamicCheck', 'C', '0', 'yaogan:deviceDynamicCheck:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备动态检查过程数据菜单');
-INSERT INTO `sys_menu` VALUES ('2096', '遥测设备动态检查过程数据查询', '2095', '1', '#', 'F', '0', 'yaogan:deviceDynamicCheck:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2097', '遥测设备动态检查过程数据新增', '2095', '2', '#', 'F', '0', 'yaogan:deviceDynamicCheck:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2098', '遥测设备动态检查过程数据修改', '2095', '3', '#', 'F', '0', 'yaogan:deviceDynamicCheck:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2099', '遥测设备动态检查过程数据删除', '2095', '4', '#', 'F', '0', 'yaogan:deviceDynamicCheck:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2100', '遥测设备自检过程数据', '2084', '1', '/yaogan/deviceSelfCheck', 'C', '0', 'yaogan:deviceSelfCheck:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备自检过程数据菜单');
-INSERT INTO `sys_menu` VALUES ('2101', '遥测设备自检过程数据查询', '2100', '1', '#', 'F', '0', 'yaogan:deviceSelfCheck:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2102', '遥测设备自检过程数据新增', '2100', '2', '#', 'F', '0', 'yaogan:deviceSelfCheck:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2103', '遥测设备自检过程数据修改', '2100', '3', '#', 'F', '0', 'yaogan:deviceSelfCheck:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2104', '遥测设备自检过程数据删除', '2100', '4', '#', 'F', '0', 'yaogan:deviceSelfCheck:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2105', '遥测设备静态检查过程数据', '2084', '1', '/yaogan/deviceStaticCheck', 'C', '0', 'yaogan:deviceStaticCheck:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备静态检查过程数据菜单');
-INSERT INTO `sys_menu` VALUES ('2106', '遥测设备静态检查过程数据查询', '2105', '1', '#', 'F', '0', 'yaogan:deviceStaticCheck:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2107', '遥测设备静态检查过程数据新增', '2105', '2', '#', 'F', '0', 'yaogan:deviceStaticCheck:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2108', '遥测设备静态检查过程数据修改', '2105', '3', '#', 'F', '0', 'yaogan:deviceStaticCheck:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2109', '遥测设备静态检查过程数据删除', '2105', '4', '#', 'F', '0', 'yaogan:deviceStaticCheck:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2110', '点位遥测线', '2084', '1', '/yaogan/line', 'C', '0', 'yaogan:line:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '点位遥测线菜单');
-INSERT INTO `sys_menu` VALUES ('2111', '点位遥测线查询', '2110', '1', '#', 'F', '0', 'yaogan:line:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2112', '点位遥测线新增', '2110', '2', '#', 'F', '0', 'yaogan:line:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2113', '点位遥测线修改', '2110', '3', '#', 'F', '0', 'yaogan:line:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2114', '点位遥测线删除', '2110', '4', '#', 'F', '0', 'yaogan:line:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2115', '移动式点位运行记录', '2084', '1', '/yaogan/mobileStation', 'C', '0', 'yaogan:mobileStation:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '移动式点位运行记录菜单');
-INSERT INTO `sys_menu` VALUES ('2116', '移动式点位运行记录查询', '2115', '1', '#', 'F', '0', 'yaogan:mobileStation:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2117', '移动式点位运行记录新增', '2115', '2', '#', 'F', '0', 'yaogan:mobileStation:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2118', '移动式点位运行记录修改', '2115', '3', '#', 'F', '0', 'yaogan:mobileStation:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2119', '移动式点位运行记录删除', '2115', '4', '#', 'F', '0', 'yaogan:mobileStation:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2120', '遥感监测数据', '2084', '1', '/yaogan/monitorDataLog', 'C', '0', 'yaogan:monitorDataLog:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥感监测数据菜单');
-INSERT INTO `sys_menu` VALUES ('2121', '遥感监测数据查询', '2120', '1', '#', 'F', '0', 'yaogan:monitorDataLog:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2122', '遥感监测数据新增', '2120', '2', '#', 'F', '0', 'yaogan:monitorDataLog:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2123', '遥感监测数据修改', '2120', '3', '#', 'F', '0', 'yaogan:monitorDataLog:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2124', '遥感监测数据删除', '2120', '4', '#', 'F', '0', 'yaogan:monitorDataLog:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2125', '遥测设备自检', '2084', '1', '/yaogan/stationCheckLog', 'C', '0', 'yaogan:stationCheckLog:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备自检菜单');
-INSERT INTO `sys_menu` VALUES ('2126', '遥测设备自检查询', '2125', '1', '#', 'F', '0', 'yaogan:stationCheckLog:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2127', '遥测设备自检新增', '2125', '2', '#', 'F', '0', 'yaogan:stationCheckLog:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2128', '遥测设备自检修改', '2125', '3', '#', 'F', '0', 'yaogan:stationCheckLog:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2129', '遥测设备自检删除', '2125', '4', '#', 'F', '0', 'yaogan:stationCheckLog:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2130', '点位', '2084', '1', '/yaogan/station', 'C', '0', 'yaogan:station:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '点位菜单');
-INSERT INTO `sys_menu` VALUES ('2131', '点位查询', '2130', '1', '#', 'F', '0', 'yaogan:station:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2132', '点位新增', '2130', '2', '#', 'F', '0', 'yaogan:station:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2133', '点位修改', '2130', '3', '#', 'F', '0', 'yaogan:station:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2134', '点位删除', '2130', '4', '#', 'F', '0', 'yaogan:station:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2135', '交通流量', '2084', '1', '/yaogan/trafficFlow', 'C', '0', 'yaogan:trafficFlow:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '交通流量菜单');
-INSERT INTO `sys_menu` VALUES ('2136', '交通流量查询', '2135', '1', '#', 'F', '0', 'yaogan:trafficFlow:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2137', '交通流量新增', '2135', '2', '#', 'F', '0', 'yaogan:trafficFlow:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2138', '交通流量修改', '2135', '3', '#', 'F', '0', 'yaogan:trafficFlow:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2139', '交通流量删除', '2135', '4', '#', 'F', '0', 'yaogan:trafficFlow:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2140', '车辆数据', '2084', '1', '/yaogan/vehicleInfo', 'C', '0', 'yaogan:vehicleInfo:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '车辆数据菜单');
-INSERT INTO `sys_menu` VALUES ('2141', '车辆数据查询', '2140', '1', '#', 'F', '0', 'yaogan:vehicleInfo:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2142', '车辆数据新增', '2140', '2', '#', 'F', '0', 'yaogan:vehicleInfo:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2143', '车辆数据修改', '2140', '3', '#', 'F', '0', 'yaogan:vehicleInfo:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2144', '车辆数据删除', '2140', '4', '#', 'F', '0', 'yaogan:vehicleInfo:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2145', '机动车轨迹', '2084', '1', '/yaogan/vehicleTrajectory', 'C', '0', 'yaogan:vehicleTrajectory:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '机动车轨迹菜单');
-INSERT INTO `sys_menu` VALUES ('2146', '机动车轨迹查询', '2145', '1', '#', 'F', '0', 'yaogan:vehicleTrajectory:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2147', '机动车轨迹新增', '2145', '2', '#', 'F', '0', 'yaogan:vehicleTrajectory:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2148', '机动车轨迹修改', '2145', '3', '#', 'F', '0', 'yaogan:vehicleTrajectory:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2149', '机动车轨迹删除', '2145', '4', '#', 'F', '0', 'yaogan:vehicleTrajectory:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2150', '违章记录', '2008', '2', '/duge/weightData/over', 'C', '0', '', '#', 'admin', '2019-04-12 14:27:25', 'admin', '2019-04-12 14:29:22', '');
-INSERT INTO `sys_menu` VALUES ('2151', '站点汇总', '2004', '1', '/report/total', 'C', '0', '', '#', 'admin', '2019-04-13 17:43:00', '', null, '');
-INSERT INTO `sys_menu` VALUES ('2152', '站点明细', '2004', '3', '/report/single', 'C', '0', '', '#', 'admin', '2019-04-13 17:43:43', '', null, '');
-INSERT INTO `sys_menu` VALUES ('2153', '站点审查记录', '2000', '3', '/station/auditRecord', 'C', '0', 'station:auditRecord:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '站点审查记录菜单');
-INSERT INTO `sys_menu` VALUES ('2154', '站点审查记录查询', '2153', '1', '#', 'F', '0', 'station:auditRecord:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2155', '站点审查记录新增', '2153', '2', '#', 'F', '0', 'station:auditRecord:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2156', '站点审查记录修改', '2153', '3', '#', 'F', '0', 'station:auditRecord:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2157', '站点审查记录删除', '2153', '4', '#', 'F', '0', 'station:auditRecord:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2158', '站点维护记录', '2000', '4', '/station/maintenanceRecord', 'C', '0', 'station:maintenanceRecord:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '站点维护记录菜单');
-INSERT INTO `sys_menu` VALUES ('2159', '站点维护记录查询', '2158', '1', '#', 'F', '0', 'station:maintenanceRecord:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2160', '站点维护记录新增', '2158', '2', '#', 'F', '0', 'station:maintenanceRecord:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2161', '站点维护记录修改', '2158', '3', '#', 'F', '0', 'station:maintenanceRecord:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2162', '站点维护记录删除', '2158', '4', '#', 'F', '0', 'station:maintenanceRecord:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
-INSERT INTO `sys_menu` VALUES ('2163', '实时监控', '2008', '3', '/duge/weightData/realtime', 'C', '0', '', '#', 'admin', '2019-06-13 15:56:22', 'admin', '2019-06-13 17:22:49', '');
-INSERT INTO `sys_menu` VALUES ('2165', '概况', '2164', '1', '/tic/main', 'C', '0', '', '#', 'admin', '2019-07-02 15:21:30', '', null, '');
-INSERT INTO `sys_menu` VALUES ('2167', '站点', '2164', '2', '/tic/weight', 'C', '0', '', '#', 'admin', '2019-07-02 15:22:56', '', null, '');
-INSERT INTO `sys_menu` VALUES ('2168', '维护记录', '2164', '3', '/tic/record', 'C', '0', '', '#', 'admin', '2019-07-02 15:23:29', '', null, '');
+INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 5, '#', 'M', '0', '', 'fa fa-gear', 'admin', '2018-03-16 11:33:00', 'admin', '2018-11-21 08:51:30', '系统管理目录');
+INSERT INTO `sys_menu` VALUES (2, '系统监控', 0, 7, '#', 'M', '0', '', 'fa fa-video-camera', 'admin', '2018-03-16 11:33:00', 'admin', '2018-11-26 21:32:12', '系统监控目录');
+INSERT INTO `sys_menu` VALUES (3, '系统工具', 0, 8, '#', 'M', '0', '', 'fa fa-bars', 'admin', '2018-03-16 11:33:00', 'admin', '2018-11-26 21:32:21', '系统工具目录');
+INSERT INTO `sys_menu` VALUES (100, '用户管理', 1, 1, '/system/user', 'C', '0', 'system:user:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '用户管理菜单');
+INSERT INTO `sys_menu` VALUES (101, '角色管理', 1, 2, '/system/role', 'C', '0', 'system:role:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '角色管理菜单');
+INSERT INTO `sys_menu` VALUES (102, '菜单管理', 1, 3, '/system/menu', 'C', '0', 'system:menu:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '菜单管理菜单');
+INSERT INTO `sys_menu` VALUES (103, '部门管理', 1, 4, '/system/dept', 'C', '0', 'system:dept:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '部门管理菜单');
+INSERT INTO `sys_menu` VALUES (104, '岗位管理', 1, 5, '/system/post', 'C', '0', 'system:post:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '岗位管理菜单');
+INSERT INTO `sys_menu` VALUES (105, '字典管理', 1, 6, '/system/dict', 'C', '0', 'system:dict:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '字典管理菜单');
+INSERT INTO `sys_menu` VALUES (106, '参数设置', 1, 7, '/system/config', 'C', '0', 'system:config:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '参数设置菜单');
+INSERT INTO `sys_menu` VALUES (107, '通知公告', 1, 8, '/system/notice', 'C', '0', 'system:notice:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '通知公告菜单');
+INSERT INTO `sys_menu` VALUES (108, '日志管理', 1, 9, '#', 'M', '0', '', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '日志管理菜单');
+INSERT INTO `sys_menu` VALUES (109, '在线用户', 2, 1, '/monitor/online', 'C', '0', 'monitor:online:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '在线用户菜单');
+INSERT INTO `sys_menu` VALUES (110, '定时任务', 2, 2, '/monitor/job', 'C', '0', 'monitor:job:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '定时任务菜单');
+INSERT INTO `sys_menu` VALUES (111, '数据监控', 2, 3, '/monitor/data', 'C', '0', 'monitor:data:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '数据监控菜单');
+INSERT INTO `sys_menu` VALUES (112, '表单构建', 3, 1, '/tool/build', 'C', '0', 'tool:build:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '表单构建菜单');
+INSERT INTO `sys_menu` VALUES (113, '代码生成', 3, 2, '/tool/gen', 'C', '0', 'tool:gen:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '代码生成菜单');
+INSERT INTO `sys_menu` VALUES (114, '系统接口', 3, 3, '/tool/swagger', 'C', '0', 'tool:swagger:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '系统接口菜单');
+INSERT INTO `sys_menu` VALUES (500, '操作日志', 108, 1, '/monitor/operlog', 'C', '0', 'monitor:operlog:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '操作日志菜单');
+INSERT INTO `sys_menu` VALUES (501, '登录日志', 108, 2, '/monitor/logininfor', 'C', '0', 'monitor:logininfor:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '登录日志菜单');
+INSERT INTO `sys_menu` VALUES (1000, '用户查询', 100, 1, '#', 'F', '0', 'system:user:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1001, '用户新增', 100, 2, '#', 'F', '0', 'system:user:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1002, '用户修改', 100, 3, '#', 'F', '0', 'system:user:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1003, '用户删除', 100, 4, '#', 'F', '0', 'system:user:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1004, '用户导出', 100, 5, '#', 'F', '0', 'system:user:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1005, '重置密码', 100, 5, '#', 'F', '0', 'system:user:resetPwd', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1006, '角色查询', 101, 1, '#', 'F', '0', 'system:role:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1007, '角色新增', 101, 2, '#', 'F', '0', 'system:role:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1008, '角色修改', 101, 3, '#', 'F', '0', 'system:role:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1009, '角色删除', 101, 4, '#', 'F', '0', 'system:role:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1010, '角色导出', 101, 4, '#', 'F', '0', 'system:role:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1011, '菜单查询', 102, 1, '#', 'F', '0', 'system:menu:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1012, '菜单新增', 102, 2, '#', 'F', '0', 'system:menu:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1013, '菜单修改', 102, 3, '#', 'F', '0', 'system:menu:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1014, '菜单删除', 102, 4, '#', 'F', '0', 'system:menu:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1015, '部门查询', 103, 1, '#', 'F', '0', 'system:dept:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1016, '部门新增', 103, 2, '#', 'F', '0', 'system:dept:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1017, '部门修改', 103, 3, '#', 'F', '0', 'system:dept:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1018, '部门删除', 103, 4, '#', 'F', '0', 'system:dept:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1019, '岗位查询', 104, 1, '#', 'F', '0', 'system:post:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1020, '岗位新增', 104, 2, '#', 'F', '0', 'system:post:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1021, '岗位修改', 104, 3, '#', 'F', '0', 'system:post:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1022, '岗位删除', 104, 4, '#', 'F', '0', 'system:post:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1023, '岗位导出', 104, 4, '#', 'F', '0', 'system:post:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1024, '字典查询', 105, 1, '#', 'F', '0', 'system:dict:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1025, '字典新增', 105, 2, '#', 'F', '0', 'system:dict:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1026, '字典修改', 105, 3, '#', 'F', '0', 'system:dict:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1027, '字典删除', 105, 4, '#', 'F', '0', 'system:dict:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1028, '字典导出', 105, 4, '#', 'F', '0', 'system:dict:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1029, '参数查询', 106, 1, '#', 'F', '0', 'system:config:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1030, '参数新增', 106, 2, '#', 'F', '0', 'system:config:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1031, '参数修改', 106, 3, '#', 'F', '0', 'system:config:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1032, '参数删除', 106, 4, '#', 'F', '0', 'system:config:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1033, '参数导出', 106, 4, '#', 'F', '0', 'system:config:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1034, '公告查询', 107, 1, '#', 'F', '0', 'system:notice:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1035, '公告新增', 107, 2, '#', 'F', '0', 'system:notice:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1036, '公告修改', 107, 3, '#', 'F', '0', 'system:notice:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1037, '公告删除', 107, 4, '#', 'F', '0', 'system:notice:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1038, '操作查询', 500, 1, '#', 'F', '0', 'monitor:operlog:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1039, '操作删除', 500, 2, '#', 'F', '0', 'monitor:operlog:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1040, '详细信息', 500, 3, '#', 'F', '0', 'monitor:operlog:detail', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1041, '日志导出', 500, 3, '#', 'F', '0', 'monitor:operlog:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1042, '登录查询', 501, 1, '#', 'F', '0', 'monitor:logininfor:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1043, '登录删除', 501, 2, '#', 'F', '0', 'monitor:logininfor:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1044, '日志导出', 501, 2, '#', 'F', '0', 'monitor:logininfor:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1045, '在线查询', 109, 1, '#', 'F', '0', 'monitor:online:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1046, '批量强退', 109, 2, '#', 'F', '0', 'monitor:online:batchForceLogout', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1047, '单条强退', 109, 3, '#', 'F', '0', 'monitor:online:forceLogout', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1048, '任务查询', 110, 1, '#', 'F', '0', 'monitor:job:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1049, '任务新增', 110, 2, '#', 'F', '0', 'monitor:job:add', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1050, '任务修改', 110, 3, '#', 'F', '0', 'monitor:job:edit', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1051, '任务删除', 110, 4, '#', 'F', '0', 'monitor:job:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1052, '状态修改', 110, 5, '#', 'F', '0', 'monitor:job:changeStatus', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1053, '任务导出', 110, 5, '#', 'F', '0', 'monitor:job:export', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1054, '生成查询', 113, 1, '#', 'F', '0', 'tool:gen:list', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (1055, '生成代码', 113, 2, '#', 'F', '0', 'tool:gen:code', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (2000, '站点管理', 0, 3, '#', 'M', '0', '', 'fa fa-exchange', 'admin', '2018-11-14 14:32:15', 'admin', '2019-04-13 17:06:29', '');
+INSERT INTO `sys_menu` VALUES (2001, '站点管理', 2000, 2, '/module/stationInfo', 'C', '0', 'stationInfo:manager', '#', 'admin', '2018-11-14 14:34:20', 'admin', '2018-11-26 21:43:35', '');
+INSERT INTO `sys_menu` VALUES (2002, '车辆信息管理', 0, 12, '#', 'M', '1', '', 'fa fa-automobile', 'admin', '2018-11-14 17:20:52', 'admin', '2019-04-13 17:06:53', '');
+INSERT INTO `sys_menu` VALUES (2003, '车辆管理', 2002, 1, '/report/reportCar', 'C', '0', '', '#', 'admin', '2018-11-14 17:21:10', 'admin', '2018-12-01 18:18:49', '');
+INSERT INTO `sys_menu` VALUES (2004, '报表中心', 0, 2, '#', 'M', '0', '', 'fa fa-dashboard', 'admin', '2018-11-14 17:22:18', 'admin', '2019-04-13 17:06:37', '');
+INSERT INTO `sys_menu` VALUES (2006, '站点比较', 2004, 2, '/report', 'C', '0', '', 'fa fa-map-signs', 'admin', '2018-11-19 22:34:40', 'admin', '2019-04-13 17:42:15', '');
+INSERT INTO `sys_menu` VALUES (2008, '通行记录管理', 0, 1, '#', 'M', '0', '', 'fa fa-road', 'admin', '2018-11-21 08:46:24', 'admin', '2018-11-21 08:50:19', '');
+INSERT INTO `sys_menu` VALUES (2009, '实时通行记录', 2008, 1, '/duge/weightData', 'C', '0', '', '#', 'admin', '2018-11-21 08:47:15', 'admin', '2018-11-21 08:49:25', '');
+INSERT INTO `sys_menu` VALUES (2010, '站点信息', 2000, 1, '/module/stationInfo/stationDashboard', 'C', '0', 'stationInfo:view', '#', 'admin', '2018-11-26 21:13:34', 'admin', '2018-11-26 21:45:13', '');
+INSERT INTO `sys_menu` VALUES (2011, '我的工作', 0, 11, '#', 'M', '1', '', 'fa fa-gavel', 'admin', '2018-11-26 21:31:33', 'admin', '2019-04-08 15:38:53', '');
+INSERT INTO `sys_menu` VALUES (2012, '罚单处理', 2011, 1, '#', 'C', '0', 'system:user:list', '#', 'admin', '2018-11-26 21:35:59', 'admin', '2018-11-26 21:37:17', '');
+INSERT INTO `sys_menu` VALUES (2013, '违章查询', 2011, 2, '#', 'C', '0', 'system:user:list', '#', 'admin', '2018-11-26 21:36:24', 'admin', '2018-11-26 21:37:48', '');
+INSERT INTO `sys_menu` VALUES (2014, '设备', 3, 1, '/module/deviceData', 'C', '0', 'module:deviceData:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '设备菜单');
+INSERT INTO `sys_menu` VALUES (2015, '设备查询', 2014, 1, '#', 'F', '0', 'module:deviceData:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2016, '设备新增', 2014, 2, '#', 'F', '0', 'module:deviceData:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2017, '设备修改', 2014, 3, '#', 'F', '0', 'module:deviceData:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2018, '设备删除', 2014, 4, '#', 'F', '0', 'module:deviceData:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2084, '遥感监测平台', 0, 4, '#', 'M', '1', '', 'fa fa-dashboard', 'admin', '2019-04-08 15:37:48', 'admin', '2019-04-11 18:10:12', '');
+INSERT INTO `sys_menu` VALUES (2085, '点位环境空气质量记录', 2084, 1, '/yaogan/airQualityRecord', 'C', '0', 'yaogan:airQualityRecord:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '点位环境空气质量记录菜单');
+INSERT INTO `sys_menu` VALUES (2086, '点位环境空气质量记录查询', 2085, 1, '#', 'F', '0', 'yaogan:airQualityRecord:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2087, '点位环境空气质量记录新增', 2085, 2, '#', 'F', '0', 'yaogan:airQualityRecord:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2088, '点位环境空气质量记录修改', 2085, 3, '#', 'F', '0', 'yaogan:airQualityRecord:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2089, '点位环境空气质量记录删除', 2085, 4, '#', 'F', '0', 'yaogan:airQualityRecord:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2090, '遥测设备检查', 2084, 1, '/yaogan/deviceCheckLog', 'C', '0', 'yaogan:deviceCheckLog:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备检查菜单');
+INSERT INTO `sys_menu` VALUES (2091, '遥测设备检查查询', 2090, 1, '#', 'F', '0', 'yaogan:deviceCheckLog:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2092, '遥测设备检查新增', 2090, 2, '#', 'F', '0', 'yaogan:deviceCheckLog:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2093, '遥测设备检查修改', 2090, 3, '#', 'F', '0', 'yaogan:deviceCheckLog:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2094, '遥测设备检查删除', 2090, 4, '#', 'F', '0', 'yaogan:deviceCheckLog:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2095, '遥测设备动态检查过程数据', 2084, 1, '/yaogan/deviceDynamicCheck', 'C', '0', 'yaogan:deviceDynamicCheck:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备动态检查过程数据菜单');
+INSERT INTO `sys_menu` VALUES (2096, '遥测设备动态检查过程数据查询', 2095, 1, '#', 'F', '0', 'yaogan:deviceDynamicCheck:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2097, '遥测设备动态检查过程数据新增', 2095, 2, '#', 'F', '0', 'yaogan:deviceDynamicCheck:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2098, '遥测设备动态检查过程数据修改', 2095, 3, '#', 'F', '0', 'yaogan:deviceDynamicCheck:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2099, '遥测设备动态检查过程数据删除', 2095, 4, '#', 'F', '0', 'yaogan:deviceDynamicCheck:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2100, '遥测设备自检过程数据', 2084, 1, '/yaogan/deviceSelfCheck', 'C', '0', 'yaogan:deviceSelfCheck:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备自检过程数据菜单');
+INSERT INTO `sys_menu` VALUES (2101, '遥测设备自检过程数据查询', 2100, 1, '#', 'F', '0', 'yaogan:deviceSelfCheck:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2102, '遥测设备自检过程数据新增', 2100, 2, '#', 'F', '0', 'yaogan:deviceSelfCheck:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2103, '遥测设备自检过程数据修改', 2100, 3, '#', 'F', '0', 'yaogan:deviceSelfCheck:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2104, '遥测设备自检过程数据删除', 2100, 4, '#', 'F', '0', 'yaogan:deviceSelfCheck:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2105, '遥测设备静态检查过程数据', 2084, 1, '/yaogan/deviceStaticCheck', 'C', '0', 'yaogan:deviceStaticCheck:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备静态检查过程数据菜单');
+INSERT INTO `sys_menu` VALUES (2106, '遥测设备静态检查过程数据查询', 2105, 1, '#', 'F', '0', 'yaogan:deviceStaticCheck:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2107, '遥测设备静态检查过程数据新增', 2105, 2, '#', 'F', '0', 'yaogan:deviceStaticCheck:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2108, '遥测设备静态检查过程数据修改', 2105, 3, '#', 'F', '0', 'yaogan:deviceStaticCheck:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2109, '遥测设备静态检查过程数据删除', 2105, 4, '#', 'F', '0', 'yaogan:deviceStaticCheck:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2110, '点位遥测线', 2084, 1, '/yaogan/line', 'C', '0', 'yaogan:line:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '点位遥测线菜单');
+INSERT INTO `sys_menu` VALUES (2111, '点位遥测线查询', 2110, 1, '#', 'F', '0', 'yaogan:line:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2112, '点位遥测线新增', 2110, 2, '#', 'F', '0', 'yaogan:line:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2113, '点位遥测线修改', 2110, 3, '#', 'F', '0', 'yaogan:line:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2114, '点位遥测线删除', 2110, 4, '#', 'F', '0', 'yaogan:line:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2115, '移动式点位运行记录', 2084, 1, '/yaogan/mobileStation', 'C', '0', 'yaogan:mobileStation:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '移动式点位运行记录菜单');
+INSERT INTO `sys_menu` VALUES (2116, '移动式点位运行记录查询', 2115, 1, '#', 'F', '0', 'yaogan:mobileStation:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2117, '移动式点位运行记录新增', 2115, 2, '#', 'F', '0', 'yaogan:mobileStation:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2118, '移动式点位运行记录修改', 2115, 3, '#', 'F', '0', 'yaogan:mobileStation:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2119, '移动式点位运行记录删除', 2115, 4, '#', 'F', '0', 'yaogan:mobileStation:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2120, '遥感监测数据', 2084, 1, '/yaogan/monitorDataLog', 'C', '0', 'yaogan:monitorDataLog:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥感监测数据菜单');
+INSERT INTO `sys_menu` VALUES (2121, '遥感监测数据查询', 2120, 1, '#', 'F', '0', 'yaogan:monitorDataLog:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2122, '遥感监测数据新增', 2120, 2, '#', 'F', '0', 'yaogan:monitorDataLog:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2123, '遥感监测数据修改', 2120, 3, '#', 'F', '0', 'yaogan:monitorDataLog:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2124, '遥感监测数据删除', 2120, 4, '#', 'F', '0', 'yaogan:monitorDataLog:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2125, '遥测设备自检', 2084, 1, '/yaogan/stationCheckLog', 'C', '0', 'yaogan:stationCheckLog:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '遥测设备自检菜单');
+INSERT INTO `sys_menu` VALUES (2126, '遥测设备自检查询', 2125, 1, '#', 'F', '0', 'yaogan:stationCheckLog:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2127, '遥测设备自检新增', 2125, 2, '#', 'F', '0', 'yaogan:stationCheckLog:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2128, '遥测设备自检修改', 2125, 3, '#', 'F', '0', 'yaogan:stationCheckLog:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2129, '遥测设备自检删除', 2125, 4, '#', 'F', '0', 'yaogan:stationCheckLog:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2130, '点位', 2084, 1, '/yaogan/station', 'C', '0', 'yaogan:station:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '点位菜单');
+INSERT INTO `sys_menu` VALUES (2131, '点位查询', 2130, 1, '#', 'F', '0', 'yaogan:station:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2132, '点位新增', 2130, 2, '#', 'F', '0', 'yaogan:station:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2133, '点位修改', 2130, 3, '#', 'F', '0', 'yaogan:station:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2134, '点位删除', 2130, 4, '#', 'F', '0', 'yaogan:station:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2135, '交通流量', 2084, 1, '/yaogan/trafficFlow', 'C', '0', 'yaogan:trafficFlow:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '交通流量菜单');
+INSERT INTO `sys_menu` VALUES (2136, '交通流量查询', 2135, 1, '#', 'F', '0', 'yaogan:trafficFlow:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2137, '交通流量新增', 2135, 2, '#', 'F', '0', 'yaogan:trafficFlow:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2138, '交通流量修改', 2135, 3, '#', 'F', '0', 'yaogan:trafficFlow:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2139, '交通流量删除', 2135, 4, '#', 'F', '0', 'yaogan:trafficFlow:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2140, '车辆数据', 2084, 1, '/yaogan/vehicleInfo', 'C', '0', 'yaogan:vehicleInfo:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '车辆数据菜单');
+INSERT INTO `sys_menu` VALUES (2141, '车辆数据查询', 2140, 1, '#', 'F', '0', 'yaogan:vehicleInfo:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2142, '车辆数据新增', 2140, 2, '#', 'F', '0', 'yaogan:vehicleInfo:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2143, '车辆数据修改', 2140, 3, '#', 'F', '0', 'yaogan:vehicleInfo:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2144, '车辆数据删除', 2140, 4, '#', 'F', '0', 'yaogan:vehicleInfo:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2145, '机动车轨迹', 2084, 1, '/yaogan/vehicleTrajectory', 'C', '0', 'yaogan:vehicleTrajectory:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '机动车轨迹菜单');
+INSERT INTO `sys_menu` VALUES (2146, '机动车轨迹查询', 2145, 1, '#', 'F', '0', 'yaogan:vehicleTrajectory:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2147, '机动车轨迹新增', 2145, 2, '#', 'F', '0', 'yaogan:vehicleTrajectory:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2148, '机动车轨迹修改', 2145, 3, '#', 'F', '0', 'yaogan:vehicleTrajectory:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2149, '机动车轨迹删除', 2145, 4, '#', 'F', '0', 'yaogan:vehicleTrajectory:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2150, '违章记录', 2008, 2, '/duge/weightData/over', 'C', '0', '', '#', 'admin', '2019-04-12 14:27:25', 'admin', '2019-04-12 14:29:22', '');
+INSERT INTO `sys_menu` VALUES (2151, '站点汇总', 2004, 1, '/report/total', 'C', '0', '', '#', 'admin', '2019-04-13 17:43:00', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2152, '站点明细', 2004, 3, '/report/single', 'C', '0', '', '#', 'admin', '2019-04-13 17:43:43', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2153, '站点审查记录', 2000, 3, '/station/auditRecord', 'C', '0', 'station:auditRecord:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '站点审查记录菜单');
+INSERT INTO `sys_menu` VALUES (2154, '站点审查记录查询', 2153, 1, '#', 'F', '0', 'station:auditRecord:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2155, '站点审查记录新增', 2153, 2, '#', 'F', '0', 'station:auditRecord:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2156, '站点审查记录修改', 2153, 3, '#', 'F', '0', 'station:auditRecord:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2157, '站点审查记录删除', 2153, 4, '#', 'F', '0', 'station:auditRecord:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2158, '站点维护记录', 2000, 4, '/station/maintenanceRecord', 'C', '0', 'station:maintenanceRecord:view', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '站点维护记录菜单');
+INSERT INTO `sys_menu` VALUES (2159, '站点维护记录查询', 2158, 1, '#', 'F', '0', 'station:maintenanceRecord:list', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2160, '站点维护记录新增', 2158, 2, '#', 'F', '0', 'station:maintenanceRecord:add', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2161, '站点维护记录修改', 2158, 3, '#', 'F', '0', 'station:maintenanceRecord:edit', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2162, '站点维护记录删除', 2158, 4, '#', 'F', '0', 'station:maintenanceRecord:remove', '#', 'admin', '2018-03-01 00:00:00', 'ry', '2018-03-01 00:00:00', '');
+INSERT INTO `sys_menu` VALUES (2163, '实时监控', 2008, 3, '/duge/weightData/realtime', 'C', '0', '', '#', 'admin', '2019-06-13 15:56:22', 'admin', '2019-06-13 17:22:49', '');
+INSERT INTO `sys_menu` VALUES (2164, '交通流量', 0, 8, '#', 'M', '0', '', 'fa fa-map-marker', 'admin', '2019-07-02 15:20:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2165, '概况', 2164, 1, '/tic/main', 'C', '0', '', '#', 'admin', '2019-07-02 15:21:30', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2167, '站点', 2164, 2, '/tic/station', 'C', '0', '', '#', 'admin', '2019-07-02 15:22:56', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2168, '维护记录', 2164, 3, '/tic/record', 'C', '0', '', '#', 'admin', '2019-07-02 15:23:29', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2170, '站点分类', 2000, 3, '/module/stationType', 'C', '0', '', '#', 'admin', '2019-11-04 14:59:58', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -1822,8 +1829,74 @@ CREATE TABLE `weight_data` (
   `upload_yhl` tinyint(3) DEFAULT '0',
   `upload_sj` tinyint(3) DEFAULT '0',
   `upload_jj` tinyint(3) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=302897 DEFAULT CHARSET=utf8 COMMENT='重量数据';
+  `mark_del` int(2) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `index_station` (`station_id`) USING BTREE,
+  KEY `index_yhl_tag` (`upload_yhl`) USING BTREE,
+  KEY `index_sj_tag` (`upload_sj`) USING BTREE,
+  KEY `index_plate` (`truck_number`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2356860 DEFAULT CHARSET=utf8 COMMENT='重量数据';
+
+
+CREATE TABLE `weight_data_before_40days` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `limit_over_level` int(8) DEFAULT NULL COMMENT '超限等级',
+  `limit_mode` int(1) DEFAULT NULL COMMENT '1=轴数限重；2=车型限重',
+  `vehicle_type` varchar(24) DEFAULT NULL COMMENT '车型',
+  `weighting_id` int(8) DEFAULT NULL COMMENT '称重序号',
+  `weighting_date` datetime DEFAULT NULL COMMENT '称重时间',
+  `lane` int(2) DEFAULT NULL COMMENT '车道号',
+  `direction` varchar(24) DEFAULT NULL COMMENT '行驶方向',
+  `truck_number` varchar(32) DEFAULT NULL COMMENT '车牌号',
+  `truck_corlor` varchar(12) DEFAULT NULL COMMENT '车牌颜色',
+  `speed` decimal(5,1) DEFAULT NULL COMMENT '车速',
+  `axle_count` int(2) DEFAULT NULL COMMENT '轴数',
+  `axle_type` varchar(24) DEFAULT NULL COMMENT '轴型序列',
+  `weight` decimal(12,2) DEFAULT '0.00' COMMENT '总重',
+  `limit_weight` decimal(12,2) DEFAULT '0.00' COMMENT '限重',
+  `over_weight` decimal(12,2) DEFAULT '0.00' COMMENT '超重',
+  `axle_weight1` decimal(12,2) DEFAULT '0.00',
+  `axle_weight2` decimal(12,2) DEFAULT '0.00',
+  `axle_weight3` decimal(12,2) DEFAULT '0.00',
+  `axle_weight4` decimal(12,2) DEFAULT '0.00',
+  `axle_weight5` decimal(12,2) DEFAULT '0.00',
+  `axle_weight6` decimal(12,2) DEFAULT '0.00',
+  `axle_weight7` decimal(12,2) DEFAULT '0.00',
+  `axle_weight8` decimal(12,2) DEFAULT '0.00',
+  `sequence_tag` char(24) DEFAULT NULL COMMENT '唯一序列号',
+  `ftp_head` varchar(128) DEFAULT NULL COMMENT '车头图片地址（秤上）',
+  `ftp_axle` varchar(128) DEFAULT NULL COMMENT '车轴图片地址（秤上）',
+  `ftp_tail` varchar(128) DEFAULT NULL COMMENT '车尾图片地址（秤上）',
+  `ftp_prior_head` varchar(128) DEFAULT NULL COMMENT '秤前车头图片地址',
+  `ftp_plate` varchar(128) DEFAULT NULL COMMENT '车牌特征图',
+  `ftp_full_view` varchar(128) DEFAULT NULL COMMENT '车头视频文件地址',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT '' COMMENT '备注',
+  `device_code` varchar(8) DEFAULT NULL COMMENT '设备编码',
+  `station_id` bigint(20) DEFAULT NULL COMMENT '站点ID',
+  `lwh_date` timestamp NULL DEFAULT NULL COMMENT '超限采集时间',
+  `plate` varchar(16) DEFAULT NULL COMMENT '超限车牌号',
+  `width` varchar(16) DEFAULT '0' COMMENT '车宽',
+  `height` varchar(16) DEFAULT '0' COMMENT '车高',
+  `length` varchar(16) DEFAULT '0' COMMENT '车长',
+  `lane_mid` varchar(16) DEFAULT NULL COMMENT '中间车道号',
+  `lane_min` varchar(16) DEFAULT NULL COMMENT '小车道号',
+  `lane_max` varchar(16) DEFAULT NULL COMMENT '大车道号',
+  `pass_time` varchar(8) DEFAULT NULL COMMENT '通过时间',
+  `upload_tag` tinyint(3) DEFAULT '0' COMMENT '上传标记',
+  `upload_yhl` tinyint(3) DEFAULT '0',
+  `upload_sj` tinyint(3) DEFAULT '0',
+  `upload_jj` tinyint(3) DEFAULT '0',
+  `mark_del` int(2) DEFAULT '0',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `index_station` (`station_id`) USING BTREE,
+  KEY `index_yhl_tag` (`upload_yhl`) USING BTREE,
+  KEY `index_sj_tag` (`upload_sj`) USING BTREE,
+  KEY `index_plate` (`truck_number`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2267767 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='重量数据';
 
 -- ----------------------------
 -- Table structure for weight_type_table_info
@@ -1864,3 +1937,21 @@ CREATE TABLE `refitted_vehicle_info`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `refitted_vehicle_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `vehicle_length` int(11) DEFAULT NULL COMMENT '车辆长度',
+  `vehicle_width` int(11) DEFAULT NULL COMMENT '车辆宽度',
+  `vehicle_height` int(11) DEFAULT NULL COMMENT '车辆高度',
+  `vehicle_rail_height` int(11) DEFAULT NULL COMMENT '车辆栏板高度',
+  `original_vehicle_rail_height` int(11) DEFAULT NULL COMMENT '原车辆栏板高度',
+  `lane_number` int(11) DEFAULT NULL COMMENT '车道号',
+  `truck_number` varchar(32) DEFAULT NULL COMMENT '号牌号码',
+  `truck_color` varchar(12) DEFAULT NULL COMMENT '号牌颜色',
+  `time` varchar(50) DEFAULT NULL COMMENT '时间',
+  `scene_picture_name` varchar(100) DEFAULT NULL COMMENT '场景图片名称（年月日+时分秒+号牌号码+scene.jpg）',
+  `plate_picture_name` varchar(100) DEFAULT NULL COMMENT '车牌图片名称（年月日+时分秒+号牌号码+plate.jpg）',
+  `graphic_model_name` varchar(100) DEFAULT NULL COMMENT '三维图名称（年月日+时分秒+号牌号码+left.png）',
+  `limit_over_tag` int(3) DEFAULT NULL COMMENT '超限标记（0正常 1超限）',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;

@@ -279,7 +279,7 @@ public class FileSystemServiceImpl {
                 if (sftp.isConnected()) {
                     sftp.disconnect();
                 } else if (sftp.isClosed()) {
-                    //log.info("sftp is closed already");
+                    log.info("sftp is closed already");
                 }
                 if (null != sftp.getSession()) {
                     sftp.getSession().disconnect();

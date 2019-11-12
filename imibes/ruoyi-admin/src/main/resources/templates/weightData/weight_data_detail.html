@@ -6,30 +6,35 @@
 <link th:href="@{/ajax/libs/blueimp/css/blueimp-gallery.min.css}" rel="stylesheet"/>
 <link th:href="@{/ajax/libs/blueimp/css/blueimp-gallery-video.css}" rel="stylesheet"/>
 <style>
-    .carousel-inner .item img{
+    .carousel-inner .item img {
         margin-top: 0px;
         padding-top: 0px;
     }
-    .carousel-inner .item h4{
+
+    .carousel-inner .item h4 {
         margin-bottom: 0px;
     }
+
     .form-group-new {
         margin-bottom: 1px;
         margin-right: -1px;
         margin-left: -1px;
     }
+
     .form-horizontal .control-label-new {
         padding-top: 1px;
         margin-bottom: 0;
         text-align: right;
     }
+
     .form-control-static-new {
         min-height: 28px;
         padding-top: 1px;
         padding-bottom: 1px;
         margin-bottom: 0;
     }
-    .over-filed{
+
+    .over-filed {
         background-color: red;
         color: white
     }
@@ -40,60 +45,50 @@
         <div class="row">
             <div class="col-sm-6">
                 <div id="links">
-                    <h3 class="col-md-12">图片信息：</h3>
                     <div class="col-md-12 carousel slide" id="carousel2">
-                        <ol class="carousel-indicators">
-                            <li data-slide-to="0" data-target="#carousel2" class="active"></li>
-                            <li data-slide-to="1" data-target="#carousel2"></li>
-                            <li data-slide-to="2" data-target="#carousel2"></li>
-                            <li data-slide-to="3" data-target="#carousel2"></li>
-                            <li data-slide-to="4" data-target="#carousel2"></li>
-                        </ol>
-                        <div class="carousel-inner" style="min-height: 150px">
-                            <div class="item active" th:if="${data.ftpPriorHead != null && data.ftpPriorHead ne ''}">
-                                <h4>前车头图片</h4>
-                                <a th:href="${ctxPath +data.ftpPriorHead}" title="前车头图片" data-gallery="">
-                                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpPriorHead}">
-                                </a>
-                            </div>
-                            <div class="item" th:if="${data.ftpTail != null && data.ftpTail ne ''}">
-                                <h4>车尾图片（秤上）</h4>
-                                <a th:href="${ctxPath +data.ftpTail}" title="车尾图片（秤上）" data-gallery="">
-                                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpTail}">
-                                </a>
-                            </div>
-                            <div class="item " th:if="${data.ftpPlate != null && data.ftpPlate ne ''}">
-                                <h4>车牌信息</h4>
-                                <a th:href="${ctxPath + data.ftpPlate}" title="车牌" data-gallery="">
-                                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath + data.ftpPlate}">
-                                </a>
-                            </div>
-                            <div class="item " th:if="${data.ftpHead != null &&  data.ftpHead ne ''}">
-                                <h4>侧拍</h4>
-                                <a th:href="${ctxPath + data.ftpHead}" title="车头图片" data-gallery="">
-                                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpHead}">
-                                </a>
-                            </div>
+                        <div class="carousel-inner"
+                             style="min-height: 150px;width: 100%;display: flex;flex-direction: column;justify-content: space-between;">
+                            <!-- <div class="item active" th:if="${data.ftpPriorHead != null && data.ftpPriorHead ne ''}"> -->
+                            <div style="width: 100%;display: flex;justify-content: space-around;align-items: center;">
+                                <div style="width: 45%; min-height:220px; min-width:100px;">
+                                    <h4>前抓拍</h4>
+                                    <a th:href="${ctxPath +data.ftpPriorHead}" title="前抓拍" data-gallery=""
+                                       th:if="${data.ftpPriorHead != null && data.ftpPriorHead ne ''}">
+                                        <img alt="image" class="img-responsive"
+                                             th:src="${ctxPath +data.ftpPriorHead}">
+                                    </a>
+                                </div>
 
-                            <div class="item" th:if="${data.ftpAxle != null && data.ftpAxle ne ''}">
-                                <h4>侧拍</h4>
-                                <a th:href="${ctxPath +data.ftpAxle}" title="车轴图片(秤上)" data-gallery="">
-                                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpAxle}">
-                                </a>
+                                <div style="width: 45%; min-height:220px; min-width:100px;">
+                                    <h4>后抓拍</h4>
+                                    <a th:href="${ctxPath +data.ftpTail}" title="后抓拍" data-gallery=""
+                                       th:if="${data.ftpTail != null && data.ftpTail ne ''}">
+                                        <img alt="image" class="img-responsive"
+                                             th:src="${ctxPath +data.ftpTail}">
+                                    </a>
+                                </div>
                             </div>
-
+                            <div style="width: 100%;display: flex;justify-content: space-around;align-items: center; margin-top：200px;">
+                                <div style="width: 45%; min-height:220px; min-width:100px;">
+                                    <h4>右侧拍</h4>
+                                    <a th:href="${ctxPath +data.ftpAxle}" title="右侧拍" data-gallery=""
+                                       th:if="${data.ftpAxle != null && data.ftpAxle ne ''}">
+                                        <!-- http://pic18.nipic.com/20120103/8993051_170340691334_2.jpg -->
+                                        <img alt="image" class="img-responsive"
+                                             th:src="${ctxPath +data.ftpAxle}">
+                                    </a>
+                                </div>
+                                <div style="width: 45%; min-height:220px; min-width:100px;">
+                                    <h4>左侧拍</h4>
+                                    <a th:href="${ctxPath + data.ftpHead}" title="左侧拍" data-gallery=""
+                                       th:if="${data.ftpHead != null &&  data.ftpHead ne ''}">
+                                        <img alt="image" class="img-responsive"
+                                             th:src="${ctxPath +data.ftpHead}">
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <a data-slide="prev" href="carousel.html#carousel2" class="left carousel-control">
-                            <span class="icon-prev"></span>
-                        </a>
-                        <a data-slide="next" href="carousel.html#carousel2" class="right carousel-control">
-                            <span class="icon-next"></span>
-                        </a>
                     </div>
-                </div>
-                <h3 class="col-md-12" style="margin-top:20px;" th:if="${data.ftpFullView != null && data.ftpFullView ne ''}">视频信息：</h3>
-                <div class="col-md-12" th:if="${data.ftpFullView != null && data.ftpFullView ne ''}">
-                    <video th:src="${ctxPath +data.ftpFullView}" th:poster="@{/img/play_button.jpg}" controls="" style="height: 200px !important;"></video>
                 </div>
             </div>
             <h4 class="col-md-6">行车信息：</h4>
@@ -104,67 +99,46 @@
                     </div>
                 </div>
                 <div class="form-group-new">
-                    <label class="col-sm-7 control-label-new">车辆方向：</label>
-                    <div class="form-control-static-new" th:text="${data.direction}">
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group-new">
                     <label class="col-sm-7 control-label-new">车牌信息：</label>
                     <div class="form-control-static-new" th:text="${data.truckNumber}">
                     </div>
                 </div>
                 <div class="form-group-new">
-                    <label class="col-sm-7 control-label-new">行驶车道：</label>
-                    <div class="form-control-static-new" th:text="${data.lane}">
+                    <label class="col-sm-7 control-label-new">采集日期：</label>
+                    <div class="form-control-static-new" th:text="${#dates.format(data.weightingDate,'yyyy-MM-dd')}">
                     </div>
                 </div>
-                <!--<div class="form-group-new">-->
-                    <!--<label class="col-sm-7 control-label-new">超限：</label>-->
-                    <!--<div class="form-control-static-new">-->
-                    <!--</div>-->
-                <!--</div>-->
-            </div>
-            <div class="col-md-6">
-                <div class="form-group-new">
-                    <label class="col-sm-3 control-label-new">采集时间：</label>
-                    <div class="form-control-static-new" th:text="${#dates.format(data.weightingDate,'yyyy-MM-dd HH:mm:ss')}">
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group-new">
+                <div class="form-group-new weight_item">
                     <label class="col-sm-7 control-label-new">总重(吨)：</label>
-                    <div class="form-control-static-new" th:text="${data.weight}">
+                    <div class="form-control-static-new" th:text="${data.weight}" id="weightDiv">
                     </div>
                 </div>
-                <div class="form-group-new">
+                <div class="form-group-new weight_item">
                     <label class="col-sm-7 control-label-new">轴数：</label>
                     <div class="form-control-static-new" th:text="${data.axleCount}">
                     </div>
                 </div>
-                <div class="form-group-new">
+                <div class="form-group-new weight_item">
                     <label class="col-sm-7 control-label-new">超重(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.overWeight}" id="overWeightDiv">
                     </div>
                 </div>
-                <div class="form-group-new">
+                <div class="form-group-new weight_item">
                     <label class="col-sm-7 control-label-new">轴一重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight1}">
                     </div>
                 </div>
-                <div class="form-group-new" th:if="${data.axleWeight3 != null && data.axleWeight3 >0 }">
+                <div class="form-group-new weight_item" th:if="${data.axleWeight3 != null && data.axleWeight3 >0 }">
                     <label class="col-sm-7 control-label-new">轴三重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight3}">
                     </div>
                 </div>
-                <div class="form-group-new" th:if="${data.axleWeight5 != null && data.axleWeight5 >0 }">
+                <div class="form-group-new weight_item" th:if="${data.axleWeight5 != null && data.axleWeight5 >0 }">
                     <label class="col-sm-7 control-label-new">轴五重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight5}">
                     </div>
                 </div>
-                <div class="form-group-new" th:if="${data.axleWeight7 != null && data.axleWeight7 >0 }">
+                <div class="form-group-new weight_item" th:if="${data.axleWeight7 != null && data.axleWeight7 >0 }">
                     <label class="col-sm-7 control-label-new">轴七重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight7}">
                     </div>
@@ -179,16 +153,12 @@
                     <div class="form-control-static-new" th:text="${data.width}/1000" id="widthDiv">
                     </div>
                 </div>
+
             </div>
             <div class="col-sm-3">
                 <div class="form-group-new">
-                    <label class="col-sm-7 control-label-new">超重率：</label>
-                    <div class="form-control-static-new" th:text="${overRate}">
-                    </div>
-                </div>
-                <div class="form-group-new">
-                    <label class="col-sm-7 control-label-new">限重：</label>
-                    <div class="form-control-static-new" th:text="${data.limitWeight}">
+                    <label class="col-sm-7 control-label-new">行驶车道：</label>
+                    <div class="form-control-static-new" th:text="${data.laneMid}">
                     </div>
                 </div>
                 <div class="form-group-new">
@@ -197,23 +167,44 @@
                     </div>
                 </div>
                 <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">采集时间：</label>
+                    <div class="form-control-static-new" th:text="${#dates.format(data.weightingDate,'HH:mm:ss')}">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">超重率：</label>
+                    <div class="form-control-static-new" th:text="${overRate}">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">限重：</label>
+                    <div class="form-control-static-new" th:text="${data.limitWeight}">
+                    </div>
+                </div>
+
+                <div class="form-group-new weight_item">
                     <label class="col-sm-7 control-label-new">轴二重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight2}">
                     </div>
                 </div>
-                <div class="form-group-new" th:if="${data.axleWeight4 != null && data.axleWeight4 >0 }">
+                <div class="form-group-new weight_item" th:if="${data.axleWeight4 != null && data.axleWeight4 >0 }">
                     <label class="col-sm-7 control-label-new">轴四重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight4}">
                     </div>
                 </div>
-                <div class="form-group-new" th:if="${data.axleWeight6 != null && data.axleWeight6 >0 }">
+                <div class="form-group-new weight_item" th:if="${data.axleWeight6 != null && data.axleWeight6 >0 }">
                     <label class="col-sm-7 control-label-new">轴六重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight6}">
                     </div>
                 </div>
-                <div class="form-group-new" th:if="${data.axleWeight8 != null && data.axleWeight8 >0 }">
+                <div class="form-group-new weight_item" th:if="${data.axleWeight8 != null && data.axleWeight8 >0 }">
                     <label class="col-sm-7 control-label-new">轴八重量(吨)：</label>
                     <div class="form-control-static-new" th:text="${data.axleWeight8}">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">通过时间(ms)：</label>
+                    <div class="form-control-static-new" th:text="${data.passTime}">
                     </div>
                 </div>
                 <div class="form-group-new">
@@ -221,23 +212,44 @@
                     <div class="form-control-static-new" th:text="${data.height}/1000" id="heightDiv">
                     </div>
                 </div>
-                <div class="form-group-new">
-                    <label class="col-sm-7 control-label-new">通过时间(ms)：</label>
-                    <div class="form-control-static-new" th:text="${data.passTime}">
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">车辆方向：</label>
+                    <div class="form-control-static-new" th:text="${data.direction}">
                     </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+            </div>
+            <div class="col-sm-3">
+                <div class="col-sm-12" th:if="${data.ftpPlate != null && data.ftpPlate ne ''}">
+                    <h4>车牌</h4>
+                    <a th:href="${ctxPath + data.ftpPlate}" title="车牌" data-gallery=""
+                       style="position:absolute;left:50%;top:110%;transform: translate(-50%,-50%);">
+                        <img alt="image" class="img-responsive" height="280" th:src="${ctxPath + data.ftpPlate}">
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <h3 class="col-sm-12" style="margin-top:20px;"
+                    th:if="${data.ftpFullView != null && data.ftpFullView ne ''}">视频信息：</h3>
+                <div class="col-sm-12" th:if="${data.ftpFullView != null && data.ftpFullView ne ''}">
+                    <video th:src="${ctxPath +data.ftpFullView}" th:poster="@{/img/play_button.jpg}" controls=""
+                           style="height: 200px !important;"></video>
                 </div>
             </div>
         </div>
     </form>
-    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
-        <div class="slides"></div>
-        <h3 class="title"></h3>
-        <a class="prev">‹</a>
-        <a class="next">›</a>
-        <a class="close">×</a>
-        <a class="play-pause"></a>
-        <ol class="indicator"></ol>
-    </div>
+</div>
+
+<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+    <div class="slides"></div>
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+</div>
 </div>
 <div th:include="include :: footer"></div>
 <script th:src="@{/ajax/libs/blueimp/js/jquery.blueimp-gallery.min.js}"></script>
@@ -248,28 +260,31 @@
             link = target.src ? target.parentNode : target,
             options = {index: link, event: event},
             links = this.getElementsByTagName('a');
-            blueimp.Gallery(links, options);
+        blueimp.Gallery(links, options);
     };
     $(function () {
-        if(parseInt($("#overWeightDiv").html())>0){
+        if (parseInt($("#overWeightDiv").html()) > 0) {
             $("#overWeightDiv").addClass("over-filed")
-        }else {
+        } else {
             $("#overWeightDiv").removeClass("over-filed")
         }
-        if(parseFloat($("#lengthDiv").html())>18.1){
+        if (parseFloat($("#lengthDiv").html()) > 18.1) {
             $("#lengthDiv").addClass("over-filed")
-        }else {
+        } else {
             $("#lengthDiv").removeClass("over-filed")
         }
-        if(parseFloat($("#widthDiv").html())>2.55){
+        if (parseFloat($("#widthDiv").html()) > 2.55) {
             $("#widthDiv").addClass("over-filed")
-        }else {
+        } else {
             $("#widthDiv").removeClass("over-filed")
         }
-        if(parseFloat($("#heightDiv").html())>4){
+        if (parseFloat($("#heightDiv").html()) > 4) {
             $("#heightDiv").addClass("over-filed")
-        }else {
+        } else {
             $("#heightDiv").removeClass("over-filed")
+        }
+        if (parseInt($("#weightDiv").html()) == 0) {
+            $(".weight_item").hide()
         }
         $(".fixed-table-toolbar").hide()
     });

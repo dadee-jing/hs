@@ -3,7 +3,7 @@ package com.hs.platform.station;
 import com.hs.platform.station.codec.XxxCodecFactory;
 import com.hs.platform.station.handler.DataIntoDBHandler;
 import com.hs.platform.station.io.LWHClient;
-import com.hs.platform.station.util.NoMatchUtil;
+import com.hs.platform.station.led.LedComponent;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
@@ -62,9 +62,6 @@ public class StationApplication {
             // 打开tcpclient请求外廓数据
             LWHClient client = new LWHClient(lwhServerHost, lwhServerPort);
             LOGGER.info("LWH client connect : " + lwhServerHost + " : " + lwhServerPort + " success.");
-
-            // 开启匹配线程
-            //NoMatchUtil.notMatchInsertDB();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }

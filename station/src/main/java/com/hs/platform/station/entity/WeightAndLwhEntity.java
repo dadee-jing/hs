@@ -54,6 +54,8 @@ public class WeightAndLwhEntity {
     private boolean sizeTag = false;
     private boolean speedTag = false;
     private int uploadTag;//上传到服务器，0待上传,1已上传或不上传
+    private String sidePath;//本地侧拍路径
+    private boolean pathTag = false;
 
     public int getUploadTag() {
         return uploadTag;
@@ -429,5 +431,21 @@ public class WeightAndLwhEntity {
 
     public void setSpeedTag(boolean speedTag) {
         this.speedTag = speedTag;
+    }
+
+    public String getSidePath() {
+        return sidePath;
+    }
+
+    public void setSidePath(String sidePath) {
+        this.sidePath = sidePath;
+    }
+
+    public boolean isPathTag() {
+        return pathTag;
+    }
+
+    public void setPathTag(boolean pathTag) {
+        this.pathTag = pathTag;
     }
 }

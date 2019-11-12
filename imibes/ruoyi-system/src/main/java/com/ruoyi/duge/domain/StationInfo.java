@@ -80,6 +80,19 @@ public class StationInfo extends BaseEntity
 	/** 连通状态 */
 	private Integer state;
 
+	private String remarkInfo;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getRemarkInfo() {
+		return remarkInfo;
+	}
+
+	public void setRemarkInfo(String remarkInfo) {
+		this.remarkInfo = remarkInfo;
+	}
 
 	public String getIp() {
 		return ip;
