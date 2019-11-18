@@ -13,14 +13,17 @@ import java.util.Date;
 @Service
 public class TransformService {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat myFmt2=new SimpleDateFormat("yyMMddHHmmss");
     public BlacksmokevehicleDto transBlacksmokevehicleDto(BlacksmokevehicleInfo source) {
         BlacksmokevehicleDto target = new BlacksmokevehicleDto();
         BeanUtils.copyProperties(source, target);
         //target.setLgmhd(String.valueOf(source.getLgmhd()));
         target.setLgmhd("100");
-        target.setJcsj(format.format(source.getJcsj()));
+        target.setJcsj(DateFormatUtils.format(source.getJcsj(), "YYYY-MM-DD HH:mm:ss"));
         return target;
     }
+
+
     public LineDto transLineDto(Line source) {
         LineDto target = new LineDto();
         BeanUtils.copyProperties(source, target);
@@ -50,27 +53,24 @@ public class TransformService {
     public TrafficFlowDto transTrafficFlowDto(TrafficFlow source) {
         TrafficFlowDto target = new TrafficFlowDto();
         BeanUtils.copyProperties(source, target);
-        target.setLlbh(source.getJlbh());
-        target.setCjsd(String.valueOf(source.getCjsd()));
+        target.setLlbh(myFmt2.format(new Date()));
+        target.setDwbh(source.getDwbh());
+        target.setSsdl(source.getSsdl());
+        target.setLlfl(source.getLlfl());
+        target.setTjsc(source.getTjsc());
+        target.setCjsd(source.getCjsd().toString());
+        target.setCjxh(source.getCjxh());
         target.setTtrq(format.format(source.getTjrq()));
-        target.setTxcls(String.valueOf(source.getTxcls()));
-        target.setPjsd(String.valueOf(source.getPjsd()));
-        target.setPjpdcd(String.valueOf(source.getPjpdcd()));
-        target.setWxxkcs("0");
-        target.setZxkcs("0");
-        target.setDxkcs("0");
-        target.setXxhcs("0");
-        target.setZxhcs("0");
-        target.setZxhcs1("0");
+        target.setCdxh(source.getCdxh());
+        target.setPjsd(source.getPjsd().toString());
+        target.setPjpdcd(source.getPjpdcd().toString());
         return target;
     }
-
     public VehicleInfoDto transVehicleInfoDto(VehicleInfo source) {
         VehicleInfoDto target = new VehicleInfoDto();
         BeanUtils.copyProperties(source, target);
         return target;
     }
-
     public VehicleTrajectoryDto transVehicleTrajectoryDto(VehicleTrajectory source) {
         VehicleTrajectoryDto target = new VehicleTrajectoryDto();
         BeanUtils.copyProperties(source, target);

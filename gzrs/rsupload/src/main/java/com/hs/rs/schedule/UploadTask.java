@@ -13,6 +13,7 @@ import com.hs.rs.persistence.dao.*;
 import com.hs.rs.persistence.entity.*;
 import com.hs.rs.service.TransformService;
 import jdk.nashorn.internal.parser.Token;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,7 +177,7 @@ public class UploadTask {
         List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNullOrderByUpLoadStatusDesc();
         vehicleInfoList.forEach(vehicleInfo -> {
             try {
-                vehicleInfo.setHpzl(parsePlateType(vehicleInfo.getCpys(),vehicleInfo.getHphm()));
+                vehicleInfo.setHpzl(parsePlateType(vehicleInfo.getHpzl(),vehicleInfo.getHphm()));
                 String requestBody = wrapperXml(transformService.transVehicleInfoDto(vehicleInfo), "vehicle");
                 String responseStr = callApi(requestBody);
                 System.out.println("responseStr===="+responseStr);
@@ -199,6 +200,12 @@ public class UploadTask {
     public void uploadMonitorData() {
         List<MonitorDataLog> monitorDataLogList = monitorDataRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         monitorDataLogList.forEach(monitorDataLog -> {
+            if(monitorDataLog.getRlzl()=="Z"){
+                monitorDataLog.setRlzl("Y");
+            }
+            if(StringUtils.isBlank(monitorDataLog.getHpzl())){
+                monitorDataLog.setRlzl(parsePlateType(monitorDataLog.getCpys(),monitorDataLog.getHphm()));
+            }
             try {
                 String requestBody = wrapperXml(transformService.transMonitorDataDto(monitorDataLog), "monitoringdata");
                 String responseStr = callApi(requestBody);
@@ -215,6 +222,7 @@ public class UploadTask {
             }
         });
     }
+
     /**
      * 上传车辆轨道信息
      */
@@ -238,52 +246,34 @@ public class UploadTask {
             }
         });
     }
-    //工作日的上传时间段为： 18：00~8：00
-    //@Scheduled(cron="*/10 * 18,19,20,21,22,23,24,1,2,3,4,5,6,7 * * MON-FRI")
-    @Scheduled(cron="${workday}")
-    public void workDay(){
+    @Scheduled(cron="*/10 * * * * *")
+    public void  ALLDay(){
         uploadVehicleTrajectory();
-        // uploadTrafficFlow();
+        uploadTrafficFlow();
         uploadVehicleInfo();
         uploadMonitorData();
-        // uploadBlacksomkevehicle();
-    }
-    //非工作日全天传输
-    //@Scheduled(cron="*/10 * * * * SAT-SUN")
-    @Scheduled(cron="${nonworkday}")
-    public void  nonWorkDay(){
-        uploadVehicleTrajectory();
-        // uploadTrafficFlow();
-        uploadVehicleInfo();
-        uploadMonitorData();
-        // uploadBlacksomkevehicle();
+        uploadBlacksomkevehicle();
     }
     static String parsePlateType(String colorStr,String truckNumber){
         switch (colorStr) {
-            case "黄":
-                if(truckNumber.contains("学")){
-                    return "16";
-                }else {
-                    return "01";
-                }
-            case "蓝":
+            case "0":
                 return "02";
-            case "黑":
+            case "1":
+                    return "16";
+            case "2":
+                    return "23";
+            case "3":
                 if(truckNumber.contains("使")){
                     return "03";
                 }else if(truckNumber.contains("领")){
                     return "04";
                 }else if(truckNumber.contains("港")){
-                    return  "26";
+                    return  "05";
                 }else if(truckNumber.contains("澳")){
-                    return "27";
+                    return "05";
                 }
-            case "白":
-                if(truckNumber.contains("警")){
-                    return "23";
-                }else {
-                    return "20";
-                }
+            case "4":
+                    return "52";
             default:
                 return "99";
         }
