@@ -21,20 +21,29 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
     }
 
     @Override
-    public void messageReceived(IoSession session, Object message)
-            throws Exception {
+    public void messageReceived(IoSession session, Object message) {
         // TODO Auto-generated method stub
-        super.messageReceived(session, message);
-        if (!"receive_online".equals(message.toString())) {
-            LOGGER.info("接收到的消息是：" + message.toString());
+        try{
+            super.messageReceived(session, message);
+            if (!"receive_online".equals(message.toString())) {
+                LOGGER.info("接收到的消息是：" + message.toString());
+            }
+        }catch (Exception e){
+            LOGGER.info("接收到的消息失败！" + message,e);
         }
+
     }
 
     @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
+    public void messageSent(IoSession session, Object message)  {
         // TODO Auto-generated method stub
-        super.messageSent(session, message);
-        LOGGER.info("向服务器发送消息成功！");
+        try{
+            super.messageSent(session, message);
+            LOGGER.info("向服务器发送消息成功！" + message);
+        }catch (Exception e){
+            LOGGER.info("向服务器发送消息失败！" + message,e);
+        }
+
     }
 
     @Override

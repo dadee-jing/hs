@@ -53,6 +53,7 @@ public class NoMatchDataUpload {
                     iterator.remove();
                 }
             }
+
         }
         LOGGER.info("end size " + weightDataQueue.size());
     }

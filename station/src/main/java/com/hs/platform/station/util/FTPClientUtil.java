@@ -108,13 +108,13 @@ public class FTPClientUtil {
 
     public static byte[] ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient,
                                   FileSystemServiceImpl fileSystemService, Date weightingDate) {
-        long startTime = System.currentTimeMillis();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             //上传前先检查新流向ftp
             sourceClient = checkNewlxFtpConnect();
             sourceClient.changeWorkingDirectory("/");
             Boolean sourceState = sourceClient.retrieveFile(sourcePath, outputStream);
+            long endTime1 = System.currentTimeMillis();
             LOGGER.info("sourceState:" + sourceState);
             //sourceState false代表源文件丢失，执行上传后是0k的文件
             if(!sourceState){
@@ -139,15 +139,17 @@ public class FTPClientUtil {
             }
         }
         try (InputStream inputStream = parse(outputStream)) {
+            long startTime2 = System.currentTimeMillis();
             Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
+            long endTime2 = System.currentTimeMillis();
             //targetState false 没有上传到服务器
-            long endTime = System.currentTimeMillis();
-            LOGGER.info("ok:targetState:" + targetState + " " + targetPath + ",cost:" + (endTime - startTime));
+            LOGGER.info("ok:targetState:" + targetState + ",cost:" +(endTime2 - startTime2)+"," + targetPath);
             //将流转化成byte返回
             try{
                 if(!sourcePath.contains("mp4")){
                     InputStream shiJuInputStream = parse(outputStream);
-                    return getPicByStream(weightingDate, shiJuInputStream);
+                    byte[] pic = getPicByStream(weightingDate, shiJuInputStream);
+                    return pic;
                 }
                 return null;
             }

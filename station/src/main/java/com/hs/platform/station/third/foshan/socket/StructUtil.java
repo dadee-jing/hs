@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import static com.hs.platform.station.third.foshan.socket.Byte2IntUtil.*;
+import static org.apache.commons.io.IOUtils.toByteArray;
 
 public class StructUtil {
 
@@ -71,16 +72,24 @@ public class StructUtil {
     }
 
     public static byte[] getPicByStream(Date picDate, InputStream inputStream) {
-        byte[] fileBytes = resizeStream(1700, 1000, inputStream);
-        byte[] picDateBytes = getTime2t(picDate);
-        byte[] picLengthBytes = getLongBytes(fileBytes.length);
-        byte[] result = new byte[9 + 4 + fileBytes.length];
-        AtomicInteger currPos = new AtomicInteger(0);
-        // 按顺序填数组
-        fillArray(result, currPos, picDateBytes);//抓拍日期信息
-        fillArray(result, currPos, picLengthBytes);//图片长度
-        fillArray(result, currPos, fileBytes); //图片本身
-        return result;
+        //byte[] fileBytes = resizeStream(1700, 1000, inputStream);
+        try{
+            byte[] fileBytes = toByteArray(inputStream);
+            byte[] picDateBytes = getTime2t(picDate);
+            byte[] picLengthBytes = getLongBytes(fileBytes.length);
+            byte[] result = new byte[9 + 4 + fileBytes.length];
+            AtomicInteger currPos = new AtomicInteger(0);
+            // 按顺序填数组
+            fillArray(result, currPos, picDateBytes);//抓拍日期信息
+            fillArray(result, currPos, picLengthBytes);//图片长度
+            fillArray(result, currPos, fileBytes); //图片本身
+            return result;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            log.info("toByteArray fail",e);
+            return null;
+        }
     }
 
     /**

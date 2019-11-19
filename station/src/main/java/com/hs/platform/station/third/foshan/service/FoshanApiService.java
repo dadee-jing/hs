@@ -57,6 +57,7 @@ public class FoshanApiService {
     @Scheduled(fixedRate = 5000)
     public void submitShiJuData() {
         if ("1".equals(getDbConfigValue("do_foshan_scheduled"))) {
+            long startTime = System.currentTimeMillis();
             log.info("市局定时任务执行开始");
             uploadShiJu = true;
             if (shiJuQueue != null && shiJuQueue.size() != 0) {
@@ -73,7 +74,8 @@ public class FoshanApiService {
                     }
                 }
             }
-            log.info("市局定时任务执行完成");
+            long endTime = System.currentTimeMillis();
+            log.info("市局定时任务执行完成 cost:" + (endTime - startTime));
         }
         else{
             //log.info("foshan clear "+ shiJuQueue.size());

@@ -48,7 +48,7 @@ public class LWHClientHandler extends IoHandlerAdapter {
      * @throws Exception
      */
     @Override
-    public void messageReceived(IoSession session, Object message) throws Exception {
+    public void messageReceived(IoSession session, Object message){
         try {
             String dataString = (String) message;
             //LOGGER.info("[duge_lwh_message]: " + dataString);
@@ -65,9 +65,6 @@ public class LWHClientHandler extends IoHandlerAdapter {
             entity.setPlate(plate);
             String speed = dataMap.get("speed");
             String pathTag = dataMap.get("pathTag");
-            if(StringUtils.isEmpty(plate) || plate.contains("无车牌")){
-                return;
-            }
             if (StringUtils.isNotBlank(speed)) {
                 LOGGER.info("speed hit:" + plate + " " + speed);
                 entity.setProcessStatus(2);
@@ -75,17 +72,25 @@ public class LWHClientHandler extends IoHandlerAdapter {
                 entity.setSpeedTag(true);
             }
             //配置文件配置是否从外廓传图片
-            else if ((StringUtils.isNotBlank(pathTag)) && (pathTag.equals("1"))) {
+            else if ((StringUtils.isNotBlank(pathTag))) {
                 if("1".equals(WeightAndLWHContainer.lwhUploadFileTag)){
-                    String sidePath = dataMap.get("sidePath");
-                    if (StringUtils.isNotBlank(sidePath)) {
-                        LOGGER.info("sidePath hit:" + plate);
+                    if("1".equals(pathTag)){
+                        LOGGER.info("leftSidePath hit:" + plate);
+                        String leftSidePath = dataMap.get("leftSidePath");
                         entity.setProcessStatus(3);
-                        entity.setSidePath(sidePath);
-                        entity.setPathTag(true);
+                        entity.setLeftSidePath(leftSidePath);
+                        entity.setPathTag(entity.getPathTag() + 1);
+                    }
+                    else if("2".equals(pathTag)){
+                        LOGGER.info("rightSidePath hit:" + plate);
+                        String rightSidePath = dataMap.get("rightSidePath");
+                        entity.setProcessStatus(4);
+                        entity.setRightSidePath(rightSidePath);
+                        entity.setPathTag(entity.getPathTag() + 1);
                     }
                 }
             }
+
             else {
                 String timeString = dataMap.get("time");
                 String processTime = timeString.substring(0, 4) + "-" + timeString.substring(4, 6) + "-"
