@@ -82,7 +82,7 @@
             <if test="lane != null ">and lane = #{lane}</if>
             <if test="direction != null  and direction != '' ">and direction = #{direction}</if>
             <if test="truckNumber != null  and truckNumber != '' ">
-                AND truck_number like concat('%', #{truckNumber}, '%')
+                AND truck_number like concat(#{truckNumber}, '%')
             </if>
             <if test="truckCorlor != null  and truckCorlor != '' ">and truck_corlor = #{truckCorlor}</if>
             <if test="speed != null ">and speed = #{speed}</if>
