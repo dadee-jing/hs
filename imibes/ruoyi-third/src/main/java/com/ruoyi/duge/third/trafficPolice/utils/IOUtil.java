@@ -6,6 +6,9 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +20,11 @@ public class IOUtil {
     static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
     static SimpleDateFormat yearmonth =new SimpleDateFormat("yyyyMM" );
     static SimpleDateFormat day =new SimpleDateFormat("dd" );
-    public static String IllegalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
+    public static boolean IllegalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
+        String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
+        String sourcePath=basePath+wd.getFtpPriorHead();
+        File file=new File(sourcePath);
+        if(file.exists() && file.length()>0){
         StringBuffer imageName=new StringBuffer();
         imageName.append("a")
                 .append(sdf.format(new Date()))
@@ -54,48 +61,51 @@ public class IOUtil {
                 .append("11")
                 .append(".JPG");
         Date date=new Date();
-        String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
-        String img=basePath+wd.getFtpPlate();
-        String img1=basePath+(wd.getFtpPriorHead()!=null ? wd.getFtpPriorHead():wd.getFtpPlate());
-        String img3=basePath+(wd.getFtpTail()!=null ? wd.getFtpTail():wd.getFtpPlate());
+        String img=basePath+(wd.getFtpPriorHead()!=null ? wd.getFtpPriorHead():wd.getFtpPlate());
+        String img1=basePath+(wd.getFtpTail()!=null ? wd.getFtpTail():wd.getFtpPlate());
+        String img3=basePath+(wd.getFtpHead()!=null ? wd.getFtpHead():wd.getFtpPlate());
+        String img4=basePath+(wd.getFtpAxle()!=null ? wd.getFtpAxle():wd.getFtpPlate());
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
         String targetPath="/sharedata/ftp/peccancy/"+yearmonth.format(date)+"/"+day.format(date)
                 +"/"+wd.getStationId() +"/"+imageName.toString();
         LOGGER.info("upload the IllegalImages of "+wd.getTruckNumber()+ ",targetPath="+targetPath);
-        MergedImages.Merged(img,img1,img,img3,targetPath,txt);
-        return imageName.toString();
+            mergedImages(img,img1,img3,img4,targetPath,txt);
+            return true;
+        }
+        return false;
     }
-    public static String normalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
-        StringBuffer imageName=new StringBuffer();
-        imageName.append("A")
-                .append(sdf.format(wd.getCreateTime()))
-                .append("_b")
-                .append(parsePlateType(wd.getTruckCorlor(),wd.getTruckNumber()))
-                .append("_c")
-                .append(new String((wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌").getBytes(),
-                        "utf-8"))
-                .append("_d")
-                .append(wd.getSpeed())
-                .append("_e")
-                .append(parseColor(wd.getTruckCorlor()))
-                .append("_f")
-                .append(wd.getLane())
-                .append("_k")
-                .append(wd.getStationId())
-                .append("_z")
-                .append("11")
-                .append(".JPG");
-        Date date=new Date();
+    public static boolean normalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
         String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
-        String img=basePath+wd.getFtpPlate();
-        String img1=basePath+(wd.getFtpPriorHead()!=null ? wd.getFtpPriorHead():wd.getFtpPlate());
-        String img3=basePath+(wd.getFtpTail()!=null ? wd.getFtpTail():wd.getFtpPlate());
-        String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
-        String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(date)+"/"+day.format(date)
-                +"/"+wd.getStationId() +"/"+imageName.toString();
-        LOGGER.info("upload the normalImages of "+wd.getTruckNumber()+ ",targetPath="+targetPath);
-        MergedImages.Merged(img,img1,img,img3,targetPath,txt);
-        return imageName.toString();
+        String sourcePath=basePath+wd.getFtpPriorHead();
+        File file=new File(sourcePath);
+        if(file.exists() && file.length()>0){
+            StringBuffer imageName=new StringBuffer();
+            imageName.append("A")
+                    .append(sdf.format(wd.getCreateTime()))
+                    .append("_b")
+                    .append(parsePlateType(wd.getTruckCorlor(),wd.getTruckNumber()))
+                    .append("_c")
+                    .append(new String((wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌").getBytes(),
+                            "utf-8"))
+                    .append("_d")
+                    .append(wd.getSpeed())
+                    .append("_e")
+                    .append(parseColor(wd.getTruckCorlor()))
+                    .append("_f")
+                    .append(wd.getLane())
+                    .append("_k")
+                    .append(st.getKakoCode())
+                    .append("_z")
+                    .append("11")
+                    .append(".JPG");
+            Date date=new Date();
+            String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(date)+"/"+day.format(date)
+                    +"/"+wd.getStationId() +"/"+imageName.toString();
+            IOOperate(sourcePath,targetPath);
+            LOGGER.info("upload the normalImages of "+wd.getTruckNumber()+ ",targetPath="+targetPath);
+            return true;
+        }
+        return false;
     }
     static Integer parseColor(String colorStr) {
         switch (colorStr) {
@@ -170,5 +180,55 @@ public class IOUtil {
             default:
                 return "99";
         }
+    }
+    public static void mergedImages(String img, String img1, String img2,String img3,String outPath,String txt){
+        BufferedImage buf;
+        BufferedImage buf1;
+        BufferedImage buf2;
+        BufferedImage buf3;
+        BufferedImage buf4;
+        OutputStream out=null;
+        try {
+            buf = resizeImage(1700 ,1000,ImageIO.read(new File(img)));
+            buf1 = resizeImage(850 ,500,ImageIO.read(new File(img)));
+            buf2 = resizeImage(850 ,500,ImageIO.read(new File(img1)));
+            buf3 = resizeImage(850 ,500,ImageIO.read(new File(img2)));
+            buf4 = resizeImage(850 ,500,ImageIO.read(new File(img3)));
+            Graphics2D g = buf.createGraphics();
+            g.drawImage(buf1, 0, 0, buf1.getWidth(), buf1.getHeight(), null);
+            g.drawImage(buf2, 850, 0, buf2.getWidth(), buf2.getHeight(), null);
+            g.drawImage(buf3, 0, 500, buf2.getWidth(), buf3.getHeight(), null);
+            g.drawImage(buf4, 850, 500, buf2.getWidth(), buf4.getHeight(), null);
+            g.setFont(new Font("微软雅黑",Font.BOLD,30));
+            g.drawString("特写图",740 ,40);
+            g.drawString("违法前",1600 ,40);
+            g.drawString("违法中",740 ,540);
+            g.drawString("违法后",1600 ,540);
+            g.setFont(new Font("微软雅黑",Font.BOLD,18));
+            g.drawString(txt,0 ,990);
+            g.dispose();
+            ImageIO.setUseCache(false);
+            File outFile = new File(outPath);
+            if (outFile.getParentFile() != null || !outFile.getParentFile().isDirectory()) {
+                // 创建父文件夹
+                outFile.getParentFile().mkdirs();
+            }
+            ImageIO.write(buf, "jpg", outFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(out!=null){
+                    out.close();}
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static BufferedImage resizeImage(int x, int y, BufferedImage bfi){
+        BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
+        bufferedImage.getGraphics().drawImage(
+                bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
+        return bufferedImage;
     }
 }

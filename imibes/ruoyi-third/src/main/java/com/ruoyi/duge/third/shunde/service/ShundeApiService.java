@@ -58,23 +58,23 @@ public class ShundeApiService implements ThirdApiService {
             if (null != weightDataList && weightDataList.size() > 0) {
                 log.info("to insert count:" + weightDataList.size());
                 LongAdder successCount = new LongAdder();
-                weightDataList.forEach(weightData -> {
-                    // log.info("to insert" + weightData.getTruckNumber());
-                    BaseVehicleDataRequest baseVehicleDataRequest = BaseVehicleDataRequest.builder()
-                            .weightData(weightData)
-                            .build();
-                    BaseThirdApiResponse baseThirdApiResponse =
-                            submitVehicleData(baseVehicleDataRequest);
-                    if (BusinessStatus.SUCCESS == baseThirdApiResponse.getBusinessStatus()) {
-                        weightData.setUploadYhl(1);
-                        successCount.increment();
-                        //log.info("ok insert" + weightData.getTruckNumber());
-                    } else {
-                        weightData.setUploadYhl(2);
-                        //log.info("error insert" + weightData.getTruckNumber());
-                    }
-                    weightDataMapper.updateData(weightData);
-                });
+                    weightDataList.forEach(weightData -> {
+                        // log.info("to insert" + weightData.getTruckNumber());
+                        BaseVehicleDataRequest baseVehicleDataRequest = BaseVehicleDataRequest.builder()
+                                .weightData(weightData)
+                                .build();
+                        BaseThirdApiResponse baseThirdApiResponse =
+                                submitVehicleData(baseVehicleDataRequest);
+                        if (BusinessStatus.SUCCESS == baseThirdApiResponse.getBusinessStatus()) {
+                            weightData.setUploadYhl(1);
+                            successCount.increment();
+                            //log.info("ok insert" + weightData.getTruckNumber());
+                        } else {
+                            weightData.setUploadYhl(2);
+                            //log.info("error insert" + weightData.getTruckNumber());
+                        }
+                        weightDataMapper.updateData(weightData);
+                    });
                 log.info("success count:" + successCount);
             }
         }

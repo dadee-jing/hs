@@ -9,5 +9,6 @@
         LEFT JOIN duge_station_info dsi on dsi.id = wd.station_id
         where year(weighting_date) = year(CURRENT_DATE) and month(weighting_date) = month(CURRENT_DATE)
         GROUP BY date(weighting_date),dsi.name
+        order by id DESC
     </select>
 </mapper>

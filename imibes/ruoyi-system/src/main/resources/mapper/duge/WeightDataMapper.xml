@@ -341,7 +341,7 @@
             and upload_yhl &lt;&gt; 1
         </where>
         order by upload_yhl
-        limit 100
+        limit 300
     </select>
 
     <select id="selectNotUploadSj" parameterType="WeightData" resultMap="WeightDataResult">
@@ -358,12 +358,11 @@
     <select id="selectNotUploadJj" parameterType="WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
-            wd.create_time &gt; date_add(now(), interval - 5 minute)
+            wd.create_time &lt; date_add(now(), interval - 5 minute)
             and upload_jj &lt; 1
-            and station_id = 1
         </where>
-        order by create_time DESC
-        limit 10
+        order by id DESC
+        limit 100
     </select>
 
     <select id="selectStationStatistics" parameterType="WeightData" resultType="hashMap">
@@ -398,7 +397,7 @@
 
     <!--抽取时间区间内单个站点无报警的十辆车的车牌-->
     <select id="selectTruckNumberByTime" resultType="String">
-        select truck_number  from weight_data  where create_time &lt; date_add(now(), interval - 14*24*60 minute)
+        select truck_number  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         and over_weight=0
         and mark_del= 0
         ORDER BY  create_time DESC
@@ -406,7 +405,7 @@
     </select>
     <!--根据车牌号查这辆车时间区间内是否有其他报警数据-->
     <select id="selectIsIllegalByTruckNumber" parameterType="String" resultMap="WeightDataResult">
-        select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
+        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         AND  create_time > date_add(now(), interval - 41*24*60 minute)
         and over_weight  > 0
         and truck_number = #{truckNumber}
@@ -436,7 +435,6 @@
 
     <select id="selectBefore40Days" parameterType="WeightData" resultMap="WeightDataResult">
         select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
-        and create_time > date_add(now(), interval - 41*24*60 minute)
         ORDER BY  create_time DESC
         LIMIT 100
     </select>

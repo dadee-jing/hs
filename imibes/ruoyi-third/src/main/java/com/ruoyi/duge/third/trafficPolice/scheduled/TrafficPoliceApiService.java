@@ -6,12 +6,15 @@ import com.ruoyi.duge.service.IConfigDataService;
 import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.duge.service.IWeightDataMapperService;
 import com.ruoyi.duge.third.trafficPolice.utils.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.concurrent.atomic.LongAdder;
+
 @Component
 public class TrafficPoliceApiService {
     @Autowired
@@ -20,26 +23,37 @@ public class TrafficPoliceApiService {
     IStationInfoService stationInfoService;
     @Autowired
     IConfigDataService configDataService;
+    private static final Logger log = LoggerFactory.getLogger(TrafficPoliceApiService.class);
     @Scheduled(cron = "${trafficpolice.scheduled}")
     public void doUpload() throws UnsupportedEncodingException {
         if ("1".equals(configDataService.getConfigValue("upload_jj"))) {
-             List<WeightData> list= weightDataMapperService.selectNotUploadJj() ;
-             for(WeightData weightData:list){
-                 StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue());
-                 Double overRate = weightData.getOverWeight().doubleValue() / weightData.getLimitWeight().doubleValue();
-                 int overLevel = overRate > 0 ? overRate >= 0.3 ? 2 : 1 : 0;
-                 if (overLevel > 0){
-                     IOUtil.IllegalImages(weightData, stationInfo);
-
-                 }else {
-                     IOUtil.normalImages(weightData,stationInfo);
-                 }
-                 for (WeightData weightData1:list) {
-                     weightData1.setUploadJj(1);
-                     weightDataMapperService.updateData(weightData1);
-                 }
-
-             }
+            List<WeightData> weightDataList= weightDataMapperService.selectNotUploadJj() ;
+            if (null != weightDataList && weightDataList.size() > 0) {
+                log.info("to insert count:" + weightDataList.size());
+                LongAdder successCount = new LongAdder();
+                for (WeightData weightData : weightDataList) {
+                    StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue());
+                    Double overRate = weightData.getOverWeight().doubleValue() / weightData.getLimitWeight().doubleValue();
+                    int overLevel = overRate > 0 ? overRate >= 0.3 ? 2 : 1 : 0;
+                    if (overLevel > 0) {
+                        if(IOUtil.IllegalImages(weightData, stationInfo)){
+                            weightData.setUploadJj(1);
+                            successCount.increment();
+                        }else {
+                            weightData.setUploadJj(2);
+                        }
+                    } else {
+                        if(IOUtil.normalImages(weightData, stationInfo)){
+                            weightData.setUploadJj(1);
+                            successCount.increment();
+                        }else {
+                            weightData.setUploadJj(2);
+                        }
+                    }
+                    weightDataMapperService.updateData(weightData);
+                }
+                log.info("success count:" + successCount);
+            }
         }
     }
 }

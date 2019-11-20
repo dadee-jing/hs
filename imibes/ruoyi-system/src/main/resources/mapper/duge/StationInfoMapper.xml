@@ -31,12 +31,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="port"    column="port"    />
         <result property="state"    column="state"    />
         <result property="remarkInfo"    column="remark_info"    />
+        <result property="kakoCode"    column="kako_code"    />
     </resultMap>
 	
 	<sql id="selectStationInfoVo">
         select id, name, abbreviation, latitude, longitude, user_id, bureau, province, city, county, address, create_by,
         create_time, update_by, update_time, remark, longitude_WGS84,latitude_WGS84,longitude_GCJ02,latitude_GCJ02,
-        longitude_BD09,latitude_BD09,ip ,port ,state,remark_info  from duge_station_info
+        longitude_BD09,latitude_BD09,ip ,port ,state,remark_info,kako_code  from duge_station_info
     </sql>
 	
     <select id="selectStationInfoList" parameterType="com.ruoyi.duge.domain.StationInfo" resultMap="StationInfoResult">
