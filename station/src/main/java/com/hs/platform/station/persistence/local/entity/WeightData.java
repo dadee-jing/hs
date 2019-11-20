@@ -206,9 +206,18 @@ public class WeightData extends BaseEntity {
      * 上传标记
      */
     private Integer uploadTag;
-
-    //private Integer uploadSj;
-
+    /**
+     * 侧拍标记
+     */
+    private Integer pathTag;
+    /**
+     * 本地左侧拍
+     */
+    private String leftSidePath;
+    /**
+     * 本地右侧拍
+     */
+    private String rightSidePath;
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)

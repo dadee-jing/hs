@@ -283,7 +283,7 @@
         } else {
             $("#heightDiv").removeClass("over-filed")
         }
-        if (parseInt($("#weightDiv").html()) == 0) {
+        if (parseFloat($("#weightDiv").html()) <= 0) {
             $(".weight_item").hide()
         }
         $(".fixed-table-toolbar").hide()

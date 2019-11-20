@@ -11,8 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import static com.hs.platform.station.Constants.led_overWeight_percentage;
 import static com.hs.platform.station.util.DbUtil.*;
@@ -25,6 +29,9 @@ public class WeightAndLWHContainer {
     private static String weightLimit = getConfigValue("weight_upload_limit");
     private static String onlyWeightUploadTag = getConfigValue("only_weight_upload");
     public static String lwhUploadFileTag = getConfigValue("lwh_upload_file");
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static AtomicLong lwhLatestTimeSecond = new AtomicLong(System.currentTimeMillis()/1000);
+    public static String weightLatestTime = new Date().toString();
     private static final double overWeightPercentage = led_overWeight_percentage;
 
     /**
@@ -33,6 +40,8 @@ public class WeightAndLWHContainer {
      * @param currentEntity
      */
     public static void clearAndInsertDB(WeightAndLwhEntity currentEntity) {
+        long startTime1 = System.currentTimeMillis();
+
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
         WeightAndLwhEntity previousEntity = mapContainer.get(carNumber);
@@ -53,15 +62,17 @@ public class WeightAndLWHContainer {
                 //插入数据库做备份
                 int previousStatus = previousEntity.getProcessStatus();
                 String remarkInfo = "";
-                if (0 == previousStatus) {
+                if (previousEntity.isWeightTag()) {
                     remarkInfo = "长宽高数据缺失。";
-                } else {
+                } else if(previousEntity.isSizeTag()) {
                     remarkInfo = "衡器称重数据缺失。";
                 }
                 previousEntity.setRemarkInfo(remarkInfo);
                 DbUtil.insertExceptionData(previousEntity);
             }
         }
+        long endTime1 = System.currentTimeMillis();
+        LOGGER.info("clearAndInsertDB cost:" + (endTime1 - startTime1));
     }
 
     /**
@@ -69,14 +80,28 @@ public class WeightAndLWHContainer {
      * @param currentEntity
      */
     public static void processData(WeightAndLwhEntity currentEntity) {
-        // 根据状态判断是由超重或超限调用(新流向-超重 0, 杜格-超限 1，2-测速雷达，3-侧拍路径)
+        long startTime1 = System.currentTimeMillis();
+        // 根据状态判断是由超重或超限调用(新流向-超重 0, 杜格-超限 1，2-测速雷达，3-左侧拍，4-右侧拍)
         //称重,测速可能多次触发
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
-        //无车牌的直接进入丢弃
-        if(StringUtils.isEmpty(carNumber) || carNumber.contains("无车牌")){
+        //无车牌的直接插入异常表
+        if(StringUtils.isBlank(carNumber) || carNumber.contains("无车牌")){
+            String remarkInfo = "";
+            if (0 == processStatus) {
+                remarkInfo = "长宽高数据缺失。";
+            }
+            else if(1 == processStatus) {
+                remarkInfo = "衡器称重数据缺失。";
+            }
+            currentEntity.setRemarkInfo(remarkInfo);
+            DbUtil.insertExceptionData(currentEntity);
             return;
         }
+        if(processStatus == 1){
+            lwhLatestTimeSecond = new AtomicLong(System.currentTimeMillis()/1000);
+        }
+
         long timeout = System.currentTimeMillis() + 30000;
         // 若30秒后仍然不能补全外廓数据或称重数据，会被定时任务清理，写入异常数据表
         currentEntity.setTimeoutMillseconds(timeout);
@@ -123,9 +148,7 @@ public class WeightAndLWHContainer {
                         // 筛选超重百分比
                         if (actualOverWeightPercentage.compareTo(new BigDecimal(overWeightPercentage)) >= 0) {
                             // 发送到LED屏
-/*                            LedComponent.showMessageLed(TruckNumber + ",您已超重,限重:" + LimitWeight +
-                                    "吨,总重:" + Weight.setScale(2, BigDecimal.ROUND_DOWN) + "吨");   */
-                            LedComponent.showMessageLed(TruckNumber + "\n您已超载");
+                            LedComponent.showMessageLed(TruckNumber.trim() + "\r\n涉嫌超载");
                         }
                     }
                 }
@@ -204,14 +227,21 @@ public class WeightAndLWHContainer {
                 previousEntity.setSpeed(Speed);
                 previousEntity.setSpeedTag(currentEntity.isSpeedTag());
             } else if (3 == processStatus) {
-                //补充侧拍路径
+                //补充左侧拍路径
                 String plate = currentEntity.getPlate();
                 previousEntity.setPlate(plate);
-                previousEntity.setSidePath(currentEntity.getSidePath());
-                previousEntity.setPathTag(currentEntity.isPathTag());
+                previousEntity.setLeftSidePath(currentEntity.getLeftSidePath());
+                previousEntity.setPathTag(previousEntity.getPathTag() + 1);
+            }else if (4 == processStatus) {
+                //补充右侧拍路径
+                String plate = currentEntity.getPlate();
+                previousEntity.setPlate(plate);
+                previousEntity.setRightSidePath(currentEntity.getRightSidePath());
+                previousEntity.setPathTag(previousEntity.getPathTag() + 1);
             }
-            // 称重，外廓，测速都匹配上了，执行插入。测速作为补充，最后没有匹配上也会插入
-            if (previousEntity.isSizeTag() && previousEntity.isWeightTag() && previousEntity.isSpeedTag() && previousEntity.isPathTag()) {
+            // 称重，外廓，测速，两张侧拍都匹配上了，执行插入。测速，侧拍作为补充，最后没有匹配上也会插入
+            if (previousEntity.isSizeTag() && previousEntity.isWeightTag()
+                    && previousEntity.isSpeedTag() && previousEntity.getPathTag() == 2) {
                 LOGGER.info("mapContainer insert " + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
@@ -219,36 +249,51 @@ public class WeightAndLWHContainer {
                 mapContainer.put(carNumber, previousEntity);
             }
         }
+        long endTime1 = System.currentTimeMillis();
+        LOGGER.info("processData cost:" + (endTime1 - startTime1));
     }
 
     public static void completeEntity(WeightAndLwhEntity previousEntity, String carNumber) {
+        long startTime1 = System.currentTimeMillis();
+
         mapContainer.remove(carNumber);
-        previousEntity.setUploadTag(0);
         //小于设置重量的upload_tag设为1，不上传到154
-        if(!StringUtils.isEmpty(weightLimit) && !weightLimit.equals("0")){
+        if(!StringUtils.isBlank(weightLimit) && !weightLimit.equals("0")){
             if(previousEntity.getWeight() != null && previousEntity.getWeight().compareTo(new BigDecimal(weightLimit)) != 1){
                 LOGGER.info("小于" +weightLimit+ "t,只做本地插入 " + carNumber);
                 previousEntity.setUploadTag(1);
             }
         }
-        if("1".equals(lwhUploadFileTag)){
+        if("1".equals(lwhUploadFileTag) && previousEntity.getPathTag() != 0){
             //本地侧拍覆盖新流向侧拍
-            previousEntity.setFtpAxle("");
-            previousEntity.setFtpHead("");
-            if(previousEntity.isPathTag()){
+            if(StringUtils.isNotBlank(previousEntity.getLeftSidePath())){
+                previousEntity.setFtpHead("");//左
                 //转化为服务器路径
-                String sourcePath = previousEntity.getSidePath();
+                String sourcePath = previousEntity.getLeftSidePath();
+                if(sourcePath.contains("\\")){
+                    sourcePath = sourcePath.replaceAll("\\\\","/");
+                }
+                String paths [] = sourcePath.split("/");
+                String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
+                previousEntity.setFtpHead(targetPath);
+                LOGGER.info("getLeftSidePath:" + sourcePath + ",targetPath:" + targetPath);
+            }
+            if(StringUtils.isNotBlank(previousEntity.getRightSidePath())){
+                previousEntity.setFtpAxle("");//右
+                //转化为服务器路径
+                String sourcePath = previousEntity.getRightSidePath();
                 if(sourcePath.contains("\\")){
                     sourcePath = sourcePath.replaceAll("\\\\","/");
                 }
                 String paths [] = sourcePath.split("/");
                 String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
                 previousEntity.setFtpAxle(targetPath);
-                LOGGER.info("sidePath:" + sourcePath + ",targetPath:" + targetPath);
+                LOGGER.info("getRightSidePath:" + sourcePath + ",targetPath:" + targetPath);
             }
         }
         DbUtil.insertWeightAndLWH(previousEntity);
-        LOGGER.info("insertDB :" + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
+        long endTime1 = System.currentTimeMillis();
+        LOGGER.info("insertDB : cost: " + (endTime1 - startTime1) +"," + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
                 previousEntity.getWeight() + "-" + previousEntity.getHeight() + ",mapContainer:" + mapContainer.size());
     }
 

@@ -29,6 +29,7 @@ public class LWHClient {
     private int port;
     private IoSession session;
     private NioSocketConnector connector;
+    private ScheduledExecutorService scheduledExecutorService;
 
     public LWHClient(String host, int port) {
         this.host = host;
@@ -71,8 +72,9 @@ public class LWHClient {
         connector.setHandler(new LWHClientHandler());
         connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));// 设置默认访问地址
 
-        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 30, TimeUnit.SECONDS);
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 60, TimeUnit.SECONDS);
+
     }
 
     public synchronized void connect() {
@@ -109,9 +111,22 @@ public class LWHClient {
      */
     public void disconnect() {
         if (session != null) {
-            session.closeNow().awaitUninterruptibly(CONNECT_TIMEOUT);
-            session = null;
+            try {
+                scheduledExecutorService.shutdownNow();
+                session.closeNow().awaitUninterruptibly(CONNECT_TIMEOUT);
+                session = null;
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 
+    public void reactiveScheduled() {
+        try {
+            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+            scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 60, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 }

@@ -85,8 +85,8 @@ public class FileSystemServiceImpl {
      */
     public synchronized boolean uploadFile(String targetPath, InputStream inputStream){
         //ChannelSftp sftp = this.createSftp();
-        getSftp();
         try {
+            getSftp();
             staticSFTP.cd(config.getRoot());
             //log.info("Change path to {}", config.getRoot());
 
@@ -104,14 +104,14 @@ public class FileSystemServiceImpl {
         } catch (Exception e) {
             log.error("Upload file failure. TargetPath: {}", targetPath, e);
             //重连
-            disconnect(staticSFTP);
-            getSftp();
+            try {
+                disconnect(staticSFTP);
+                staticSFTP = this.createSftp();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             return false;
-            //throw new Exception("Upload File failure");
         }
-/*        finally {
-            this.disconnect(staticSFTP);
-        }*/
     }
 
     private void getSftp() {
@@ -121,7 +121,13 @@ public class FileSystemServiceImpl {
                 log.info("staticSFTP create");
             }
             else{
-                if(!staticSFTP.getSession().isConnected()){
+                if(!staticSFTP.getSession().isConnected() || staticSFTP.isClosed() || !staticSFTP.isConnected()){
+                    disconnect(staticSFTP);
+                    staticSFTP = this.createSftp();
+                    log.info("staticSFTP reconnect");
+                }
+
+/*                if(!staticSFTP.getSession().isConnected()){
                     staticSFTP.getSession().connect(config.getSessionConnectTimeout());
                     log.info("staticSFTP session reconnect");
                 }
@@ -132,7 +138,7 @@ public class FileSystemServiceImpl {
                 if(!staticSFTP.isConnected()){
                     staticSFTP.connect(config.getChannelConnectedTimeout());
                     log.info("staticSFTP channel reconnect2");
-                }
+                }*/
             }
         }
         catch (Exception e) {

@@ -105,8 +105,10 @@ public class DbUtil {
 
         String sql = "insert into weight_data(limit_mode, vehicle_type, weighting_id, weighting_date, lane, direction, "
                 + "truck_number, truck_corlor, speed, axle_count, axle_type, weight, limit_weight, over_weight, axle_weight1, "
-                + "axle_weight2, axle_weight3, axle_weight4, axle_weight5, axle_weight6, axle_weight7, axle_weight8,sequence_tag,ftp_head,ftp_axle,ftp_tail,ftp_prior_head,ftp_plate,ftp_full_view,device_code"
-                + ",lwh_date,plate,width,height,length,lane_mid,lane_min,lane_max,pass_time,station_id,upload_tag) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "axle_weight2, axle_weight3, axle_weight4, axle_weight5, axle_weight6, axle_weight7, axle_weight8,sequence_tag," +
+                "ftp_head,ftp_axle,ftp_tail,ftp_prior_head,ftp_plate,ftp_full_view,device_code,lwh_date,plate,width,height,length," +
+                "lane_mid,lane_min,lane_max,pass_time,station_id,upload_tag,path_tag,left_side_path,right_side_path) " +
+                "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -156,6 +158,9 @@ public class DbUtil {
             statement.setString(39, weight.getPassTime());
             statement.setInt(40, weight.getStationId());
             statement.setInt(41, weight.getUploadTag());
+            statement.setInt(42, weight.getPathTag());
+            statement.setString(43, weight.getLeftSidePath());
+            statement.setString(44, weight.getRightSidePath());
 
             statement.execute();
         } catch (SQLException e) {

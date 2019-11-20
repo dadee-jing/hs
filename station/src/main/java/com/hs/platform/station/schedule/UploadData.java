@@ -62,12 +62,13 @@ public class UploadData {
 
     public void doUploadDbData() {
         // 下载20秒前数据，保证图片视频收集
+        //test7
         try {
             Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
             List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
             if (null != weightDataList && weightDataList.size() != 0) {
                 String remoteUploadUrl = getDbConfigValue("remote_weight_upload_url");
-                if(StringUtils.isEmpty(remoteUploadUrl)){
+                if(StringUtils.isBlank(remoteUploadUrl)){
                     logger.error("远程上传车辆数据url未配置");
                 }
                 logger.info("upload size " + weightDataList.size());

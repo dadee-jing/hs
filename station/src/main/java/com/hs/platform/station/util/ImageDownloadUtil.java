@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -64,30 +65,61 @@ public class ImageDownloadUtil {
             String targetParentPath = stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd");
 
             if (null != newlxFtpClient && null != fileSystemService) {
-                String FtpHead = entity.getFtpHead();//侧
-                String FtpAxle = entity.getFtpAxle();//侧
-                String FtpTail = entity.getFtpTail();//后
-                String FtpPriorHead = entity.getFtpPriorHead();//前
-                String FtpPlate = entity.getFtpPlate();//车牌
-                String FtpFullView = entity.getFtpFullView();//视频
+                String FtpPriorHead = entity.getFtpPriorHead();//前 scene
+                String FtpTail = entity.getFtpTail();//后 back
+                String FtpHead = entity.getFtpHead();//左侧 left
+                String FtpAxle = entity.getFtpAxle();//右侧 right
+                String FtpPlate = entity.getFtpPlate();//车牌 plate
+                String FtpFullView = entity.getFtpFullView();//视频 video
+
+                String leftSidePath = entity.getLeftSidePath();//本地左侧拍
+                String rightSidePath = entity.getRightSidePath();//本地右侧拍
+
                 FoshanMessage foshanMessage = new FoshanMessage();
-                //前，后，侧，车牌，视频，市局无需视频
+                //前，后，左，右，车牌，视频，市局无需视频
                 //上传图片，组装对象
                 int picCount = 0;
-                if("1".equals(WeightAndLWHContainer.lwhUploadFileTag)){
-                    //单独执行上传侧拍
-                    if(StringUtils.isNotBlank(FtpAxle)){
-                        byte[] picSide = FTPClientUtil.localToFtp(FtpAxle,fileSystemService,entity.getWeightingDate());
-                        if(picSide != null && picSide.length != 0){
-                            foshanMessage.setPic4(picSide);
+                if("1".equals(WeightAndLWHContainer.lwhUploadFileTag) && entity.getPathTag() != 0){
+                    //优先使用本地侧拍， 没有则新流向补充。四种情况
+                    //isBlank 判断某字符串是否为空或长度为0或由空白符(whitespace)构成
+                    List<String> pathList = new ArrayList<>();
+                    if(StringUtils.isNotBlank(leftSidePath) && StringUtils.isNotBlank(rightSidePath)){
+                        byte[] picleftSide = FTPClientUtil.localToFtp(FtpHead,fileSystemService,entity.getWeightingDate());
+                        if(picleftSide != null && picleftSide.length != 0){
+                            foshanMessage.setPic3(picleftSide);
                             picCount++;
                         }
+                        byte[] picrightSide = FTPClientUtil.localToFtp(FtpAxle,fileSystemService,entity.getWeightingDate());
+                        if(picrightSide != null && picrightSide.length != 0){
+                            foshanMessage.setPic4(picrightSide);
+                            picCount++;
+                        }
+                        pathList = Arrays.asList(FtpPriorHead, FtpTail, FtpPlate, FtpFullView);
                     }
-                    List<String> pathList = Arrays.asList(FtpPriorHead, FtpTail, FtpPlate, FtpFullView);
+                    else if(StringUtils.isNotBlank(leftSidePath) && StringUtils.isBlank(rightSidePath)){
+                        byte[] picleftSide = FTPClientUtil.localToFtp(FtpHead,fileSystemService,entity.getWeightingDate());
+                        if(picleftSide != null && picleftSide.length != 0){
+                            foshanMessage.setPic3(picleftSide);
+                            picCount++;
+                        }
+
+                        pathList = Arrays.asList(FtpPriorHead, FtpTail,FtpAxle, FtpPlate, FtpFullView);
+                    }
+                    else if(StringUtils.isBlank(leftSidePath) && StringUtils.isNotBlank(rightSidePath)){
+                        byte[] picrightSide = FTPClientUtil.localToFtp(FtpAxle,fileSystemService,entity.getWeightingDate());
+                        if(picrightSide != null && picrightSide.length != 0){
+                            foshanMessage.setPic4(picrightSide);
+                            picCount++;
+                        }
+                        pathList = Arrays.asList(FtpPriorHead, FtpTail,FtpHead, FtpPlate, FtpFullView);
+                    }
+                    else{
+                        pathList = Arrays.asList(FtpPriorHead, FtpTail, FtpHead, FtpAxle,FtpPlate, FtpFullView);
+                    }
                     uploadFile(foshanMessage,pathList,targetParentPath,entity,picCount);
                 }
                 else{
-                    List<String> pathList = Arrays.asList(FtpPriorHead, FtpTail,FtpPlate, FtpHead, FtpAxle, FtpFullView);
+                    List<String> pathList = Arrays.asList(FtpPriorHead, FtpTail, FtpHead, FtpAxle,FtpPlate, FtpFullView);
                     uploadFile(foshanMessage,pathList,targetParentPath,entity,picCount);
                 }
 
@@ -107,23 +139,23 @@ public class ImageDownloadUtil {
                 byte[] pic = FTPClientUtil.ftpToFtp(filePath, targetParentPath + '/' + filePath,
                         newlxFtpClient, fileSystemService,weightData.getWeightingDate());
                 if(pic != null){
-                    if(i == 0){
+                    if(filePath.contains("scene")){
                         foshanMessage.setPic1(pic);
                         picCount++;
                     }
-                    else if(i == 1){
+                    else if(filePath.contains("back")){
                         foshanMessage.setPic2(pic);
                         picCount++;
                     }
-                    else if(i == 2){
+                    else if(filePath.contains("left")){
                         foshanMessage.setPic3(pic);
                         picCount++;
                     }
-                    else if(i == 3){
+                    else if(filePath.contains("right")){
                         foshanMessage.setPic4(pic);
                         picCount++;
                     }
-                    else if(i == 4){
+                    else if(filePath.contains("plate")){
                         foshanMessage.setPic5(pic);
                         picCount++;
                     }
@@ -136,7 +168,6 @@ public class ImageDownloadUtil {
     private void combineFoshanMessage(FoshanMessage foshanMessage,WeightData weightData,int picCount) {
         foshanMessage.setMessageType(FoshanMessage.BODY_MSG);
         foshanMessage.setCarData2Info
-                //改：改成配置文件或者只查询一次
                 (getCarData2Info(Integer.parseInt(configDataRepository.findFirstByKey("site_id").getValue()),
                         weightData.getLane(),
                         weightData.getWeightingDate(),

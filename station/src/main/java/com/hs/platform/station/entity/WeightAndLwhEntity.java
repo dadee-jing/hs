@@ -53,9 +53,35 @@ public class WeightAndLwhEntity {
     private boolean weightTag = false;
     private boolean sizeTag = false;
     private boolean speedTag = false;
-    private int uploadTag;//上传到服务器，0待上传,1已上传或不上传
-    private String sidePath;//本地侧拍路径
-    private boolean pathTag = false;
+    private int uploadTag = 0;//上传到服务器，0待上传,1已上传或不上传
+    private String leftSidePath = "";//本地侧拍路径
+    private String rightSidePath = "";//本地侧拍路径
+    private int pathTag = 0;//2-左右拍都有
+
+    public String getLeftSidePath() {
+        return leftSidePath;
+    }
+
+    public void setLeftSidePath(String leftSidePath) {
+        this.leftSidePath = leftSidePath;
+    }
+
+    public String getRightSidePath() {
+        return rightSidePath;
+    }
+
+    public void setRightSidePath(String rightSidePath) {
+        this.rightSidePath = rightSidePath;
+    }
+
+
+    public int getPathTag() {
+        return pathTag;
+    }
+
+    public void setPathTag(int pathTag) {
+        this.pathTag = pathTag;
+    }
 
     public int getUploadTag() {
         return uploadTag;
@@ -433,19 +459,5 @@ public class WeightAndLwhEntity {
         this.speedTag = speedTag;
     }
 
-    public String getSidePath() {
-        return sidePath;
-    }
 
-    public void setSidePath(String sidePath) {
-        this.sidePath = sidePath;
-    }
-
-    public boolean isPathTag() {
-        return pathTag;
-    }
-
-    public void setPathTag(boolean pathTag) {
-        this.pathTag = pathTag;
-    }
 }

@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class StationApplication {
 
     private static Logger LOGGER = LoggerFactory.getLogger(StationApplication.class);
+    public static LWHClient client;
 
     public static void main(String[] args) {
         SpringApplication.run(StationApplication.class, args);
@@ -59,8 +60,12 @@ public class StationApplication {
                 }
             }, 0, 30, TimeUnit.SECONDS);
 
+
+            //Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(()->LedComponent.showMessageLed("测A88888\r\n涉嫌超载"),
+             //       3, 5, TimeUnit.SECONDS);
+
             // 打开tcpclient请求外廓数据
-            LWHClient client = new LWHClient(lwhServerHost, lwhServerPort);
+            client = new LWHClient(lwhServerHost, lwhServerPort);
             LOGGER.info("LWH client connect : " + lwhServerHost + " : " + lwhServerPort + " success.");
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
