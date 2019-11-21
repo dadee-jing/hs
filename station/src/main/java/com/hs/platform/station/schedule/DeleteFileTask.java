@@ -13,13 +13,12 @@ public class DeleteFileTask {
 
     private static Logger log = LoggerFactory.getLogger(DeleteFileTask.class);
 
-    @Scheduled(cron = "0 0 0/5 * * ?")
+    @Scheduled(cron = "0 0 0/2 * * ?")
     private void deleteTimeOutFile(){
         //每5小时删除一次创建时间大于x小时的文件
         //D:/Camera/Picture/20191107/20191107_1410/1405123_1_side.jpg
-        log.info("deleteTimeOutFile start");
         String rootPath = "D:/Camera/Picture/";
-        int timeout = 12;
+        int timeout = 5;
         try {
             File rootFile = new File(rootPath);
             File fileList[] = rootFile.listFiles();
@@ -39,7 +38,11 @@ public class DeleteFileTask {
                         String secondFileName = secondFile.getName();
                         String fileHour = secondFileName.substring(0, secondFileName.length() - 2)
                                 .replaceAll("_", "");
+                        String fileDay = fileHour.substring(0 ,fileHour.length() - 2);
                         //超过x小时的删除
+                        if(!nowDay.equals(fileDay)){
+                            timeout +=75;
+                        }
                         if (Integer.valueOf(nowHour) - Integer.valueOf(fileHour) > timeout) {
                             delAllFile(new File(dayPath + "/" + secondFileName));
                             log.info("delete secondFile:" + dayPath + "/" + secondFileName);
@@ -52,7 +55,6 @@ public class DeleteFileTask {
         }catch (Exception e){
             log.error("deleteTimeOutFile fail" ,e);
         }
-        log.info("deleteTimeOutFile end");
     }
 
     /**

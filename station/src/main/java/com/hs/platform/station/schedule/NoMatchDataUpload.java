@@ -23,12 +23,7 @@ public class NoMatchDataUpload {
      */
     @Scheduled(fixedRate = 5000)
     public void uploadNoMatchData() {
-        long startTime = System.currentTimeMillis();
-        int flag = (int) ((Math.random() * 9 + 1) * 1000);
-        LOGGER.info("to uploadNoMatchData " + flag);
         doUploadNoMatchData();
-        long endTime = System.currentTimeMillis();
-        LOGGER.info("end uploadNoMatchData " + flag + ",uploadNoMatchData cost:" + (endTime - startTime));
     }
 
     /**
@@ -37,7 +32,7 @@ public class NoMatchDataUpload {
      */
     private void doUploadNoMatchData() {
         if (weightDataQueue != null && weightDataQueue.size() > 0) {
-            LOGGER.info("start size " + weightDataQueue.size());
+            LOGGER.info("to uploadNoMatchData size " + weightDataQueue.size());
             Iterator<WeightAndLwhEntity> iterator = weightDataQueue.iterator();
             while (iterator.hasNext()) {
                 WeightAndLwhEntity entity = iterator.next();
@@ -53,9 +48,8 @@ public class NoMatchDataUpload {
                     iterator.remove();
                 }
             }
-
+            LOGGER.info("end uploadNoMatchData size:" + weightDataQueue.size());
         }
-        LOGGER.info("end size " + weightDataQueue.size());
     }
 
     public static void addEntity(WeightAndLwhEntity entity) {

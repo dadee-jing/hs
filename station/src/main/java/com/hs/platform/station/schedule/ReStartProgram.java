@@ -29,7 +29,6 @@ public class ReStartProgram {
     @Scheduled(cron = "0 0/1 * * * ?")
     public void restartP7000() {
         if ("1".equals(restart_p7000)) {
-            LOGGER.info("ReStartP7000 start");
             //超过5分钟没外廓请求重启外廓程序
             try {
                 long nowSecond = System.currentTimeMillis() / 1000;
@@ -40,29 +39,28 @@ public class ReStartProgram {
                     callCmd(batPath);
                     Thread.sleep(100);
                     StationApplication.client.reactiveScheduled();
+                    LOGGER.info("ReStartP7000 end");
                 }
             } catch (Exception e) {
                 LOGGER.info("ReStartP7000 error", e);
             }
-            LOGGER.info("ReStartP7000 end");
         }
     }
 
     @Scheduled(cron = "0 0/5 * * * ?")
     public void restartStation() {
         if ("1".equals(restart_p7000)) {
-            LOGGER.info("restartStation start");
             try {
                 long nowSecond = System.currentTimeMillis() / 1000;
                 if (nowSecond - lwhLatestTimeSecond.get() > (60 * 15)) {
                     LOGGER.info("doReStartStation," + nowSecond + "," + lwhLatestTimeSecond.get());
                     String batPath = "D:/deploy/batch/restartStation.bat";
                     callCmd(batPath);
+                    LOGGER.info("restartStation end");
                 }
             } catch (Exception e) {
                 LOGGER.info("restartStation error", e);
             }
-            LOGGER.info("restartStation end");
         }
     }
 
@@ -84,7 +82,6 @@ public class ReStartProgram {
                 LOGGER.info("callCmd fail a", e);
             }
             LOGGER.info("result:" + sb.toString());
-            LOGGER.info("callCmd execute finished");
         } catch (IOException e) {
             LOGGER.info("callCmd fail b", e);
         }

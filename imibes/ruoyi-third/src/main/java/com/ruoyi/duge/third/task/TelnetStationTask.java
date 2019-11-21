@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
-@Component("ryTask")
+@Component("telnetStationTask")
 public class TelnetStationTask {
 
     @Autowired

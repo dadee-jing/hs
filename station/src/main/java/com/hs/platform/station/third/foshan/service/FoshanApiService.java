@@ -51,31 +51,30 @@ public class FoshanApiService {
 
     public static void addEntity(FoshanMessage entity) {
         shiJuQueue.add(entity);
+        if(shiJuQueue.size() > 300){
+            shiJuQueue.poll();
+        }
         log.info("FoshanMessage add size:" + shiJuQueue.size());
     }
 
     @Scheduled(fixedRate = 5000)
     public void submitShiJuData() {
         if ("1".equals(getDbConfigValue("do_foshan_scheduled"))) {
-            long startTime = System.currentTimeMillis();
-            log.info("市局定时任务执行开始");
             uploadShiJu = true;
             if (shiJuQueue != null && shiJuQueue.size() != 0) {
-                log.info("市局定时任务size:" + shiJuQueue.size());
+                log.info("市局定时任务开始，size:" + shiJuQueue.size());
                 for (FoshanMessage foshanMessage : shiJuQueue) {
                     foshanMessage = shiJuQueue.poll();
                     if (foshanMessage != null) {
                         try {
                             sendMsgClient.sendMessage(foshanMessage);
-                            log.info("市局上送成功 ");
                         } catch (Exception e) {
                             log.info("市局上送失败 ");
                         }
                     }
                 }
+                log.info("市局定时任务执行完成");
             }
-            long endTime = System.currentTimeMillis();
-            log.info("市局定时任务执行完成 cost:" + (endTime - startTime));
         }
         else{
             //log.info("foshan clear "+ shiJuQueue.size());
