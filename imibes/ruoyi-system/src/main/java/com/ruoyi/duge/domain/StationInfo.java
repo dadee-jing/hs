@@ -81,6 +81,9 @@ public class StationInfo extends BaseEntity
 	private Integer state;
 
 	private String remarkInfo;
+	/** 卡口编号 */
+	private String kakoCode;
+
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -329,7 +332,13 @@ public class StationInfo extends BaseEntity
 	public void setIndex(Integer index) {
 		this.index = index;
 	}
+	public String getKakoCode() {
+		return kakoCode;
+	}
 
+	public void setKakoCode(String kakoCode) {
+		this.kakoCode = kakoCode;
+	}
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
