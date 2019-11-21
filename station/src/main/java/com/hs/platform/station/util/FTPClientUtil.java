@@ -114,7 +114,6 @@ public class FTPClientUtil {
             sourceClient = checkNewlxFtpConnect();
             sourceClient.changeWorkingDirectory("/");
             Boolean sourceState = sourceClient.retrieveFile(sourcePath, outputStream);
-            long endTime1 = System.currentTimeMillis();
             LOGGER.info("sourceState:" + sourceState);
             //sourceState false代表源文件丢失，执行上传后是0k的文件
             if(!sourceState){
@@ -151,7 +150,6 @@ public class FTPClientUtil {
                     byte[] pic = getPicByStream(weightingDate, shiJuInputStream);
                     return pic;
                 }
-                return null;
             }
             catch (Exception e){
                 LOGGER.error("getPicByStream error");
@@ -289,22 +287,23 @@ public class FTPClientUtil {
 
     public static byte[] localToFtp(String sidePath, FileSystemServiceImpl fileSystemService,Date weightingDate) {
         //转化为本地路径,本地路径获取文件，原路径执行上传
-        //sidePath:PicPlate/20191106_1541/粤A12345_1_side.jpg
-        //D:/Camera/Picture/2019/11/06/15/41/粤A12345_1_side.jpg
+        //sidePath:PicPlate/20191118_1510/150214831_3_leftSide.jpg
+        //D:/Camera/Picture/20191118/20191118_1510/150214831_3_leftSide.jpg
         String sourcePath = "D:/Camera/Picture/" + sidePath.substring(9,17) + "/" + sidePath.substring(9,22) +
                 sidePath.substring(22,sidePath.length());
-        LOGGER.info("sideSourcePath:" + sourcePath);
-        InputStream input = null;
-        InputStream inputStream = null;
-        InputStream shiJuInputStream = null;
+        InputStream input;
+        InputStream inputStream;
+        InputStream shiJuInputStream;
         try {
             input =  new FileInputStream(sourcePath);
             ByteArrayOutputStream baos = cloneInputStream(input);
             inputStream = new ByteArrayInputStream(baos.toByteArray());
             shiJuInputStream = new ByteArrayInputStream(baos.toByteArray());
         } catch (FileNotFoundException e) {
+            //源文件丢失
             e.printStackTrace();
-            LOGGER.error("getInputStream fail " + sourcePath);
+            LOGGER.error("getSourcePathFile fail" + sourcePath);
+            return null;
         }
         try {
             final String stationId = station_id + "";
@@ -312,8 +311,12 @@ public class FTPClientUtil {
             Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
             LOGGER.info("localToFtp ok:targetState:" + targetState + " " + sourcePath);
         } catch (Exception e) {
+            ReUploadFailedData.localReUploadQueue.add( new FTPReUploadInfo(sidePath,""));
+            if(ReUploadFailedData.localReUploadQueue.size() > 100){
+                ReUploadFailedData.localReUploadQueue.poll();
+            }
             e.printStackTrace();
-            LOGGER.error("uploadFile fail " + sourcePath);
+            LOGGER.error("uploadFile fail " + sourcePath,e);
         }
         try{
             byte[] pic =getPicByStream(weightingDate, shiJuInputStream);
@@ -322,6 +325,30 @@ public class FTPClientUtil {
             LOGGER.error("getPicByStream fail " + sourcePath);
         }
         return null;
+    }
+
+
+    public static int reLocalToFtp(String sidePath, FileSystemServiceImpl fileSystemService) {
+        String sourcePath = "D:/Camera/Picture/" + sidePath.substring(9,17) + "/" + sidePath.substring(9,22) +
+                sidePath.substring(22,sidePath.length());
+        InputStream inputStream ;
+        try {
+             inputStream = new FileInputStream(sourcePath);
+        }catch (Exception e) {
+            LOGGER.error("re getSourcePathFile fail" + sourcePath);
+            return 0;
+        }
+        try {
+            final String stationId = station_id + "";
+            String targetPath = stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd") + "/" + sidePath;
+            Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
+            LOGGER.info("re localToFtp ok:targetState:" + targetState + " " + sourcePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("re localToFtp fail " + sourcePath,e);
+            return 1;
+        }
+        return 0;
     }
 
 

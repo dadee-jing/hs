@@ -66,7 +66,7 @@ public class LWHClientHandler extends IoHandlerAdapter {
             String speed = dataMap.get("speed");
             String pathTag = dataMap.get("pathTag");
             if (StringUtils.isNotBlank(speed)) {
-                LOGGER.info("speed hit:" + plate + " " + speed);
+                //LOGGER.info("speed hit:" + plate + " " + speed);
                 entity.setProcessStatus(2);
                 entity.setSpeed(new BigDecimal(speed));
                 entity.setSpeedTag(true);
@@ -75,14 +75,14 @@ public class LWHClientHandler extends IoHandlerAdapter {
             else if ((StringUtils.isNotBlank(pathTag))) {
                 if("1".equals(WeightAndLWHContainer.lwhUploadFileTag)){
                     if("1".equals(pathTag)){
-                        LOGGER.info("leftSidePath hit:" + plate);
+                        //LOGGER.info("leftSidePath hit:" + plate);
                         String leftSidePath = dataMap.get("leftSidePath");
                         entity.setProcessStatus(3);
                         entity.setLeftSidePath(leftSidePath);
                         entity.setPathTag(entity.getPathTag() + 1);
                     }
                     else if("2".equals(pathTag)){
-                        LOGGER.info("rightSidePath hit:" + plate);
+                        //LOGGER.info("rightSidePath hit:" + plate);
                         String rightSidePath = dataMap.get("rightSidePath");
                         entity.setProcessStatus(4);
                         entity.setRightSidePath(rightSidePath);

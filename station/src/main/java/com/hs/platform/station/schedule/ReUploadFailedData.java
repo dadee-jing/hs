@@ -23,6 +23,7 @@ public class ReUploadFailedData {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ReUploadFailedData.class);
     public static ConcurrentLinkedQueue<FTPReUploadInfo> ftpReUploadQueue = new ConcurrentLinkedQueue<>();
+    public static ConcurrentLinkedQueue<FTPReUploadInfo> localReUploadQueue = new ConcurrentLinkedQueue<>();
     //改用限定大小的list
     /**
      * 重新上传新流向失败的数据
@@ -30,7 +31,7 @@ public class ReUploadFailedData {
     @Scheduled(cron = "0 0/5 * * * ?")
     public void reUploadNewlxData() {
         if(ftpReUploadQueue != null && ftpReUploadQueue.size() > 0){
-            LOGGER.info("reUploadStart:" + ftpReUploadQueue.size());
+            LOGGER.info("reUploadNewlxDataStart:" + ftpReUploadQueue.size());
             //每次处理10条
             int i = 0;
             ImageDownloadUtil.checkNewlxFtpConnect();
@@ -42,12 +43,35 @@ public class ReUploadFailedData {
                 if(result == 0){
                     iterator.remove();
                 }
-                i++;
-                if(i > 10){
+                if(i++ > 20){
                     break;
                 }
             }
-            LOGGER.info("reUploadEnd:" + ftpReUploadQueue.size());
+            LOGGER.info("reUploadNewlxDataEnd:" + ftpReUploadQueue.size());
+        }
+    }
+    /**
+     * 重新上传本地失败的数据
+     */
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void reUploadLocalData() {
+        if(localReUploadQueue != null && localReUploadQueue.size() > 0){
+            LOGGER.info("reUploadLocalDataStart:" + localReUploadQueue.size());
+            //每次处理10条
+            int i = 0;
+            ImageDownloadUtil.checkNewlxFtpConnect();
+            Iterator<FTPReUploadInfo> iterator = localReUploadQueue.iterator();
+            while(iterator.hasNext()){
+                FTPReUploadInfo info= iterator.next();
+                int result = FTPClientUtil.reLocalToFtp(info.getSourcePath(), fileSystemService);
+                if(result == 0){
+                    iterator.remove();
+                }
+                if(i++ > 20){
+                    break;
+                }
+            }
+            LOGGER.info("reUploadLocalDataEnd:" + localReUploadQueue.size());
         }
     }
 

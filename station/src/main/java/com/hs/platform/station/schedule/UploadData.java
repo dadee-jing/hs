@@ -50,28 +50,23 @@ public class UploadData {
      */
     @Scheduled(fixedRate = 5000)
     public void uploadDbData() {
-        long startTime = System.currentTimeMillis();
-        int flag = (int) ((Math.random() * 9 + 1) * 1000);
-        logger.info("to upload " + flag);
         if ("1".equals(getDbConfigValue("do_upload_tag"))) {
             doUploadDbData();
         }
-        long endTime = System.currentTimeMillis();
-        logger.info("end upload " + flag + ",uploadDbData cost:" + (endTime - startTime));
     }
 
     public void doUploadDbData() {
         // 下载20秒前数据，保证图片视频收集
-        //test7
         try {
             Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
             List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
             if (null != weightDataList && weightDataList.size() != 0) {
+                long startTime = System.currentTimeMillis();
+                logger.info("to upload size" + weightDataList.size());
                 String remoteUploadUrl = getDbConfigValue("remote_weight_upload_url");
                 if(StringUtils.isBlank(remoteUploadUrl)){
                     logger.error("远程上传车辆数据url未配置");
                 }
-                logger.info("upload size " + weightDataList.size());
                 weightDataList.forEach(weightData -> {
                     boolean successTag = true;
                     try {
@@ -94,6 +89,8 @@ public class UploadData {
                     weightData.setUploadTag(successTag ? 1 : 2);
                     weightDataRepository.save(weightData);
                 });
+                long endTime = System.currentTimeMillis();
+                logger.info("end upload size" + weightDataList.size() + ",uploadDbData cost:" + (endTime - startTime));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

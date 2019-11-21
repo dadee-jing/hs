@@ -122,7 +122,6 @@ public class ImageDownloadUtil {
                     List<String> pathList = Arrays.asList(FtpPriorHead, FtpTail, FtpHead, FtpAxle,FtpPlate, FtpFullView);
                     uploadFile(foshanMessage,pathList,targetParentPath,entity,picCount);
                 }
-
                 //加入队列
                 FoshanApiService.addEntity(foshanMessage);
             }

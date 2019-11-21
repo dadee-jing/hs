@@ -40,8 +40,6 @@ public class WeightAndLWHContainer {
      * @param currentEntity
      */
     public static void clearAndInsertDB(WeightAndLwhEntity currentEntity) {
-        long startTime1 = System.currentTimeMillis();
-
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
         WeightAndLwhEntity previousEntity = mapContainer.get(carNumber);
@@ -71,8 +69,6 @@ public class WeightAndLWHContainer {
                 DbUtil.insertExceptionData(previousEntity);
             }
         }
-        long endTime1 = System.currentTimeMillis();
-        LOGGER.info("clearAndInsertDB cost:" + (endTime1 - startTime1));
     }
 
     /**
@@ -80,8 +76,7 @@ public class WeightAndLWHContainer {
      * @param currentEntity
      */
     public static void processData(WeightAndLwhEntity currentEntity) {
-        long startTime1 = System.currentTimeMillis();
-        // 根据状态判断是由超重或超限调用(新流向-超重 0, 杜格-超限 1，2-测速雷达，3-左侧拍，4-右侧拍)
+        // 根据状态判断是由超重或超限调用(0-新流向称重, 1-杜格外廓，2-测速雷达，3-左侧拍，4-右侧拍)
         //称重,测速可能多次触发
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
@@ -94,6 +89,9 @@ public class WeightAndLWHContainer {
             else if(1 == processStatus) {
                 remarkInfo = "衡器称重数据缺失。";
             }
+            else{
+                return;
+            }
             currentEntity.setRemarkInfo(remarkInfo);
             DbUtil.insertExceptionData(currentEntity);
             return;
@@ -101,7 +99,6 @@ public class WeightAndLWHContainer {
         if(processStatus == 1){
             lwhLatestTimeSecond = new AtomicLong(System.currentTimeMillis()/1000);
         }
-
         long timeout = System.currentTimeMillis() + 30000;
         // 若30秒后仍然不能补全外廓数据或称重数据，会被定时任务清理，写入异常数据表
         currentEntity.setTimeoutMillseconds(timeout);
@@ -242,20 +239,16 @@ public class WeightAndLWHContainer {
             // 称重，外廓，测速，两张侧拍都匹配上了，执行插入。测速，侧拍作为补充，最后没有匹配上也会插入
             if (previousEntity.isSizeTag() && previousEntity.isWeightTag()
                     && previousEntity.isSpeedTag() && previousEntity.getPathTag() == 2) {
-                LOGGER.info("mapContainer insert " + carNumber);
+                //LOGGER.info("mapContainer insert " + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
-                LOGGER.info("mapContainer put " + carNumber);
+                //LOGGER.info("mapContainer put " + carNumber);
                 mapContainer.put(carNumber, previousEntity);
             }
         }
-        long endTime1 = System.currentTimeMillis();
-        LOGGER.info("processData cost:" + (endTime1 - startTime1));
     }
 
     public static void completeEntity(WeightAndLwhEntity previousEntity, String carNumber) {
-        long startTime1 = System.currentTimeMillis();
-
         mapContainer.remove(carNumber);
         //小于设置重量的upload_tag设为1，不上传到154
         if(!StringUtils.isBlank(weightLimit) && !weightLimit.equals("0")){
@@ -264,6 +257,7 @@ public class WeightAndLWHContainer {
                 previousEntity.setUploadTag(1);
             }
         }
+        //使用本地侧拍
         if("1".equals(lwhUploadFileTag) && previousEntity.getPathTag() != 0){
             //本地侧拍覆盖新流向侧拍
             if(StringUtils.isNotBlank(previousEntity.getLeftSidePath())){
@@ -276,7 +270,7 @@ public class WeightAndLWHContainer {
                 String paths [] = sourcePath.split("/");
                 String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
                 previousEntity.setFtpHead(targetPath);
-                LOGGER.info("getLeftSidePath:" + sourcePath + ",targetPath:" + targetPath);
+                //LOGGER.info("getLeftSidePath:" + sourcePath + ",targetPath:" + targetPath);
             }
             if(StringUtils.isNotBlank(previousEntity.getRightSidePath())){
                 previousEntity.setFtpAxle("");//右
@@ -288,12 +282,11 @@ public class WeightAndLWHContainer {
                 String paths [] = sourcePath.split("/");
                 String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
                 previousEntity.setFtpAxle(targetPath);
-                LOGGER.info("getRightSidePath:" + sourcePath + ",targetPath:" + targetPath);
+                //LOGGER.info("getRightSidePath:" + sourcePath + ",targetPath:" + targetPath);
             }
         }
         DbUtil.insertWeightAndLWH(previousEntity);
-        long endTime1 = System.currentTimeMillis();
-        LOGGER.info("insertDB : cost: " + (endTime1 - startTime1) +"," + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
+        LOGGER.info("insertDB : " + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
                 previousEntity.getWeight() + "-" + previousEntity.getHeight() + ",mapContainer:" + mapContainer.size());
     }
 
