@@ -1,18 +1,15 @@
 package com.ruoyi.web.controller.duge;
 
 import com.ruoyi.duge.domain.RefittedVehicle;
-import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.service.IConfigDataService;
 import com.ruoyi.duge.service.RefittedVehicleService;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.web.core.base.BaseController;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
