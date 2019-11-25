@@ -1,7 +1,6 @@
 package com.ruoyi.duge.mapper;
 
 import com.ruoyi.duge.domain.DeptTest;
-import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.StationType;
 
 import java.util.List;
