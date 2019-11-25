@@ -71,14 +71,14 @@ public class LWHClient {
         // 添加处理器
         connector.setHandler(new LWHClientHandler());
         connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));// 设置默认访问地址
-
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 60, TimeUnit.SECONDS);
 
     }
 
     public synchronized void connect() {
-        if (null != session && session.isConnected()) {
+        LOGGER.info("lwh connect");
+        if (null != session && session.isConnected() && connector.isActive()) {
             return;
         }
         try {
