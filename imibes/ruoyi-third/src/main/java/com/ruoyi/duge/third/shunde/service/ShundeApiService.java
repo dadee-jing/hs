@@ -92,14 +92,14 @@ public class ShundeApiService implements ThirdApiService {
      * 10t以下，只要5张图片全，就插入，视频有也不插入
      */
     private boolean isAllFileExist(WeightData weightData) {
-        if(StringUtils.isNotBlank(weightData.getFtpPriorHead()) && StringUtils.isNotBlank(weightData.getFtpTail()) &&
+        String sids = configDataService.getConfigValue("all_pic_upload_yhl");
+        if (null == sids || !sids.contains("," + weightData.getSiteId() + ",")) {
+            return true;
+        } else if (StringUtils.isNotBlank(weightData.getFtpPriorHead()) && StringUtils.isNotBlank(weightData.getFtpTail()) &&
                 StringUtils.isNotBlank(weightData.getFtpHead()) && StringUtils.isNotBlank(weightData.getFtpAxle()) &&
-                StringUtils.isNotBlank(weightData.getFtpPlate())){
-            if(weightData.getWeight().compareTo(new BigDecimal(10)) > -1){
-                if(StringUtils.isNotBlank(weightData.getFtpFullView())){
-                    return true;
-                }
-                return false;
+                StringUtils.isNotBlank(weightData.getFtpPlate())) {
+            if (weightData.getWeight().compareTo(new BigDecimal(10)) > -1) {
+                return StringUtils.isNotBlank(weightData.getFtpFullView());
             }
             weightData.setFtpFullView(null);
             return true;
