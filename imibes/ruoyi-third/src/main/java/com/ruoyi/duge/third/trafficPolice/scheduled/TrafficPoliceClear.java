@@ -13,7 +13,7 @@ public class TrafficPoliceClear {
     Calendar calendar = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     @Scheduled(cron = "0 0 1 * * ?")
-    private void deletePasscar3DaysAgo(){
+    private void delete3DaysAgo(){
         calendar.add(Calendar.DATE, -3);
         String passcarPath="/sharedata/ftp/passcarbak/"+sdf.format(calendar.getTime());
         new File(passcarPath).delete();
