@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.duge;
 
 import com.ruoyi.duge.domain.RefittedVehicle;
+import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.service.IConfigDataService;
 import com.ruoyi.duge.service.RefittedVehicleService;
 import com.ruoyi.framework.web.page.TableDataInfo;

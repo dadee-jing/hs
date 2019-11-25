@@ -93,7 +93,7 @@ public class ShundeApiService implements ThirdApiService {
      */
     private boolean isAllFileExist(WeightData weightData) {
         String sids = configDataService.getConfigValue("all_pic_upload_yhl");
-        if (null == sids || !sids.contains("," + weightData.getSiteId() + ",")) {
+        if (null == sids || !sids.contains("," + weightData.getStationId() + ",")) {
             return true;
         } else if (StringUtils.isNotBlank(weightData.getFtpPriorHead()) && StringUtils.isNotBlank(weightData.getFtpTail()) &&
                 StringUtils.isNotBlank(weightData.getFtpHead()) && StringUtils.isNotBlank(weightData.getFtpAxle()) &&
