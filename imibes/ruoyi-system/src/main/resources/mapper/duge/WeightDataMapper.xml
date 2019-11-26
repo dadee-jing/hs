@@ -400,17 +400,17 @@
         select truck_number  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         and over_weight=0
         and mark_del= 0
-        ORDER BY  create_time DESC
+        ORDER BY id DESC
         LIMIT 10
     </select>
     <!--根据车牌号查这辆车时间区间内是否有其他报警数据-->
     <select id="selectIsIllegalByTruckNumber" parameterType="String" resultMap="WeightDataResult">
         select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         AND  create_time > date_add(now(), interval - 41*24*60 minute)
-        and over_weight  > 0
+        and  over_weight  > 0
         and truck_number = #{truckNumber}
     </select>
-    <!--查这辆车时间区间内所有数据-->
+    <!--查这辆车40天前那一天内所有数据-->
     <select id="selectByTruckNumber" parameterType="String" resultMap="WeightDataResult">
         select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         AND create_time > date_add(now(), interval - 41*24*60 minute)
@@ -423,19 +423,18 @@
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and over_weight=0
         and mark_del= 0
-        ORDER BY  create_time DESC
+        ORDER BY  id DESC
         LIMIT 10
     </select>
-    <!--查这辆车时间区间内所有数据-->
+    <!--查这辆车90天前那一天内所有数据-->
     <select id="selectByTruckNumberOver90Date" parameterType="String" resultMap="WeightDataResult">
         select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and truck_number = #{truckNumber}
     </select>
-
     <select id="selectBefore40Days" parameterType="WeightData" resultMap="WeightDataResult">
         select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
-        ORDER BY  create_time DESC
+        ORDER BY  id DESC
         LIMIT 100
     </select>
     <insert id="insertIntoWeightDataBefore40Days" parameterType="WeightData">

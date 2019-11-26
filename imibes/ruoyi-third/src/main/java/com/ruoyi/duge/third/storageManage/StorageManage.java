@@ -80,10 +80,8 @@ public class StorageManage {
             log.info("Delete file of "+wd.getTruckNumber()+" CreateTime:"+format.format(wd.getCreateTime()));
             String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
             if(StringUtils.isNotBlank(wd.getFtpHead())){
-                log.info(basePath+wd.getFtpHead());
                 new File(basePath+wd.getFtpHead()).delete();}
             else if(StringUtils.isNotBlank(wd.getFtpAxle())){
-                log.info(basePath+wd.getFtpAxle());
                 new File(basePath+wd.getFtpAxle()).delete();}
             else if(StringUtils.isNotBlank(wd.getFtpTail())){
                 new File(basePath+wd.getFtpTail()).delete();}
