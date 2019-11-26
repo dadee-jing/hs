@@ -61,8 +61,8 @@ public class StationApplication {
             }, 0, 30, TimeUnit.SECONDS);
 
 
-            //Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(()->LedComponent.showMessageLed("测A88888\r\n涉嫌超载"),
-             //       3, 5, TimeUnit.SECONDS);
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(()->LedComponent.showMessageLed("测A88888\r\n涉嫌超载"),
+                    3, 5, TimeUnit.SECONDS);
 
             // 打开tcpclient请求外廓数据
             client = new LWHClient(lwhServerHost, lwhServerPort);

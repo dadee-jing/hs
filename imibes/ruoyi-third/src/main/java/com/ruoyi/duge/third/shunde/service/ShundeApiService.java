@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
@@ -60,24 +61,50 @@ public class ShundeApiService implements ThirdApiService {
                 LongAdder successCount = new LongAdder();
                     weightDataList.forEach(weightData -> {
                         // log.info("to insert" + weightData.getTruckNumber());
-                        BaseVehicleDataRequest baseVehicleDataRequest = BaseVehicleDataRequest.builder()
-                                .weightData(weightData)
-                                .build();
-                        BaseThirdApiResponse baseThirdApiResponse =
-                                submitVehicleData(baseVehicleDataRequest);
-                        if (BusinessStatus.SUCCESS == baseThirdApiResponse.getBusinessStatus()) {
-                            weightData.setUploadYhl(1);
-                            successCount.increment();
-                            //log.info("ok insert" + weightData.getTruckNumber());
-                        } else {
-                            weightData.setUploadYhl(2);
-                            //log.info("error insert" + weightData.getTruckNumber());
+                        if(isAllFileExist(weightData)) {
+                            BaseVehicleDataRequest baseVehicleDataRequest = BaseVehicleDataRequest.builder()
+                                    .weightData(weightData)
+                                    .build();
+                            BaseThirdApiResponse baseThirdApiResponse =
+                                    submitVehicleData(baseVehicleDataRequest);
+                            if (BusinessStatus.SUCCESS == baseThirdApiResponse.getBusinessStatus()) {
+                                weightData.setUploadYhl(1);
+                                successCount.increment();
+                                //log.info("ok insert" + weightData.getTruckNumber());
+                            } else {
+                                weightData.setUploadYhl(2);
+                                //log.info("error insert" + weightData.getTruckNumber());
+                            }
+                            weightDataMapper.updateData(weightData);
                         }
-                        weightDataMapper.updateData(weightData);
+                        else{
+                            weightData.setUploadYhl(3);
+                            weightDataMapper.updateData(weightData);
+                        }
                     });
                 log.info("success count:" + successCount);
             }
         }
+    }
+
+    /**
+     * 10t以上，6个文件都全才插入
+     * 10t以下，只要5张图片全，就插入，视频有也不插入
+     */
+    private boolean isAllFileExist(WeightData weightData) {
+        String sids = configDataService.getConfigValue("all_pic_upload_yhl");
+        if (null == sids || !sids.contains("," + weightData.getStationId() + ",")) {
+            return true;
+        } else if (StringUtils.isNotBlank(weightData.getFtpPriorHead()) && StringUtils.isNotBlank(weightData.getFtpTail()) &&
+                StringUtils.isNotBlank(weightData.getFtpHead()) && StringUtils.isNotBlank(weightData.getFtpAxle()) &&
+                StringUtils.isNotBlank(weightData.getFtpPlate())) {
+            if (weightData.getWeight().compareTo(new BigDecimal(10)) > -1) {
+                return StringUtils.isNotBlank(weightData.getFtpFullView());
+            }
+            weightData.setFtpFullView(null);
+            return true;
+        }
+        return false;
     }
 
     @Override

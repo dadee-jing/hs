@@ -74,10 +74,10 @@ public class UploadData {
                         BeanUtils.copyProperties(remoteWeightDataData, weightData);
                         remoteWeightDataData.setId(null);
                         remoteWeightDataData.setUploadTag(0);
-                        // 文本数据
-                        successTag = post(remoteUploadUrl, remoteWeightDataData);
                         // 同步提交文件
                         imageDownloadUtil.submitDownloadTask(weightData);
+                        // 文本数据
+                        successTag = post(remoteUploadUrl, remoteWeightDataData);
                         if(successTag){
                             logger.info("upload " + weightData.getTruckNumber());
                         }

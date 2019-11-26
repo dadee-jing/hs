@@ -2,6 +2,7 @@ package com.hs.platform.station.util;
 
 import com.hs.platform.station.persistence.local.dao.ConfigDataRepository;
 import com.hs.platform.station.persistence.local.entity.WeightData;
+import com.hs.platform.station.persistence.remote.entity.RemoteWeightDataData;
 import com.hs.platform.station.third.foshan.service.FoshanApiService;
 import com.hs.platform.station.third.foshan.socket.FoshanMessage;
 import com.hs.platform.station.util.SFTP.FileSystemServiceImpl;
@@ -58,12 +59,11 @@ public class ImageDownloadUtil {
 
 
     public void submitDownloadTask(final WeightData entity) {
+        //源文件丢失或者0k的文件，远程数据库路径设置为空
         try {
-
             final String stationId = station_id + "";
             // 按照固定目录存放 ftppath/stationID/date/   ftp/1/20190717/
-            String targetParentPath = stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd");
-
+            String targetParentPath = stationId + "/" + DateFormatUtils.format(entity.getWeightingDate(), "yyyyMMdd");
             if (null != newlxFtpClient && null != fileSystemService) {
                 String FtpPriorHead = entity.getFtpPriorHead();//前 scene
                 String FtpTail = entity.getFtpTail();//后 back

@@ -2,7 +2,6 @@ package com.hs.platform.station.third.foshan.socket;
 
 import com.hs.platform.station.persistence.local.dao.ConfigDataRepository;
 import com.hs.platform.station.third.foshan.service.FoshanApiService;
-import com.hs.platform.station.util.ImageDownloadUtil;
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IdleStatus;

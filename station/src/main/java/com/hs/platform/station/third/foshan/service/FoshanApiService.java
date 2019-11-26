@@ -42,6 +42,10 @@ public class FoshanApiService {
     private final ConfigDataRepository configDataRepository;
     private static ConcurrentLinkedQueue<FoshanMessage> shiJuQueue = new ConcurrentLinkedQueue<>();
     public static Boolean uploadShiJu = false;
+    public static volatile int totalCount = 0;
+    public static volatile int sendCount = 0;
+    public static int sendSuccessCount = 0;
+    public static int receiveCount = 0;
 
     @Autowired
     public FoshanApiService(SendMsgClient sendMsgClient, ConfigDataRepository configDataRepository) {
@@ -51,10 +55,11 @@ public class FoshanApiService {
 
     public static void addEntity(FoshanMessage entity) {
         shiJuQueue.add(entity);
+        totalCount++;
         if(shiJuQueue.size() > 300){
             shiJuQueue.poll();
         }
-        log.info("FoshanMessage add size:" + shiJuQueue.size());
+        //log.info("FoshanMessage add size:" + shiJuQueue.size());
     }
 
     @Scheduled(fixedRate = 5000)
@@ -62,18 +67,18 @@ public class FoshanApiService {
         if ("1".equals(getDbConfigValue("do_foshan_scheduled"))) {
             uploadShiJu = true;
             if (shiJuQueue != null && shiJuQueue.size() != 0) {
-                log.info("市局定时任务开始，size:" + shiJuQueue.size());
+                log.info("uploadShiJu start size:" + shiJuQueue.size());
                 for (FoshanMessage foshanMessage : shiJuQueue) {
                     foshanMessage = shiJuQueue.poll();
                     if (foshanMessage != null) {
                         try {
                             sendMsgClient.sendMessage(foshanMessage);
+                            sendCount++;
                         } catch (Exception e) {
-                            log.info("市局上送失败 ");
+                            log.info("uploadShiJu fail",e);
                         }
                     }
                 }
-                log.info("市局定时任务执行完成");
             }
         }
         else{

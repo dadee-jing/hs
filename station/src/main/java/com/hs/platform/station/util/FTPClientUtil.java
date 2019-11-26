@@ -115,9 +115,9 @@ public class FTPClientUtil {
             sourceClient.changeWorkingDirectory("/");
             Boolean sourceState = sourceClient.retrieveFile(sourcePath, outputStream);
             LOGGER.info("sourceState:" + sourceState);
-            //sourceState false代表源文件丢失，执行上传后是0k的文件
+            //sourceState false代表源文件丢失，执行上传后是0k的文件，对应路径设为空
             if(!sourceState){
-                LOGGER.info("sourcePath:" + sourcePath);
+                LOGGER.info("getSourcePathFile fail:" + sourcePath);
                 return null;
             }
         } catch (Exception e) {
@@ -132,12 +132,17 @@ public class FTPClientUtil {
             return null;
         } finally {
             try {
-                outputStream.close();
-            } catch (IOException e) {
+                //outputStream.close();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         try (InputStream inputStream = parse(outputStream)) {
+            if(inputStream.available() < 100){
+                //对应路径设置为空
+                LOGGER.info("sourceFile empty:" + sourcePath);
+                //return null;
+            }
             long startTime2 = System.currentTimeMillis();
             Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
             long endTime2 = System.currentTimeMillis();
@@ -302,12 +307,12 @@ public class FTPClientUtil {
         } catch (FileNotFoundException e) {
             //源文件丢失
             e.printStackTrace();
-            LOGGER.error("getSourcePathFile fail" + sourcePath);
+            LOGGER.error("getSourcePathFileLocal fail" + sourcePath);
             return null;
         }
         try {
             final String stationId = station_id + "";
-            String targetPath = stationId + "/" + DateFormatUtils.format(new Date(), "yyyyMMdd") + "/" + sidePath;
+            String targetPath = stationId + "/" + DateFormatUtils.format(weightingDate, "yyyyMMdd") + "/" + sidePath;
             Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
             LOGGER.info("localToFtp ok:targetState:" + targetState + " " + sourcePath);
         } catch (Exception e) {
@@ -316,7 +321,7 @@ public class FTPClientUtil {
                 ReUploadFailedData.localReUploadQueue.poll();
             }
             e.printStackTrace();
-            LOGGER.error("uploadFile fail " + sourcePath,e);
+            LOGGER.error("uploadFileLocal fail " + sourcePath,e);
         }
         try{
             byte[] pic =getPicByStream(weightingDate, shiJuInputStream);
