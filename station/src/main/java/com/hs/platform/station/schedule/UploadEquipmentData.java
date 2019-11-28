@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.hs.platform.station.Constants.station_id;
 import static com.hs.platform.station.Constants.upload_equipment_state_url;
+import static com.hs.platform.station.util.ImageDownloadUtil.station_id;
 
 @Service
 public class UploadEquipmentData {

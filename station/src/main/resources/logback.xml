@@ -33,10 +33,6 @@
 
 
     <appender name="FoshanApiServiceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-<!--        <file>${LOG_HOME}/foshan/FoshanApiService.log</file>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <FileNamePattern>${LOG_HOME}/foshan/FoshanApiService.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <MaxHistory>30</MaxHistory>

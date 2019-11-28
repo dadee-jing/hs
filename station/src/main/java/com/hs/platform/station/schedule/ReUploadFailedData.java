@@ -63,7 +63,7 @@ public class ReUploadFailedData {
             Iterator<FTPReUploadInfo> iterator = localReUploadQueue.iterator();
             while(iterator.hasNext()){
                 FTPReUploadInfo info= iterator.next();
-                int result = FTPClientUtil.reLocalToFtp(info.getSourcePath(), fileSystemService);
+                int result = FTPClientUtil.reLocalToFtp(info.getSourcePath(),info.getTargetPath(), fileSystemService);
                 if(result == 0){
                     iterator.remove();
                 }

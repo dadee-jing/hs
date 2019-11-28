@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import static com.hs.platform.station.third.foshan.service.FoshanApiService.*;
+import static com.hs.platform.station.third.foshan.socket.FoshanMessage.BODY_MSG;
+import static com.hs.platform.station.third.foshan.socket.FoshanMessage.HEART_BEAT_MSG;
 
 @Component
 public class SendMsgClientHandler extends IoHandlerAdapter {
@@ -25,41 +27,52 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) {
-        long startTime = System.currentTimeMillis();
-        try{
+        try {
             super.messageReceived(session, message);
-            if (!"receive_online".equals(message.toString())) {
-                if(message.toString().contains("5002")){
-                    //LOGGER.info("receive heartbeat:" + message.toString());
+            FoshanRspMessage foshanRspMessage = (FoshanRspMessage) message;
+            if ("5002".equals(foshanRspMessage.getInstrId())) {
+                //LOGGER.info("receive heartbeat:" + message.toString());
+            } else if ("5020".equals(foshanRspMessage.getInstrId())) {
+                receiveCount.increment();
+                String plate = waitingResponseMap.remove(foshanRspMessage.getSerialNo());
+                if (null != plate) {
+                    // 通知正在等待的返回
+                    if (null != failPlateMap.remove(plate)) {
+                        // 处理迟到返回，修正统计
+                        successCount.increment();
+                        failCount.decrement();
+                    } else {
+                        try {
+                            okPlateMap.put(plate, 1);
+                            lock.lockInterruptibly();
+                            cond.signal();
+                        } catch (Exception e) {
+                            LOGGER.error("lock error", e);
+                        } finally {
+                            lock.unlock();
+                        }
+                    }
                 }
-                else if(message.toString().contains("5020")){
-                    receiveCount++;
-                    long endTime = System.currentTimeMillis();
-                    LOGGER.info("receive success:totalCount:" + totalCount + ",sendCount:" + sendCount + ",sendSuccessCount:"
-                            + sendSuccessCount + ",receiveCount:" + receiveCount + ",cost:" + (endTime - startTime));
-                }
+                LOGGER.info("receive 5020:" + ((FoshanRspMessage) message).getSerialNo() + " " + plate);
             }
-        }catch (Exception e){
-            LOGGER.info("接收到的消息失败！" + message,e);
+        } catch (Exception e) {
+            LOGGER.info("接收到的消息失败！" + message, e);
         }
     }
 
     @Override
-    public void messageSent(IoSession session, Object message)  {
-        long startTime = System.currentTimeMillis();
-        try{
+    public void messageSent(IoSession session, Object message) {
+        try {
             super.messageSent(session, message);
-            int msgType = ((FoshanMessage)message).getMessageType();
-            if(msgType == 20482){
+            int msgType = ((FoshanMessage) message).getMessageType();
+            if (msgType == HEART_BEAT_MSG) {
                 //LOGGER.info("send heartbeat");
+            } else if (msgType == BODY_MSG) {
+                sendSuccessCount.increment();
             }
-            else if(msgType == 20512){
-                sendSuccessCount++;
-                long endTime = System.currentTimeMillis();
-                LOGGER.info("send data,cost:" + (endTime - startTime));
-            }
-        }catch (Exception e){
-            LOGGER.info("向服务器发送消息失败！" + message,e);
+        } catch (Exception e) {
+            FoshanApiService.sendFailCount.increment();
+            LOGGER.info("向服务器发送消息失败！" + message, e);
         }
 
     }

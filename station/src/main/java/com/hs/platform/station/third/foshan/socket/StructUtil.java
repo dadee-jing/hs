@@ -22,7 +22,15 @@ public class StructUtil {
 
     private static final Logger log = LoggerFactory.getLogger(StructUtil.class);
 
-    private static int serailNo = 0;
+    private static int serialNo = 0;
+
+    public synchronized static int getSerailNo() {
+        if (serialNo > 30000) {
+            return 1;
+        } else {
+            return serialNo++;
+        }
+    }
 
     public static byte[] getTime2t(Date date) {
         Instant instant = date.toInstant();
@@ -171,6 +179,7 @@ public class StructUtil {
     }
 
     public static byte[] combineMsg(int instructionId,
+                                    int serialNo,
                                     byte[] carData2Info,
                                     byte[] picData1,
                                     byte[] picData2,
@@ -196,7 +205,7 @@ public class StructUtil {
         // 命令类型
         fillArray(result, currPos, new byte[]{0x00});
         // 流水号
-        fillArray(result, currPos, getWordBytes(serailNo++));
+        fillArray(result, currPos, getWordBytes(serialNo));
         // 进程id
         fillArray(result, currPos, getDwordBytes(0));
         // 保留
@@ -277,7 +286,7 @@ public class StructUtil {
         byte[] pic1 = getPic(new Date(), new File("d:\\6.jpg"));
         byte[] pic2 = getPic(new Date(), new File("d:\\6.jpg"));
         //byte[] msg = combineMsg(0x5020, car, pic1, pic2);
-        byte[] msg = combineMsg(0x5020, car, pic1, pic2, pic1, pic1, pic1);
+        byte[] msg = combineMsg(0x5020,1, car, pic1, pic2, pic1, pic1, pic1);
         byte[] result = combineAll(msg);
 
         byte[] lengthBytes = new byte[4];

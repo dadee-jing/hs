@@ -18,6 +18,8 @@ import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.hs.platform.station.third.foshan.socket.FoshanMessage.BODY_MSG;
+
 @Component
 public class SendMsgClient {
 
@@ -27,6 +29,7 @@ public class SendMsgClient {
     private static final Logger log = LoggerFactory.getLogger(SendMsgClient.class);
     private String host;
     private int port;
+    private final Object lockObject;
 
     @Autowired
     public SendMsgClient(ConfigDataRepository configDataRepository,
@@ -34,6 +37,7 @@ public class SendMsgClient {
         this.sendMsgClientHandler = sendMsgClientHandler;
         host = configDataRepository.findFirstByKey("foshan.tcp.host").getValue();
         port = Integer.parseInt(configDataRepository.findFirstByKey("foshan.tcp.port").getValue());
+        this.lockObject = new Object();
     }
 
     public boolean isConnected() {
@@ -63,34 +67,54 @@ public class SendMsgClient {
         }
     }
 
-    public synchronized boolean connect() {
-        if (null != session && session.isConnected()) {
-            return true;
-        }
-        for (int i = 0; i < 5; i++) {
-            try {
-                ConnectFuture future = connector.connect();
-                // 等待连接创建成功
-                future.awaitUninterruptibly();
-                // 获取会话
-                session = future.getSession();
-                log.info("连接佛山服务端" + host + ":" + port + "[成功],时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+    public boolean connect() {
+        synchronized (lockObject){
+            if (null != session && session.isConnected()) {
                 return true;
-            } catch (RuntimeIoException e) {
-                log.error("连接佛山服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e.getMessage());
+            }
+            for (int i = 0; i < 5; i++) {
                 try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e1) {
-                    log.error("连接佛山服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e1.getMessage());
+                    ConnectFuture future = connector.connect();
+                    // 等待连接创建成功
+                    future.awaitUninterruptibly();
+                    // 获取会话
+                    session = future.getSession();
+                    log.info("连接佛山服务端" + host + ":" + port + "[成功],时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                    return true;
+                } catch (Exception e) {
+                    log.error("连接佛山服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e.getMessage());
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e1) {
+                        log.error("连接佛山服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e1.getMessage());
+                    }
                 }
             }
+            return false;
+        }
+    }
+
+    public boolean sendMessage(FoshanMessage foshanMessage) {
+        if (connect()) {
+            try{
+                synchronized (lockObject){
+                    // 同步发送， 10s超时
+                    session.write(foshanMessage).awaitUninterruptibly(10000);
+                }
+                if(foshanMessage.getMessageType() == BODY_MSG){
+                    FoshanApiService.sendCount.increment();
+                }
+                return true;
+            }catch (Exception e){
+                FoshanApiService.sendFailCount.increment();
+                log.info("sendMessage error",e);
+            }
+        }
+        else{
+            FoshanApiService.sendFailCount.increment();
+            log.info("connect fail,send fail");
         }
         return false;
     }
 
-    public synchronized void sendMessage(FoshanMessage foshanMessage) {
-        if (connect()) {
-            session.write(foshanMessage);
-        }
-    }
 }

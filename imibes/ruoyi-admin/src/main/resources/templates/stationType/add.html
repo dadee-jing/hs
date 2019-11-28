@@ -1,100 +1,92 @@
-<!DOCTYPE HTML>
-<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <meta charset="utf-8">
 <head th:include="include :: header"></head>
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-stationInfo-add">
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">站点名称：</label>
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-dept-add">
+			<input id="treeId" name="parentId" type="hidden" th:value="${stationType.typeId}"   />
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">上级：</label>
 				<div class="col-sm-8">
-					<input id="name" name="name" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">缩写：</label>
-				<div class="col-sm-8">
-					<input id="abbreviation" name="abbreviation" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">纬度：</label>
-				<div class="col-sm-8">
-					<input id="latitude" name="latitude" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">经度：</label>
-				<div class="col-sm-8">
-					<input id="longitude" name="longitude" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">负责人：</label>
-				<div class="col-sm-8">
-					<input id="userId" name="userId" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">公路局名称：</label>
-				<div class="col-sm-8">
-					<input id="bureau" name="bureau" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">省：</label>
-				<div class="col-sm-8">
-					<input id="province" name="province" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">市：</label>
-				<div class="col-sm-8">
-					<input id="city" name="city" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">区：</label>
-				<div class="col-sm-8">
-					<input id="county" name="county" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">详细地址：</label>
-				<div class="col-sm-8">
-					<input id="address" name="address" class="form-control" type="text">
+					<input class="form-control" type="text" onclick="selectDeptTree()" id="treeName" readonly="true" th:value="${stationType.typeName}"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">ip：</label>
+				<label class="col-sm-3 control-label">名称：</label>
 				<div class="col-sm-8">
-					<input id="ip" name="ip" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">端口：</label>
-				<div class="col-sm-8">
-					<input id="port" name="port" class="form-control" type="text">
+					<input class="form-control" type="text" name="typeName" id="typeName">
 				</div>
 			</div>
 		</form>
 	</div>
-    <div th:include="include::footer"></div>
-    <script type="text/javascript">
-		var prefix = ctx + "module/stationInfo"
-		$("#form-stationInfo-add").validate({
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+		var prefix = ctx + "module/stationType";
+		
+		$("#form-dept-add").validate({
 			rules:{
-				xxxx:{
+				typeName:{
 					required:true,
+					remote: {
+		                url: prefix + "/checkTypeNameUnique",
+		                type: "post",
+		                dataType: "json",
+		                data: {
+		                	"parentId": function() {
+		                		return $("input[name='parentId']").val();
+		                    },
+		                	"typeName" : function() {
+		                        return $.common.trim($("#typeName").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
 				},
-			}
+				orderNum:{
+					required:true,
+					digits:true
+				},
+				email:{
+                    email:true,
+        		},
+        		phone:{
+        			isPhone:true,
+        		},
+			},
+			messages: {
+		        "typeName": {
+		            remote: "已经存在"
+		        }
+		    }
 		});
 		
 		function submitHandler() {
 	        if ($.validate.form()) {
-	            $.operate.save(prefix + "/add", $('#form-stationInfo-add').serialize());
+	        	$.operate.save(prefix + "/add", $('#form-dept-add').serialize());
 	        }
 	    }
+	
+		/*部门管理-新增-选择父部门树*/
+		function selectDeptTree() {
+			var options = {
+				title: '站点分类选择',
+				width: "380",
+				url: prefix + "/selectStationTypeTree/" + $("#treeId").val(),
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		
+		function doSubmit(index, layero){
+			var body = layer.getChildFrame('body', index);
+   			$("#treeId").val(body.find('#treeId').val());
+   			$("#treeName").val(body.find('#treeName').val());
+   			layer.close(index);
+		}
 	</script>
 </body>
 </html>

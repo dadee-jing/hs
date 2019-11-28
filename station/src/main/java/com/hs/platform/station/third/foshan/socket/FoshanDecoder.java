@@ -7,9 +7,11 @@ import org.apache.mina.filter.codec.ProtocolDecoderAdapter;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import static com.hs.platform.station.third.foshan.socket.Byte2IntUtil.byteArrayToInt;
 import static com.hs.platform.station.third.foshan.socket.Byte2IntUtil.bytesToHexString;
 
@@ -40,39 +42,47 @@ public class FoshanDecoder extends ProtocolDecoderAdapter {
         byte[] tag = new byte[1];
         in.get(tag);
         Map<String, Object> receiveMessageMap = new HashMap<>();
+        FoshanRspMessage foshanRspMessage = FoshanRspMessage.builder().build();
         //System.out.println("start_tag:" + bytesToHexString(tag));
         receiveMessageMap.put("start_tag", bytesToHexString(tag));
+        foshanRspMessage.setStartTag(bytesToHexString(tag));
 
         byte[] instrId = new byte[2];
         in.get(instrId);
         //System.out.println("instrId:" + bytesToHexString(instrId));
         receiveMessageMap.put("instrId", bytesToHexString(instrId));
+        foshanRspMessage.setInstrId(bytesToHexString(instrId));
 
         byte[] instrType = new byte[1];
         in.get(instrType);
         //System.out.println("instrType:" + bytesToHexString(instrType));
         receiveMessageMap.put("instrType", bytesToHexString(instrType));
+        foshanRspMessage.setInstrType(bytesToHexString(instrType));
 
         byte[] serialNo = new byte[2];
         in.get(serialNo);
         //System.out.println("serialNo:" + bytesToHexString(serialNo));
         receiveMessageMap.put("serialNo", bytesToHexString(serialNo));
+        foshanRspMessage.setSerialNo(bytesToHexString(serialNo));
 
         byte[] progressId = new byte[4];
         in.get(progressId);
         //System.out.println("progressId:" + bytesToHexString(progressId));
         receiveMessageMap.put("progressId", bytesToHexString(progressId));
+        foshanRspMessage.setProgressId(bytesToHexString(progressId));
 
         byte[] tbd = new byte[4];
         in.get(tbd);
         //System.out.println("tbd:" + bytesToHexString(tbd));
         receiveMessageMap.put("tbd", bytesToHexString(tbd));
+        foshanRspMessage.setTbd(bytesToHexString(tbd));
 
         byte[] messageLength = new byte[4];
         in.get(messageLength);
         int ml = byteArrayToInt(messageLength);
         //System.out.println("messageLength:" + ml);
         receiveMessageMap.put("messageLength", ml);
+        foshanRspMessage.setLength(ml);
 
         if (ml > 0) {
             byte[] bodyByte = new byte[1];
@@ -87,6 +97,7 @@ public class FoshanDecoder extends ProtocolDecoderAdapter {
             }
             receiveMessageMap.put("body", bytesToHexString(body));
             receiveMessageMap.put("body_str", new String(body));
+            foshanRspMessage.setBody(new String(body));
 
             // 0A
             //in.get(tag);
@@ -95,6 +106,7 @@ public class FoshanDecoder extends ProtocolDecoderAdapter {
             in.get(tag);
             System.out.println("end_tag:" + bytesToHexString(tag));
             receiveMessageMap.put("end_tag", bytesToHexString(tag));
+            foshanRspMessage.setEndTag(bytesToHexString(tag));
         }
 
         String outStr = objectMapper.writeValueAsString(receiveMessageMap);
@@ -105,7 +117,8 @@ public class FoshanDecoder extends ProtocolDecoderAdapter {
         } else {
             outStr = "receive_online";
         }*/
-        out.write(outStr);
+        //out.write(outStr);
+        out.write(foshanRspMessage);
         /*
         String response = null;
 

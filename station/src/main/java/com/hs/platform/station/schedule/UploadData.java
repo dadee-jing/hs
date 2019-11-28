@@ -24,8 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class UploadData {
@@ -75,7 +74,8 @@ public class UploadData {
                         remoteWeightDataData.setId(null);
                         remoteWeightDataData.setUploadTag(0);
                         // 同步提交文件
-                        imageDownloadUtil.submitDownloadTask(weightData);
+                        HashMap<String,String> fileInfo = imageDownloadUtil.submitDownloadTask(weightData);
+                        updateRemoteWeightData(fileInfo,remoteWeightDataData);
                         // 文本数据
                         successTag = post(remoteUploadUrl, remoteWeightDataData);
                         if(successTag){
@@ -94,6 +94,32 @@ public class UploadData {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    private void updateRemoteWeightData(HashMap<String, String> fileInfo, RemoteWeightDataData remoteWeightDataData) {
+        Iterator<Map.Entry<String, String>> entries = fileInfo.entrySet().iterator();
+        while(entries.hasNext()){
+            Map.Entry<String, String> entry = entries.next();
+            logger.info("updateRemoteWeightData key = " + entry.getKey() + ", value = " + entry.getValue());
+            if(entry.getKey().contains("scene") && "0".equals(entry.getValue())){
+                remoteWeightDataData.setFtpPriorHead("");
+            }
+            else if(entry.getKey().contains("back") && "0".equals(entry.getValue())){
+                remoteWeightDataData.setFtpTail("");
+            }
+            else if(entry.getKey().contains("left") && "0".equals(entry.getValue())){
+                remoteWeightDataData.setFtpHead("");
+            }
+            else if(entry.getKey().contains("right") && "0".equals(entry.getValue())){
+                remoteWeightDataData.setFtpAxle("");
+            }
+            else if(entry.getKey().contains("plate") && "0".equals(entry.getValue())){
+                remoteWeightDataData.setFtpPlate("");
+            }
+            else if(entry.getKey().contains("video") && "0".equals(entry.getValue())){
+                remoteWeightDataData.setFtpFullView("");
+            }
         }
     }
 
@@ -121,6 +147,7 @@ public class UploadData {
             JsonNode jsonNode = objectMapper.readTree(content);
             return null != jsonNode.findValue("code") && jsonNode.findValue("code").intValue() == 0;
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(),e);
             return false;
         }

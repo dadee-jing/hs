@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.duge;
 
 import com.ruoyi.common.base.AjaxResult;
 import com.ruoyi.duge.domain.WeightData;
+import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.duge.third.foshan.service.FoshanApiService;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
 import com.ruoyi.duge.third.shunde.service.ShundeApiService;
@@ -25,6 +26,9 @@ public class PublicController extends BaseController {
 
     @Autowired
     private ShundeApiService shundeApiService;
+
+    @Autowired
+    private IStationInfoService stationInfoService;
 
     @PostMapping("/weightData/add")
     @ResponseBody
@@ -85,5 +89,28 @@ public class PublicController extends BaseController {
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    /**
+     * 从站点发请求更新状态信息
+     * @param data
+     * @return
+     */
+    @PostMapping("/stationInfo/update")
+    @ResponseBody
+    public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo data) {
+        int result;
+        try {
+            result = stationInfoService.updateStationInfo(data);
+        } catch (DuplicateKeyException e) {
+            result = 1;
+            System.out.println("DuplicateKeyException");
+        } catch (Exception e) {
+            result = 0;
+        }
+        if(result == 1){
+            LOGGER.info("update "+ data.getId() + " " + data.getName());
+        }
+        return toAjax(result);
     }
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.sql.Timestamp;
 
@@ -14,28 +16,37 @@ import java.sql.Timestamp;
  * @author zn
  * @date 2019-11-1
  */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Data
 public class StationType extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;
-	
-	/** 主键 */
-	private Integer typeId;
-	/** 父类型id */
-	private Integer parentId;
-	/** 祖类型id */
+
+	/** 部门ID */
+	private Long typeId;
+
+	/** 父部门ID */
+	private Long parentId;
+
+	/** 祖级列表 */
 	private String ancestors;
-	/** 类型名称 */
+
+	/** 部门名称 */
 	private String typeName;
-	/** 排序 */
+
+	/** 显示顺序 */
 	private String orderNum;
 
-	private Timestamp createTime;
+	/** 负责人 */
+	private String leader;
 
-	private String createBy;
+	/** 部门状态:0正常,1停用 */
 	private String status;
+
+	/** 删除标志（0代表存在 2代表删除） */
 	private String delFlag;
+
+	/** 父部门名称 */
+	private String parentName;
+
 }

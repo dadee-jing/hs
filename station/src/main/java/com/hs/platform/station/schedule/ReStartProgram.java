@@ -38,7 +38,7 @@ public class ReStartProgram {
                     String batPath = "D:/deploy/batch/restart.bat";
                     callCmd(batPath);
                     Thread.sleep(100);
-                    StationApplication.client.reactiveScheduled();
+                    //StationApplication.client.reactiveScheduled();
                     LOGGER.info("ReStartP7000 end");
                 }
             } catch (Exception e) {

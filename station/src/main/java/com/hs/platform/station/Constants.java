@@ -1,8 +1,12 @@
 package com.hs.platform.station;
 
+import com.hs.platform.station.util.DbUtil;
+import com.hs.platform.station.util.WeightAndLWHContainer;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -10,14 +14,15 @@ import java.io.File;
  * 配置文件常量
  */
 public class Constants {
+    private static Logger log = LoggerFactory.getLogger(Constants.class);
 
-    public static Integer station_id;
+    //public static Integer station_id;
     public static Integer newlx_tcp_server_port;
-    public static String newlx_ftp_server_host;
+    //public static String newlx_ftp_server_host;
     public static Integer newlx_ftp_server_port;
     public static String newlx_ftp_user;
     public static String newlx_ftp_passwd;
-    public static String lwh_server_host;
+    //public static String lwh_server_host;
     public static Integer lwh_server_port;
     public static String shunde_ftp_server_host;
     public static Integer shunde_ftp_server_port;
@@ -28,7 +33,7 @@ public class Constants {
     public static String db_password;
     public static String db_url;
     public static String upload_equipment_state_url;
-    public static String led_ip;
+    //public static String led_ip;
     public static Integer led_port;
     public static String led_idcode;
     public static Double led_overWeight_percentage;
@@ -46,13 +51,13 @@ public class Constants {
         try {
             Configurations configs = new Configurations();
             Configuration config = configs.properties(new File("config.properties"));
-            station_id = config.getInt("station_id");
+            //station_id = config.getInt("station_id");
             newlx_tcp_server_port = config.getInt("newlx_tcp_server_port");
-            newlx_ftp_server_host = config.getString("newlx_ftp_server_host");
+            //newlx_ftp_server_host = config.getString("newlx_ftp_server_host");
             newlx_ftp_server_port = config.getInt("newlx_ftp_server_port");
             newlx_ftp_user = config.getString("newlx_ftp_user");
             newlx_ftp_passwd = config.getString("newlx_ftp_passwd");
-            lwh_server_host = config.getString("lwh_server_host");
+            //lwh_server_host = config.getString("lwh_server_host");
             lwh_server_port = config.getInt("lwh_server_port");
             shunde_ftp_server_host = config.getString("shunde_ftp_server_host");
             shunde_ftp_server_port = config.getInt("shunde_ftp_server_port");
@@ -63,7 +68,7 @@ public class Constants {
             db_password = config.getString("db_password");
             db_url = config.getString("db_url");
             upload_equipment_state_url = config.getString("upload_equipment_state_url");
-            led_ip = config.getString("led_ip");
+            //led_ip = config.getString("led_ip");
             led_port = config.getInt("led_port");
             led_idcode = config.getString("led_idcode");
             led_overWeight_percentage = config.getDouble("led_overWeight_percentage");

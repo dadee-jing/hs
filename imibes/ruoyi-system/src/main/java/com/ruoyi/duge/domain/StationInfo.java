@@ -84,6 +84,35 @@ public class StationInfo extends BaseEntity
 	/** 卡口编号 */
 	private String kakoCode;
 
+	private Integer typeId;
+
+	private Long parentId;
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+
+	public Integer getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
+
+	private StationType stationType;
+
+	public StationType getStationType() {
+		return stationType;
+	}
+
+	public void setStationType(StationType stationType) {
+		this.stationType = stationType;
+	}
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;

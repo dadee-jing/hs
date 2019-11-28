@@ -19,4 +19,5 @@ public class FoshanMessage {
     private byte[] pic4;
     private byte[] pic5;
     private String messageBody;
+    private String plate;
 }
