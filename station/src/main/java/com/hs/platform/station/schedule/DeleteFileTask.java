@@ -27,7 +27,7 @@ public class DeleteFileTask {
             File rootFile = new File(rootPath);
             if(rootFile.exists()){
                 int timeout = 5;
-                if(StringUtils.isNotBlank(timeOutHour)){
+                if(StringUtils.isNotBlank(timeOutHour) && !"0".equals(timeout)){
                     timeout = Integer.valueOf(timeOutHour);
                 }
                 File fileList[] = rootFile.listFiles();

@@ -2,11 +2,11 @@ package com.hs.platform.station.led;
 
 import com.lumen.ledcenter3.protocol.ExtSendUtil;
 import com.lumen.ledcenter3.protocol.ShowEffect;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.hs.platform.station.Constants.*;
+import static com.hs.platform.station.util.ImageDownloadUtil.led_ip;
 
 public class LedComponent {
     private static ExecutorService executorService = Executors.newCachedThreadPool();

@@ -32,39 +32,55 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="state"    column="state"    />
         <result property="remarkInfo"    column="remark_info"    />
         <result property="kakoCode"    column="kako_code"    />
+        <result property="typeId"    column="type_id"    />
+        <association property="stationType"    column="type_id" javaType="com.ruoyi.duge.domain.StationType" resultMap="typeResult" />
+    </resultMap>
+
+    <resultMap id="typeResult" type="com.ruoyi.duge.domain.StationType">
+        <id     property="typeId"   column="type_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="typeName" column="type_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="status"   column="status" />
     </resultMap>
 	
 	<sql id="selectStationInfoVo">
-        select id, name, abbreviation, latitude, longitude, user_id, bureau, province, city, county, address, create_by,
-        create_time, update_by, update_time, remark, longitude_WGS84,latitude_WGS84,longitude_GCJ02,latitude_GCJ02,
-        longitude_BD09,latitude_BD09,ip ,port ,state,remark_info,kako_code  from duge_station_info
+        select dsi.id, dsi.name, dsi.abbreviation, dsi.latitude, dsi.longitude, dsi.user_id, dsi.bureau, dsi.province,
+        dsi.city, dsi.county, dsi.address, dsi.create_by,dsi.create_time, dsi.update_by, dsi.update_time, dsi.remark,
+        dsi.longitude_WGS84,dsi.latitude_WGS84,dsi.longitude_GCJ02,dsi.latitude_GCJ02,dsi.longitude_BD09,dsi.latitude_BD09,
+        dsi.ip ,dsi.port ,dsi.state,dsi.remark_info,dsi.kako_code ,dsi.type_id, st.type_name from duge_station_info dsi
+        left join station_type st on dsi.type_id = st.type_id
     </sql>
 	
     <select id="selectStationInfoList" parameterType="com.ruoyi.duge.domain.StationInfo" resultMap="StationInfoResult">
         <include refid="selectStationInfoVo"/>
         <where>  
-            <if test="id != null "> and id = #{id}</if>
-             <if test="name != null  and name != '' "> and name = #{name}</if>
-             <if test="abbreviation != null  and abbreviation != '' "> and abbreviation = #{abbreviation}</if>
-             <if test="latitude != null  and latitude != '' "> and latitude = #{latitude}</if>
-             <if test="longitude != null  and longitude != '' "> and longitude = #{longitude}</if>
-             <if test="userId != null "> and user_id = #{userId}</if>
-             <if test="bureau != null  and bureau != '' "> and bureau = #{bureau}</if>
-             <if test="province != null  and province != '' "> and province = #{province}</if>
-             <if test="city != null  and city != '' "> and city = #{city}</if>
-             <if test="county != null  and county != '' "> and county = #{county}</if>
-             <if test="address != null  and address != '' "> and address = #{address}</if>
-             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
-             <if test="createTime != null "> and create_time = #{createTime}</if>
-             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
-             <if test="updateTime != null "> and update_time = #{updateTime}</if>
-             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="id != null "> and dsi.id = #{id}</if>
+             <if test="name != null  and name != '' "> and dsi.name = #{name}</if>
+             <if test="abbreviation != null  and abbreviation != '' "> and dsi.abbreviation = #{abbreviation}</if>
+             <if test="latitude != null  and latitude != '' "> and dsi.latitude = #{latitude}</if>
+             <if test="longitude != null  and longitude != '' "> and dsi.longitude = #{longitude}</if>
+             <if test="userId != null "> and dsi.user_id = #{userId}</if>
+             <if test="bureau != null  and bureau != '' "> and dsi.bureau = #{bureau}</if>
+             <if test="province != null  and province != '' "> and dsi.province = #{province}</if>
+             <if test="city != null  and city != '' "> and dsi.city = #{city}</if>
+             <if test="county != null  and county != '' "> and dsi.county = #{county}</if>
+             <if test="address != null  and address != '' "> and dsi.address = #{address}</if>
+             <if test="createBy != null  and createBy != '' "> and dsi.create_by = #{createBy}</if>
+             <if test="createTime != null "> and dsi.create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and dsi.update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and dsi.update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and dsi.remark = #{remark}</if>
+            <if test="typeId != null and typeId != 0">
+                AND (dsi.type_id = #{typeId} OR dsi.type_id IN
+                ( SELECT t.type_id FROM station_type t WHERE FIND_IN_SET (#{typeId},ancestors) ))
+            </if>
          </where>
     </select>
     
     <select id="selectStationInfoById" parameterType="Integer" resultMap="StationInfoResult">
         <include refid="selectStationInfoVo"/>
-        where id = #{id}
+        where dsi.id = #{id}
     </select>
         
     <insert id="insertStationInfo" parameterType="com.ruoyi.duge.domain.StationInfo">
@@ -88,6 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="remark != null  and remark != ''  ">remark,</if>
 			<if test="ip != null  and ip != ''  ">ip,</if>
 			<if test="port != null ">port,</if>
+			<if test="typeId != null ">type_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null  ">#{id},</if>
@@ -108,6 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="remark != null  and remark != ''  ">#{remark},</if>
             <if test="ip != null  and ip != ''  ">#{ip},</if>
             <if test="port != null ">#{port},</if>
+            <if test="typeId != null ">#{typeId},</if>
          </trim>
     </insert>
 	 
@@ -133,6 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="port != null ">port = #{port},</if>
             <if test="state != null ">state = #{state},</if>
             <if test="remarkInfo != null ">remark_info = #{remarkInfo},</if>
+            <if test="typeId != null ">type_id = #{typeId},</if>
         </trim>
         where id = #{id}
     </update>

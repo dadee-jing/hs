@@ -32,6 +32,17 @@ public class LWHClientHandler extends IoHandlerAdapter {
     }
 
     @Override
+    public void messageSent(IoSession session, Object message)  {
+        try {
+            super.messageSent(session, message);
+            LOGGER.info("lwh heartbeat send");
+        } catch (Exception e) {
+            LOGGER.info("lwh heartbeat send fail",e);
+        }
+
+    }
+
+    @Override
     public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
 
         LOGGER.info("-客户端与服务端连接[空闲] - " + status.toString());

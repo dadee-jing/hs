@@ -12,7 +12,6 @@ import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 public class LWHClient {
     private static Logger LOGGER = LoggerFactory.getLogger(LWHClient.class);
     public static final int CONNECT_TIMEOUT = 3000;
-
     private String host;
     private int port;
     private IoSession session;
@@ -72,13 +70,21 @@ public class LWHClient {
         connector.setHandler(new LWHClientHandler());
         connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));// 设置默认访问地址
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 60, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 120, TimeUnit.SECONDS);
 
     }
 
-    public synchronized void connect() {
+    public void connect() {
         LOGGER.info("lwh connect");
         if (null != session && session.isConnected() && connector.isActive()) {
+            LOGGER.info("lwh connect," + session.isConnected() + "," + connector.isActive());
+            try{
+                session.write("1");
+            }catch (Exception e){
+                session.closeNow();
+                session = null;
+                LOGGER.info("lwh heartbeat fail",e);
+            }
             return;
         }
         try {
@@ -121,12 +127,13 @@ public class LWHClient {
         }
     }
 
-    public void reactiveScheduled() {
+/*    public void reactiveScheduled() {
         try {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
             scheduledExecutorService.scheduleAtFixedRate(this::connect, 0, 60, TimeUnit.SECONDS);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-    }
+    }*/
+
 }

@@ -1,6 +1,5 @@
 package com.hs.platform.station.third.foshan.socket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -9,14 +8,14 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.hs.platform.station.third.foshan.socket.SockeUtil.bytesToHexString;
-import static com.hs.platform.station.third.foshan.socket.StructUtil.combineAll;
-import static com.hs.platform.station.third.foshan.socket.StructUtil.combineMsg;
+import static com.hs.platform.station.third.foshan.service.FoshanApiService.waitingResponseMap;
+import static com.hs.platform.station.third.foshan.socket.Byte2IntUtil.bytesToHexString;
+import static com.hs.platform.station.third.foshan.socket.Byte2IntUtil.getWordBytes;
+import static com.hs.platform.station.third.foshan.socket.StructUtil.*;
 
 public class FoshanEncoder extends ProtocolEncoderAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(FoshanEncoder.class);
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static Logger LOGGER = LoggerFactory.getLogger(FoshanEncoder.class);
 
     @Override
     public void encode(IoSession session, Object message, ProtocolEncoderOutput out) throws Exception {
@@ -25,10 +24,16 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
             FoshanMessage foshanMessage = (FoshanMessage) message;
             byte[] result;
             if (StringUtils.isBlank(foshanMessage.getMessageBody())) {
-                byte[] msg = combineMsg(foshanMessage.getMessageType(),
+                int serialNo = getSerailNo();
+                byte[] msg = combineMsg(foshanMessage.getMessageType(), serialNo,
                         foshanMessage.getCarData2Info(), foshanMessage.getPic1(), foshanMessage.getPic2(),
                         foshanMessage.getPic3(), foshanMessage.getPic4(), foshanMessage.getPic5());
                 result = combineAll(msg);
+                String serialStr = bytesToHexString(getWordBytes(serialNo));
+                if (null != serialStr && null != foshanMessage.getPlate()) {
+                    waitingResponseMap.put(serialStr, foshanMessage.getPlate());
+                    LOGGER.info("input " + serialStr + " " + foshanMessage.getPlate());
+                }
             } else {
                 result = Byte2IntUtil.hexStringToByte(foshanMessage.getMessageBody());
             }
@@ -43,7 +48,7 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
             e.printStackTrace();
             throw e;
         } finally {
-            if(null != buffer){
+            if (null != buffer) {
                 buffer.clear();
             }
         }

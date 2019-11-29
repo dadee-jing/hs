@@ -3,49 +3,93 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.duge.mapper.StationTypeMapper">
-    
-    <resultMap type="com.ruoyi.duge.domain.StationType" id="StationTypeResult">
-        <result property="typeId"    column="type_id"/>
-        <result property="parentId"    column="parent_id"/>
-        <result property="ancestors"    column="ancestors"/>
-        <result property="typeName"    column="type_name"/>
-        <result property="orderNum"    column="order_num"/>
-        <result property="createTime"    column="create_time"/>
-        <result property="createBy"    column="create_by"/>
-        <result property="status"    column="status"/>
-        <result property="delFlag"    column="del_flag"/>
-    </resultMap>
 
-    <resultMap type="com.ruoyi.duge.domain.DeptTest" id="SysDeptResult">
-        <id     property="ptId"     column="dept_id"     />
+    <resultMap type="com.ruoyi.duge.domain.StationType" id="StationTypeResult">
+        <id     property="typeId"     column="type_id"     />
         <result property="parentId"   column="parent_id"   />
         <result property="ancestors"  column="ancestors"   />
-        <result property="deptName"   column="dept_name"   />
+        <result property="typeName"   column="type_name"   />
+        <result property="parentName"   column="parent_name"   />
         <result property="orderNum"   column="order_num"   />
         <result property="leader"     column="leader"      />
-        <result property="phone"      column="phone"       />
-        <result property="email"      column="email"       />
         <result property="status"     column="status"      />
         <result property="delFlag"    column="del_flag"    />
-        <result property="parentName" column="parent_name" />
         <result property="createBy"   column="create_by"   />
         <result property="createTime" column="create_time" />
         <result property="updateBy"   column="update_by"   />
         <result property="updateTime" column="update_time" />
     </resultMap>
 
-
     <sql id="selectStationTypeVo">
         select type_id,parent_id,ancestors,type_name,order_num,create_time,create_by,del_flag,status
         from station_type
     </sql>
-	
+    <insert id="insertStationType" parameterType="com.ruoyi.duge.domain.StationType">
+            insert into station_type(
+            <if test="typeId != null and typeId != 0">type_id,</if>
+            <if test="parentId != null and parentId != 0">parent_id,</if>
+            <if test="typeName != null and typeName != ''">type_name,</if>
+            <if test="ancestors != null and ancestors != ''">ancestors,</if>
+            <if test="orderNum != null and orderNum != ''">order_num,</if>
+            <if test="leader != null and leader != ''">leader,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            create_time
+            )values(
+            <if test="typeId != null and typeId != 0">#{typeId},</if>
+            <if test="parentId != null and parentId != 0">#{parentId},</if>
+            <if test="typeName != null and typeName != ''">#{typeName},</if>
+            <if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+            <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+            <if test="leader != null and leader != ''">#{leader},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            sysdate()
+            )
+    </insert>
+    <update id="updateStationType" parameterType="com.ruoyi.duge.domain.StationType">
+        update station_type
+        <set>
+            <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+            <if test="typeName != null and typeName != ''">type_name = #{typeName},</if>
+            <if test="ancestors != null and ancestors != ''">ancestors = #{ancestors},</if>
+            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+            <if test="leader != null and leader != ''">leader = #{leader},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where type_id = #{typeId}
+    </update>
+
+    <delete id="deleteStationTypeById" parameterType="long">
+       delete from station_type where type_id = #{typeId}
+    </delete>
+
+    <select id="checkTypeNameUnique" resultMap="StationTypeResult">
+        <include refid="selectStationTypeVo"/>
+        where type_name=#{typeName} and parent_id = #{parentId}
+    </select>
+
     <select id="selectStationTypeList" parameterType="com.ruoyi.duge.domain.StationType" resultMap="StationTypeResult">
         <include refid="selectStationTypeVo"/>
     </select>
-    <select id="selectDeptTest" resultMap="SysDeptResult">
-        select * from dept_test
+
+    <select id="selectStationTypeListNoRoot" parameterType="com.ruoyi.duge.domain.StationType" resultMap="StationTypeResult">
+        <include refid="selectStationTypeVo"/>
+        where type_id &lt;&gt; 100
     </select>
 
+    <select id="selectStationTypeById" parameterType="Long"  resultMap="StationTypeResult">
+		select d.type_id, d.parent_id, d.ancestors, d.type_name, d.order_num, d.leader, d.status,
+			(select type_name from station_type where type_id = d.parent_id) parent_name
+		from station_type d
+		where d.type_id = #{typeId}
+    </select>
+
+    <select id="selectTypeCount" resultType="java.lang.Integer" parameterType="long">
+        select count(1) from station_type
+        where parent_id = #{typeId}
+    </select>
 
 </mapper>

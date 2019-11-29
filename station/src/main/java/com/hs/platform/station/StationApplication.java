@@ -13,11 +13,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static com.hs.platform.station.util.ImageDownloadUtil.lwh_server_host;
 
 @SpringBootApplication(scanBasePackages = {"com.hs.platform.station"})
 @org.springframework.context.annotation.Configuration
@@ -33,7 +34,7 @@ public class StationApplication {
 
         try {
             Integer newlxTcpServerPort = Constants.newlx_tcp_server_port;
-            String lwhServerHost = Constants.lwh_server_host;
+            String lwhServerHost = lwh_server_host;
             Integer lwhServerPort = Constants.lwh_server_port;
             LOGGER.info("newlx_tcp_server_port:" + newlxTcpServerPort);
             LOGGER.info("lwh_server_host:" + lwhServerHost);
@@ -61,8 +62,8 @@ public class StationApplication {
             }, 0, 30, TimeUnit.SECONDS);
 
 
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(()->LedComponent.showMessageLed("测A88888\r\n涉嫌超载"),
-                    3, 5, TimeUnit.SECONDS);
+//            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(()-> LedComponent.showMessageLed("测A88888\r\n涉嫌超载"),
+//                    3, 5, TimeUnit.SECONDS);
 
             // 打开tcpclient请求外廓数据
             client = new LWHClient(lwhServerHost, lwhServerPort);

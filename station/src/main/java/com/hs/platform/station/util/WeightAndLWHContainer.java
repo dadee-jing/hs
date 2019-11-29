@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 import static com.hs.platform.station.Constants.led_overWeight_percentage;
 import static com.hs.platform.station.util.DbUtil.*;
+import static com.hs.platform.station.util.ImageDownloadUtil.station_id;
 
 public class WeightAndLWHContainer {
 
@@ -47,7 +48,7 @@ public class WeightAndLWHContainer {
         if (null != previousEntity) {
             //称重与外廓匹配上就执行插入
             if (previousEntity.isWeightTag() && previousEntity.isSizeTag()) {
-                LOGGER.info("clearAndInsertDB--" + carNumber);
+                //LOGGER.info("clearAndInsertDB--" + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
                 //配置文件，只有称重数据也执行上传
@@ -111,7 +112,7 @@ public class WeightAndLWHContainer {
             NoMatchDataUpload.addEntity(currentEntity);
         } else {
             // 第二次插入，补全另一边数据数据，入库
-            Integer stationId = Constants.station_id;
+            Integer stationId = station_id;
             previousEntity.setStationId(stationId);
             // 补齐剩余字段
             if (0 == processStatus) {
@@ -252,6 +253,7 @@ public class WeightAndLWHContainer {
         mapContainer.remove(carNumber);
         //小于设置重量的upload_tag设为1，不上传到154
         if(!StringUtils.isBlank(weightLimit) && !weightLimit.equals("0")){
+            //-1小于，0等于，1大于
             if(previousEntity.getWeight() != null && previousEntity.getWeight().compareTo(new BigDecimal(weightLimit)) != 1){
                 LOGGER.info("小于" +weightLimit+ "t,只做本地插入 " + carNumber);
                 previousEntity.setUploadTag(1);
@@ -259,35 +261,39 @@ public class WeightAndLWHContainer {
         }
         //使用本地侧拍
         if("1".equals(lwhUploadFileTag) && previousEntity.getPathTag() != 0){
-            //本地侧拍覆盖新流向侧拍
-            if(StringUtils.isNotBlank(previousEntity.getLeftSidePath())){
-                previousEntity.setFtpHead("");//左
-                //转化为服务器路径
-                String sourcePath = previousEntity.getLeftSidePath();
-                if(sourcePath.contains("\\")){
-                    sourcePath = sourcePath.replaceAll("\\\\","/");
-                }
-                String paths [] = sourcePath.split("/");
-                String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
-                previousEntity.setFtpHead(targetPath);
-                //LOGGER.info("getLeftSidePath:" + sourcePath + ",targetPath:" + targetPath);
-            }
-            if(StringUtils.isNotBlank(previousEntity.getRightSidePath())){
-                previousEntity.setFtpAxle("");//右
-                //转化为服务器路径
-                String sourcePath = previousEntity.getRightSidePath();
-                if(sourcePath.contains("\\")){
-                    sourcePath = sourcePath.replaceAll("\\\\","/");
-                }
-                String paths [] = sourcePath.split("/");
-                String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
-                previousEntity.setFtpAxle(targetPath);
-                //LOGGER.info("getRightSidePath:" + sourcePath + ",targetPath:" + targetPath);
-            }
+            changeLocalFile(previousEntity);
         }
         DbUtil.insertWeightAndLWH(previousEntity);
         LOGGER.info("insertDB : " + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
                 previousEntity.getWeight() + "-" + previousEntity.getHeight() + ",mapContainer:" + mapContainer.size());
+    }
+
+    private static void changeLocalFile(WeightAndLwhEntity previousEntity) {
+        //本地侧拍覆盖新流向侧拍
+        if(StringUtils.isNotBlank(previousEntity.getLeftSidePath())){
+            previousEntity.setFtpHead("");//左
+            //转化为服务器路径
+            String sourcePath = previousEntity.getLeftSidePath();
+            if(sourcePath.contains("\\")){
+                sourcePath = sourcePath.replaceAll("\\\\","/");
+            }
+            String paths [] = sourcePath.split("/");
+            String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
+            previousEntity.setFtpHead(targetPath);
+            //LOGGER.info("getLeftSidePath:" + sourcePath + ",targetPath:" + targetPath);
+        }
+        if(StringUtils.isNotBlank(previousEntity.getRightSidePath())){
+            previousEntity.setFtpAxle("");//右
+            //转化为服务器路径
+            String sourcePath = previousEntity.getRightSidePath();
+            if(sourcePath.contains("\\")){
+                sourcePath = sourcePath.replaceAll("\\\\","/");
+            }
+            String paths [] = sourcePath.split("/");
+            String targetPath = "PicPlate/" + paths[4] + "/" + paths[5] ;
+            previousEntity.setFtpAxle(targetPath);
+            //LOGGER.info("getRightSidePath:" + sourcePath + ",targetPath:" + targetPath);
+        }
     }
 
 }
