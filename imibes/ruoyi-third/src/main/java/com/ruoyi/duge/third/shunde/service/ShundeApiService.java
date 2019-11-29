@@ -150,6 +150,7 @@ public class ShundeApiService implements ThirdApiService {
                     .createDate(weightData.getCreateTime())
                     .modifyDate(weightData.getUpdateTime())
                     .memo(weightData.getRemark())
+                    .laneID(weightData.getLaneId())
                     .build();
             insertVehicleRecord(vehicleRecord);
         } catch (Exception e) {
@@ -334,8 +335,8 @@ public class ShundeApiService implements ThirdApiService {
                 " \"PLATE_COLOR\", \"LANE_NO\", \"AXLE_NUM\", \"VEHICLE_SPEED\", \"VEHICLE_WEIGHT\", \"VEHICLE_HEIGHT\", \"VEHICLE_WIDTH\"," +
                 " \"VEHICLE_LENGTH\", \"OVER_SPEED\", \"OVER_WEIGHT\", \"OVER_HEIGHT\", \"OVER_WIDTH\", \"OVER_LENGTH\", \"MEMO\", \"CHECK_DATE\"," +
                 " \"CREATE_DATE\", \"MODIFY_DATE\", \"OVER_LINE\", \"OVER_WEIGHT_RATIO\", \"OVER_HEIGHT_RATIO\", \"OVER_WIDTH_RATIO\"," +
-                " \"OVER_LENGTH_RATIO\", \"OVER_SPEED_RATIO\") " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " \"OVER_LENGTH_RATIO\", \"OVER_SPEED_RATIO\", \"LANE_ID\") " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setLong(1, vehicleRecord.getId());
         ps.setString(2, vehicleRecord.getRecordId());
@@ -364,6 +365,7 @@ public class ShundeApiService implements ThirdApiService {
         ps.setString(25, vehicleRecord.getOverWidthRadio());
         ps.setString(26, vehicleRecord.getOverLengthRadio());
         ps.setString(27, vehicleRecord.getOverSpeedRadio());
+        ps.setInt(28,vehicleRecord.getLaneID());
         log.debug(ps.toString());
         ps.executeUpdate();
         conn.commit();

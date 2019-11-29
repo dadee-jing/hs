@@ -38,4 +38,5 @@ public class VehicleRecord {
     private Date createDate; // 创建日期
     private Date modifyDate; // 更新日期
     private String memo; //备忘录
+    private Integer laneID; //车道ID
 }

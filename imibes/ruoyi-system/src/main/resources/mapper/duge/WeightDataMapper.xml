@@ -57,6 +57,7 @@
         <result property="uploadSj" column="upload_sj"/>
         <result property="uploadJj" column="upload_jj"/>
         <result property="markDel" column="mark_del"/>
+        <result property="laneId" column="lane_id"/>
     </resultMap>
 
     <sql id="selectDataVo">
@@ -203,6 +204,7 @@
             <if test="uploadYhl != null  ">upload_yhl,</if>
             <if test="uploadSj != null  ">upload_sj,</if>
             <if test="uploadJj != null  ">upload_jj,</if>
+            <if test="laneId != null  ">lane_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null  ">#{id},</if>
@@ -256,6 +258,7 @@
             <if test="uploadYhl != null  ">#{uploadYhl},</if>
             <if test="uploadSj != null  ">#{uploadSj},</if>
             <if test="uploadJj != null  ">#{uploadJj},</if>
+            <if test="laneId != null  ">#{laneId},</if>
         </trim>
     </insert>
 
@@ -312,6 +315,7 @@
             <if test="uploadYhl != null  ">upload_yhl = #{uploadYhl},</if>
             <if test="uploadSj != null  ">upload_sj = #{uploadSj},</if>
             <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
+            <if test="laneId != null  ">lane_id = #{laneId},</if>
         </trim>
         where id = #{id}
     </update>
@@ -336,8 +340,18 @@
     </select>
 
     <select id="selectNotUploadYhl" parameterType="WeightData" resultMap="WeightDataResult">
-        <include refid="selectDataVo"/>
+        select wd.id as id,wd.station_id as station_id,dsi.name as station_name,sli.lane_id as lane_id,limit_over_level, limit_mode, vehicle_type, weighting_id,
+        weighting_date, lane, direction, truck_number, truck_corlor, speed, axle_count, axle_type, weight,
+        limit_weight,over_weight, axle_weight1, axle_weight2, axle_weight3, axle_weight4, axle_weight5,
+        axle_weight6, axle_weight7, axle_weight8, sequence_tag, ftp_head, ftp_axle, ftp_tail, ftp_prior_head,
+        ftp_plate, ftp_full_view, wd.create_by, wd.create_time, wd.update_by, wd.update_time, wd.remark,
+        wd.device_code, lwh_date, plate, width, height, length, lane_mid, lane_min, lane_max,
+        pass_time, upload_tag, upload_yhl, upload_sj, upload_jj
+        FROM  weight_data wd ,duge_station_info dsi,station_lane_info sli
         <where>
+            wd.station_id=dsi.id
+            AND wd.station_id=sli.station_id
+            AND wd.lane=sli.land_no
             and upload_yhl in (0, 2)
         </where>
         order by upload_yhl
@@ -432,6 +446,64 @@
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and truck_number = #{truckNumber}
     </select>
+    <update id="updateWeightDataBefore40Days" parameterType="WeightData">
+        update weight_data_before_40days
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="limitOverLevel != null  ">limit_over_level = #{limitOverLevel},</if>
+            <if test="limitMode != null  ">limit_mode = #{limitMode},</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">vehicle_type = #{vehicleType},</if>
+            <if test="weightingId != null  ">weighting_id = #{weightingId},</if>
+            <if test="weightingDate != null  ">weighting_date = #{weightingDate},</if>
+            <if test="lane != null  ">lane = #{lane},</if>
+            <if test="direction != null  and direction != ''  ">direction = #{direction},</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">truck_number = #{truckNumber},</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">truck_corlor = #{truckCorlor},</if>
+            <if test="speed != null  ">speed = #{speed},</if>
+            <if test="axleCount != null  ">axle_count = #{axleCount},</if>
+            <if test="axleType != null  and axleType != ''  ">axle_type = #{axleType},</if>
+            <if test="weight != null  ">weight = #{weight},</if>
+            <if test="limitWeight != null  ">limit_weight = #{limitWeight},</if>
+            <if test="overWeight != null  ">over_weight = #{overWeight},</if>
+            <if test="axleWeight1 != null  ">axle_weight1 = #{axleWeight1},</if>
+            <if test="axleWeight2 != null  ">axle_weight2 = #{axleWeight2},</if>
+            <if test="axleWeight3 != null  ">axle_weight3 = #{axleWeight3},</if>
+            <if test="axleWeight4 != null  ">axle_weight4 = #{axleWeight4},</if>
+            <if test="axleWeight5 != null  ">axle_weight5 = #{axleWeight5},</if>
+            <if test="axleWeight6 != null  ">axle_weight6 = #{axleWeight6},</if>
+            <if test="axleWeight7 != null  ">axle_weight7 = #{axleWeight7},</if>
+            <if test="axleWeight8 != null  ">axle_weight8 = #{axleWeight8},</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">sequence_tag = #{sequenceTag},</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">ftp_head = #{ftpHead},</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">ftp_axle = #{ftpAxle},</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">ftp_tail = #{ftpTail},</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">ftp_prior_head = #{ftpPriorHead},</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">ftp_plate = #{ftpPlate},</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">ftp_full_view = #{ftpFullView},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code = #{deviceCode},</if>
+            <if test="stationId != null  ">station_id = #{stationId},</if>
+            <if test="lwhDate != null  ">lwh_date = #{lwhDate},</if>
+            <if test="plate != null  and plate != ''  ">plate = #{plate},</if>
+            <if test="width != null  and width != ''  ">width = #{width},</if>
+            <if test="height != null  and height != ''  ">height = #{height},</if>
+            <if test="length != null  and length != ''  ">length = #{length},</if>
+            <if test="laneMid != null  and laneMid != ''  ">lane_mid = #{laneMid},</if>
+            <if test="laneMin != null  and laneMin != ''  ">lane_min = #{laneMin},</if>
+            <if test="laneMax != null  and laneMax != ''  ">lane_max = #{laneMax},</if>
+            <if test="passTime != null  and passTime != ''  ">pass_time = #{passTime},</if>
+            <if test="uploadTag != null  ">upload_tag = #{uploadTag},</if>
+            <if test="uploadYhl != null  ">upload_yhl = #{uploadYhl},</if>
+            <if test="uploadSj != null  ">upload_sj = #{uploadSj},</if>
+            <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
+            <if test="markDel != null  ">mark_del = #{markDel},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
     <select id="selectBefore40Days" parameterType="WeightData" resultMap="WeightDataResult">
         select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         ORDER BY  id DESC

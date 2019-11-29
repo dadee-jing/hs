@@ -43,13 +43,15 @@ public class StorageManage {
     public void deleteOverDate(){
         if ("1".equals(configDataService.getConfigValue("do_storage_manage"))) {
         List<String> list=weightDataMapperService.selectTruckNumberByTime();
+        System.out.println("deleteOverDate selectTruckNumberByTime size:"+ list.size());
+        log.info("deleteOverDate selectTruckNumberByTime size:"+ list.size());
         for (String  truckNumber:list){
             if( 0==weightDataMapperService.selectIsIllegalByTruckNumber(truckNumber).size()){
                 List<WeightData> weightDatalist=weightDataMapperService.selectByTruckNumber(truckNumber);
                 deleteFileByWeightDataList(weightDatalist);
                 for(WeightData weightData : weightDatalist ){
                     weightData.setMarkDel(1);
-                    weightDataMapperService.updateData(weightData);
+                    weightDataMapperService.updateWeightDataBefore40Days(weightData);
                 }
             }
         }
@@ -78,6 +80,7 @@ public class StorageManage {
     public void deleteFileByWeightDataList(List<WeightData> list){
         for (WeightData wd:list) {
             log.info("Delete file of "+wd.getTruckNumber()+" CreateTime:"+format.format(wd.getCreateTime()));
+            System.out.println("Delete file of "+wd.getTruckNumber()+" CreateTime:"+format.format(wd.getCreateTime()));
             String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
             if(StringUtils.isNotBlank(wd.getFtpHead())){
                 new File(basePath+wd.getFtpHead()).delete();}

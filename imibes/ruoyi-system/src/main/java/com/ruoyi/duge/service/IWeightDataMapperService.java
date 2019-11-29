@@ -73,4 +73,6 @@ public interface IWeightDataMapperService
 	List<WeightData> selectByTruckNumberOver90Date(String truckNum);
     List<WeightData> selectBefore40Days();
 	public int insertIntoWeightDataBefore40Days(WeightData weightData);
+
+	void updateWeightDataBefore40Days(WeightData weightData);
 }

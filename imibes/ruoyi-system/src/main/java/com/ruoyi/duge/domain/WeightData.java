@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.base.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.ibatis.annotations.Insert;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -212,6 +213,17 @@ public class WeightData extends BaseEntity {
      * @return
      */
     private Integer markDel;
+    //车道编号
+
+    private Integer laneId;
+
+    public Integer getLaneId() {
+        return laneId;
+    }
+
+    public void setLaneId(Integer laneId) {
+        this.laneId = laneId;
+    }
 
     public Integer getMarkDel() {
         return markDel;

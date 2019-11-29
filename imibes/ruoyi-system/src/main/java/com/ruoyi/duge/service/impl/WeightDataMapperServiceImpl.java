@@ -142,4 +142,9 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
       return   dataMapper.insertIntoWeightDataBefore40Days(weightData);
     }
 
+    @Override
+    public void updateWeightDataBefore40Days(WeightData weightData) {
+        dataMapper.updateWeightDataBefore40Days(weightData);
+    }
+
 }
