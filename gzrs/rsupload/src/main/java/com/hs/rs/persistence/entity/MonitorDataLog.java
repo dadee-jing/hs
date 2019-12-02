@@ -49,7 +49,7 @@ public class MonitorDataLog {
     /**
      * 监测时间
      */
-    private Date tstime;
+    private String jcsj;
     /**
      * 地点经度
      */

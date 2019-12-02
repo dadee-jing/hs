@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 @Component
 public class UploadTask {
@@ -40,13 +41,11 @@ public class UploadTask {
     private ObjectMapper objectMapper;
     private final HttpCustomClient httpCustomClient;
     private ConcurrentHashMap<String, String> header = new ConcurrentHashMap<>();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UploadTask.class);
     private static final String CONTENT_TYPE = "text/xml;charset=UTF-8";
     private static  String URL = null;
     private ConcurrentHashMap<String, String> header1;
     private String X_Auth_Token = "";
-
+    private static final Logger log = LoggerFactory.getLogger(UploadTask.class);
     @Autowired
     public UploadTask(SysparastrRepository sysparastrRepository,
                       BlacksmokevehicleInfoRepository blacksmokevehicleInfoRepository,
@@ -89,25 +88,18 @@ public class UploadTask {
     }
     private String callApi(String strBody) {
         try {
-            LOGGER.info("post " + URL);
-            LOGGER.info("header" + objectMapper.writeValueAsString(header));
-            LOGGER.info("body " + strBody);
             String result = httpCustomClient.doPost(URL, header, strBody);
-            LOGGER.info("response " + result);
             return result;
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
             throw HttpCustomException.instance(e.getMessage());
         }
     }
-
     public String wrapperXml(Object data, String datatype) {
         ArrayNode datas = objectMapper.createArrayNode();
         JsonNode node = objectMapper.convertValue(data, JsonNode.class);
         datas.add(node);
         try {
             String datasStr = objectMapper.writeValueAsString(datas);
-            LOGGER.info("datas:" + datasStr);
             Envelope envelope = Envelope.BuildEnvelope(datatype, datasStr);
             return XStreamUtil.objectToXml(envelope);
         } catch (JsonProcessingException e) {
@@ -137,6 +129,8 @@ public class UploadTask {
     public void uploadBlacksomkevehicle() {
         List<BlacksmokevehicleInfo> blacksmokevehicleInfoList = blacksmokevehicleInfoRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
 //         逐条数据提交
+        log.info("uploadBlacksomkevehicle insert count:" + blacksmokevehicleInfoList.size());
+        LongAdder successCount = new LongAdder();
         blacksmokevehicleInfoList.forEach(blacksmokevehicleInfo -> {
             try {
                 String requestBody = wrapperXml(transformService.transBlacksmokevehicleDto(blacksmokevehicleInfo), "blacksmokevehicle");
@@ -146,6 +140,7 @@ public class UploadTask {
                 // 根据文档判断 数据是否提交成功
                 if(response.get("status").toString().replace("\"", "").equals("1")) {  //  看文档实现
                     blacksmokevehicleInfo.setUpLoadStatus(1);
+                    successCount.increment();
                 } else {
                     blacksmokevehicleInfo.setUpLoadStatus(2);
                 }
@@ -154,9 +149,12 @@ public class UploadTask {
                 e.printStackTrace();
             }
         });
+        log.info("uploadBlacksomkevehicle success count:" + successCount);
     }
     public void uploadTrafficFlow() {
         List<TrafficFlow> trafficFlowList = trafficFlowRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        log.info("uploadTrafficFlow insert count:" + trafficFlowList.size());
+        LongAdder successCount = new LongAdder();
         trafficFlowList.forEach(trafficFlow -> {
             try {
                 String requestBody= wrapperXml(transformService.transTrafficFlowDto(trafficFlow), "trafficflow");
@@ -164,6 +162,7 @@ public class UploadTask {
                 JsonNode response = objectMapper.readTree(responseStr);
                 if(response.get("status").toString().replace("\"", "").equals("1")) {
                     trafficFlow.setUpLoadStatus(1);
+                    successCount.increment();
                 } else {
                     trafficFlow.setUpLoadStatus(2);
                 }
@@ -172,18 +171,23 @@ public class UploadTask {
                 e.printStackTrace();
             }
         });
+        log.info("uploadTrafficFlow success count:" + successCount);
     }
+    @Scheduled(cron="*/10 * * * * *")
     public void uploadVehicleInfo() {
-        List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNullOrderByUpLoadStatusDesc();
+        List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        log.info("uploadVehicleInfo insert count:" + vehicleInfoList.size());
+        LongAdder successCount = new LongAdder();
         vehicleInfoList.forEach(vehicleInfo -> {
             try {
-                vehicleInfo.setHpzl(parsePlateType(vehicleInfo.getHpzl(),vehicleInfo.getHphm()));
+                vehicleInfo.setHpzl(parsePlateType(vehicleInfo.getCpys(),vehicleInfo.getHphm()));
                 String requestBody = wrapperXml(transformService.transVehicleInfoDto(vehicleInfo), "vehicle");
                 String responseStr = callApi(requestBody);
                 System.out.println("responseStr===="+responseStr);
                 JsonNode response = objectMapper.readTree(responseStr);
                 if(response.get("status").toString().replace("\"", "").equals("1")) {
                     vehicleInfo.setUpLoadStatus(1);
+                    successCount.increment();
                 } else {
                     vehicleInfo.setUpLoadStatus(2);
                 }
@@ -192,6 +196,7 @@ public class UploadTask {
                 e.printStackTrace();
             }
         });
+        log.info("uploadVehicleInfo success count:" + successCount);
     }
     /**
      * 上传遥感监测数据
@@ -199,6 +204,8 @@ public class UploadTask {
 
     public void uploadMonitorData() {
         List<MonitorDataLog> monitorDataLogList = monitorDataRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        log.info("uploadMonitorData insert count:" + monitorDataLogList.size());
+        LongAdder successCount = new LongAdder();
         monitorDataLogList.forEach(monitorDataLog -> {
             if(monitorDataLog.getRlzl()=="Z"){
                 monitorDataLog.setRlzl("Y");
@@ -206,13 +213,20 @@ public class UploadTask {
             if(StringUtils.isBlank(monitorDataLog.getHpzl())){
                 monitorDataLog.setRlzl(parsePlateType(monitorDataLog.getCpys(),monitorDataLog.getHphm()));
             }
+            if (monitorDataLog.getClsd().equals("0")){
+                return;
+            }
+            if (monitorDataLog.getCojg().equals("0")&& monitorDataLog.getNojg().equals("0")
+                    && monitorDataLog.getHcjg().equals("0")){
+                return;
+            }
             try {
                 String requestBody = wrapperXml(transformService.transMonitorDataDto(monitorDataLog), "monitoringdata");
                 String responseStr = callApi(requestBody);
-
                 JsonNode response = objectMapper.readTree(responseStr);
                 if(response.get("status").toString().replace("\"", "").equals("1")) {
                     monitorDataLog.setUpLoadStatus(1);
+                    successCount.increment();
                 } else {
                     monitorDataLog.setUpLoadStatus(2);
                 }
@@ -221,14 +235,16 @@ public class UploadTask {
                 e.printStackTrace();
             }
         });
+        log.info("uploadMonitorData success count:" + successCount);
     }
 
     /**
      * 上传车辆轨道信息
      */
-    @Scheduled(fixedDelay = 3600000, initialDelay = 8000)
     public void uploadVehicleTrajectory() {
         List<VehicleTrajectory> vehicleTrajectoryList = vehicleTrajectoryRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
+        log.info("uploadVehicleTrajectory insert count:" + vehicleTrajectoryList.size());
+        LongAdder successCount = new LongAdder();
         vehicleTrajectoryList.forEach(vehicleTrajectory -> {
             try{
                 String requestBody = wrapperXml(transformService.transVehicleTrajectoryDto(vehicleTrajectory), "vehicletrajectory");
@@ -237,6 +253,7 @@ public class UploadTask {
                 if(response.get("status").toString().replace("\"", "").equals("1")) {
                     System.out.println("responseStr===="+responseStr);
                     vehicleTrajectory.setUpLoadStatus(1);
+                    successCount.increment();
                 } else {
                     vehicleTrajectory.setUpLoadStatus(2);
                 }
@@ -245,8 +262,9 @@ public class UploadTask {
                 e.printStackTrace();
             }
         });
+        log.info("uploadVehicleTrajectory success count:" + successCount);
     }
-    @Scheduled(cron="*/10 * * * * *")
+
     public void  ALLDay(){
         uploadVehicleTrajectory();
         uploadTrafficFlow();

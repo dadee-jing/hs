@@ -38,7 +38,7 @@ public class TransformService {
 
     public MonitorDataDto transMonitorDataDto(MonitorDataLog source) {
         MonitorDataDto target = new MonitorDataDto();
-        target.setJcsj(format.format(source.getTstime()));
+        target.setJcsj(source.getJcsj());
         BeanUtils.copyProperties(source, target);
         return target;
     }

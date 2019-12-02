@@ -11,4 +11,6 @@ import java.util.List;
 public interface VehicleInfoRepository extends JpaRepository<VehicleInfo, VehicleInfoMultiKeys> {
 
     List<VehicleInfo> findTop200ByUpLoadStatusIsNullOrderByUpLoadStatusDesc();
+
+    List<VehicleInfo> findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(int i);
 }
