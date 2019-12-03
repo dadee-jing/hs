@@ -395,6 +395,16 @@
         GROUP BY
         station_id
     </select>
+    
+    <select id="selectCarOutNumber" parameterType="CarOut" resultType="hashMap">
+    	SELECT carOutNum.* FROM
+		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number 
+		FROM weight_data
+		WHERE station_id = #{stationId}
+		GROUP BY hour) carOutNum
+		WHERE carOutNum.`hour` BETWEEN  #{startDate} AND  #{endDate};
+    	
+    </select>
 
     <select id="selectSpeedAvg" parameterType="WeightData" resultType="Double">
         SELECT avg(speed) FROM weight_data WHERE weighting_date >  #{params.timeStr}
