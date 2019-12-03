@@ -22,38 +22,40 @@ public class FoshanApiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FoshanApiService.class);
     private final SendMsgClient sendMsgClient;
     private final ConfigDataRepository configDataRepository;
+    private final FoshanAsyncService foshanAsyncService;
     private static LinkedBlockingQueue<FoshanMessage> shiJuQueue = new LinkedBlockingQueue<>(500);
     public static Boolean uploadShiJu = false;
-    public static LongAdder totalCount = new LongAdder();
-    public static LongAdder sendCount = new LongAdder();
-    public static LongAdder sendFailCount = new LongAdder();
-    public static LongAdder sendSuccessCount = new LongAdder();
-    public static LongAdder successCount = new LongAdder();
-    public static LongAdder failCount = new LongAdder();
-    public static LongAdder receiveCount = new LongAdder();
+    public static LongAdder totalCount = new LongAdder();//总记录数
+    public static LongAdder queueCount = new LongAdder();//发送队列总数
+    public static LongAdder sendCount = new LongAdder();//执行发送的次数
+    //public static LongAdder sendFailCount = new LongAdder();
+    public static LongAdder sendSuccessCount = new LongAdder();//发送成功的次数
+    public static LongAdder successCount = new LongAdder();//收到成功回调的次数
+    public static LongAdder failCount = new LongAdder();//没收到回调次数
+    public static LongAdder receiveCount = new LongAdder();//收到5020次数
     public static ConcurrentHashMap<String, String> waitingResponseMap = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<String, Integer> okPlateMap = new ConcurrentHashMap<>();
-    public static ConcurrentHashMap<String, Integer> failPlateMap = new ConcurrentHashMap<>();
     public static ReentrantLock lock = new ReentrantLock();
-    public static Condition cond = lock.newCondition();
-
 
     @Autowired
-    public FoshanApiService(SendMsgClient sendMsgClient, ConfigDataRepository configDataRepository) {
+    public FoshanApiService(SendMsgClient sendMsgClient, ConfigDataRepository configDataRepository,
+                            FoshanAsyncService foshanAsyncService) {
         this.sendMsgClient = sendMsgClient;
         this.configDataRepository = configDataRepository;
+        this.foshanAsyncService = foshanAsyncService;
     }
 
     public static void addEntity(FoshanMessage entity) {
         totalCount.increment();
+        queueCount.increment();
         if (!shiJuQueue.offer(entity)) {
             LOGGER.error("shiJuQueue full");
             shiJuQueue.poll();
             shiJuQueue.poll();
             shiJuQueue.poll();
             shiJuQueue.offer(entity);
+            queueCount.add(-2);
         }
-        //log.info("FoshanMessage add size:" + shiJuQueue.size());
     }
 
     @Scheduled(fixedRate = 5000)
@@ -64,26 +66,13 @@ public class FoshanApiService {
             while (null != foshanMessage) {
                 sendMsgClient.sendMessage(foshanMessage);
                 LOGGER.info("send "+ foshanMessage.getPlate());
-                boolean ok;
-                // 重试3次
-                if (!(ok = getResponse(foshanMessage.getPlate(), 1000 * 10))) {
-                    sendMsgClient.sendMessage(foshanMessage);
-                    if (!(ok = getResponse(foshanMessage.getPlate(), 1000 * 10))) {
-                        sendMsgClient.sendMessage(foshanMessage);
-                        ok = getResponse(foshanMessage.getPlate(), 1000 * 10);
-                    }
-                }
-                if (ok) {
-                    successCount.increment();
-                } else {
-                    failCount.increment();
-                    failPlateMap.put(foshanMessage.getPlate(), 1);
-                }
+                //异步重发和回调
+                foshanAsyncService.reSendASync(sendMsgClient,foshanMessage);
                 foshanMessage = shiJuQueue.poll();
-                LOGGER.info("queueSize:" + totalCount.longValue() + ",sendCount:" + sendCount.longValue()
-                        + ",sendFailCount:" + sendFailCount.longValue() + ",sendSuccessCount:" + sendSuccessCount.longValue()
-                        + ",receiveCount:" + receiveCount.longValue() + ",successCount:" + successCount.longValue()
-                        + ",failCount:" + failCount.longValue());
+                LOGGER.info("queueSize:" + queueCount.longValue() + ",sendCount:" + sendCount.longValue()
+                        + ",sendSuccessCount:" + sendSuccessCount.longValue() + ",receiveCount:"
+                        + receiveCount.longValue() + ",successCount:" + successCount.longValue()
+                        + ",failCount:" + failCount.longValue()+ ",totalCount:" + totalCount.longValue());
             }
         } else {
             uploadShiJu = false;
@@ -91,19 +80,33 @@ public class FoshanApiService {
         }
     }
 
-    /**
-     * 规定时间内等待相应车牌反馈
-     * @param plate
-     * @param timeout
-     * @return
-     */
-    private boolean getResponse(String plate, long timeout) {
+/*    private void reSendASync(FoshanMessage foshanMessage) {
+        boolean ok;
+        if (!(ok = getResponse(foshanMessage.getPlate(), 1000 * 10))) {
+            sendMsgClient.sendMessage(foshanMessage);
+            if (!(ok = getResponse(foshanMessage.getPlate(), 1000 * 10))) {
+                sendMsgClient.sendMessage(foshanMessage);
+                ok = getResponse(foshanMessage.getPlate(), 1000 * 10);
+            }
+        }
+        if (ok) {
+            successCount.increment();
+        } else {
+            failCount.increment();
+        }
+    }
 
+    private boolean getResponse(String plate, long timeout) {
         timeout = TimeUnit.MILLISECONDS.toNanos(timeout);
+        Condition cond = lock.newCondition();
         boolean ok = false;
         try {
             lock.lockInterruptibly();
             for (; ; ) {
+                if (okPlateMap.remove(plate) != null) {
+                    ok = true;
+                    break;
+                }
                 if (timeout <= 0) {
                     return false;
                 }
@@ -113,19 +116,14 @@ public class FoshanApiService {
                     cond.signal();
                     throw ie;
                 }
-                if (okPlateMap.remove(plate) != null) {
-                    ok = true;
-                    break;
-                }
-                TimeUnit.MILLISECONDS.sleep(100);
             }
         } catch (Exception e) {
-            LOGGER.error("lock error", e);
+            e.printStackTrace();
         } finally {
             lock.unlock();
         }
         return ok;
-    }
+    }*/
 
     private String getDbConfigValue(String key) {
         try {

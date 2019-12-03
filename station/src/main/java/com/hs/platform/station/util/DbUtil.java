@@ -22,8 +22,10 @@ public class DbUtil {
 
         String sql = "insert into exception_data(limit_mode, vehicle_type, weighting_id, weighting_date, lane, direction, "
                 + "truck_number, truck_corlor, speed, axle_count, axle_type, weight, limit_weight, over_weight, axle_weight1, "
-                + "axle_weight2, axle_weight3, axle_weight4, axle_weight5, axle_weight6, axle_weight7, axle_weight8,sequence_tag,ftp_head,ftp_axle,ftp_tail,ftp_prior_head,ftp_plate,ftp_full_view,device_code"
-                + ",lwh_date,plate,width,height,length,lane_mid,lane_min,lane_max,pass_time,remark_info) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "axle_weight2, axle_weight3, axle_weight4, axle_weight5, axle_weight6, axle_weight7, axle_weight8,sequence_tag," +
+                "ftp_head,ftp_axle,ftp_tail,ftp_prior_head,ftp_plate,ftp_full_view,device_code,lwh_date,plate,width,height," +
+                "length,lane_mid,lane_min,lane_max,pass_time,remark_info,create_time) " +
+                "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -80,6 +82,7 @@ public class DbUtil {
             statement.setString(38, weight.getLaneMax());
             statement.setString(39, weight.getPassTime());
             statement.setString(40, weight.getRemarkInfo());
+            statement.setTimestamp(41, new Timestamp(System.currentTimeMillis()));
             statement.execute();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
@@ -107,8 +110,8 @@ public class DbUtil {
                 + "truck_number, truck_corlor, speed, axle_count, axle_type, weight, limit_weight, over_weight, axle_weight1, "
                 + "axle_weight2, axle_weight3, axle_weight4, axle_weight5, axle_weight6, axle_weight7, axle_weight8,sequence_tag," +
                 "ftp_head,ftp_axle,ftp_tail,ftp_prior_head,ftp_plate,ftp_full_view,device_code,lwh_date,plate,width,height,length," +
-                "lane_mid,lane_min,lane_max,pass_time,station_id,upload_tag,path_tag,left_side_path,right_side_path) " +
-                "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "lane_mid,lane_min,lane_max,pass_time,station_id,upload_tag,path_tag,left_side_path,right_side_path,create_time,remark,lbh) " +
+                "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -161,6 +164,9 @@ public class DbUtil {
             statement.setInt(42, weight.getPathTag());
             statement.setString(43, weight.getLeftSidePath());
             statement.setString(44, weight.getRightSidePath());
+            statement.setTimestamp(45, new Timestamp(System.currentTimeMillis()));
+            statement.setString(46, weight.getRemarkInfo());
+            statement.setString(47, weight.getLbh());
 
             statement.execute();
         } catch (SQLException e) {
@@ -637,5 +643,24 @@ public class DbUtil {
             }
         }
         return resultList;
+    }
+
+    public static String getAddress(int station_id) {
+        //select address from duge_station_info where id = 1;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        String value = "";
+        try {
+            connection = DataSourceUtil.getDataSource().getConnection();
+            statement = connection.prepareStatement("select address from duge_station_info where id = ?");
+            statement.setInt(1, station_id);
+            rs = statement.executeQuery();
+            rs.next();
+            value = rs.getString("address") == null ? "" : rs.getString("address");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return value;
     }
 }

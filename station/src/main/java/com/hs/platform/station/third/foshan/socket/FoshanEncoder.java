@@ -37,7 +37,7 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
             } else {
                 result = Byte2IntUtil.hexStringToByte(foshanMessage.getMessageBody());
             }
-
+            LOGGER.info("msgSize:" + result.length + ",plate:" + foshanMessage.getPlate());
             //log.info("FoshanEncoder:" + bytesToHexString(result));
 
             buffer = IoBuffer.allocate(result.length, true);

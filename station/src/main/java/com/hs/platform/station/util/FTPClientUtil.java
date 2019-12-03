@@ -3,28 +3,37 @@ package com.hs.platform.station.util;
 import com.hs.platform.station.entity.FTPReUploadInfo;
 import com.hs.platform.station.schedule.ReUploadFailedData;
 import com.hs.platform.station.util.SFTP.FileSystemServiceImpl;
-import org.apache.commons.lang3.time.DateFormatUtils;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.awt.*;
 import java.io.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-import static com.hs.platform.station.Constants.*;
-import static com.hs.platform.station.Constants.newlx_ftp_server_port;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.getPicByStream;
-import static com.hs.platform.station.util.ImageDownloadUtil.checkNewlxFtpConnect;
-import static com.hs.platform.station.util.ImageDownloadUtil.newlxFtpClient;
+import static com.hs.platform.station.util.DateUtil.dateToWeek;
+import static com.hs.platform.station.util.ImageDownloadUtil.*;
 
 public class FTPClientUtil {
 
     private static Logger LOGGER = LoggerFactory.getLogger(FTPClientUtil.class);
 
     private final static Object fileLock = new Object();
+
+    //private static int[] stationList = {1,2,5,6};
+    private static ArrayList<Integer> stationList = new ArrayList<Integer>(){{
+        add(1);
+        add(2);
+        add(5);
+        add(6);
+    }
+    };
 
     /**
      * 获取FTPClient对象
@@ -104,7 +113,8 @@ public class FTPClientUtil {
 
 
     public static HashMap<String,Object>  ftpToFtp(String sourcePath, String targetPath, FTPClient sourceClient,
-                                  FileSystemServiceImpl fileSystemService, Date weightingDate) {
+                                                   FileSystemServiceImpl fileSystemService, Date weightingDate,
+                                                   String laneMid, BigDecimal speed, String plate) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         HashMap<String,Object> fileInfo = new HashMap<>();
         fileInfo.put("fileState","1");
@@ -145,14 +155,36 @@ public class FTPClientUtil {
                 return fileInfo;
             }
             long startTime2 = System.currentTimeMillis();
-            Boolean targetState = fileSystemService.uploadFile(targetPath, inputStream);
+            //前抓拍加水印
+            OutputStream waterOutputStream = null;
+            InputStream uploadInputStream = null;
+            InputStream shiJuInputStream = parse(outputStream);
+
+            if(sourcePath.contains("scene") && stationList.contains(station_id)){
+                waterOutputStream = setWaterMark(weightingDate,laneMid,speed,plate,inputStream);
+                if(null != waterOutputStream){
+                    uploadInputStream = parse(waterOutputStream);
+                    shiJuInputStream = parse(waterOutputStream);
+                }
+            }
+            Boolean targetState = fileSystemService.uploadFile(targetPath,uploadInputStream == null ? inputStream:uploadInputStream);
             long endTime2 = System.currentTimeMillis();
             //targetState false 没有上传到服务器
             LOGGER.info("ok:targetState:" + targetState + ",cost:" +(endTime2 - startTime2)+"," + targetPath);
             //将流转化成byte返回
             try{
                 if(!sourcePath.contains("mp4")){
-                    InputStream shiJuInputStream = parse(outputStream);
+/*                    if(!sourcePath.contains("plate")){
+                        //压缩除车牌外的图片
+                        long startTime3 = System.currentTimeMillis();
+                        ByteArrayOutputStream reSizeOutputStream = resizePicToOutputStream(shiJuInputStream);
+                        if(null != reSizeOutputStream){
+                            shiJuInputStream = parse(reSizeOutputStream);
+                            long endTime3 = System.currentTimeMillis();
+                            LOGGER.info("resize,before:" + outputStream.size() + ",after:" + reSizeOutputStream.size() +
+                                    ",cost:" + (endTime3 - startTime3));
+                        }
+                    }*/
                     byte[] pic = getPicByStream(weightingDate, shiJuInputStream);
                     fileInfo.put("pic",pic);
                     return fileInfo;
@@ -180,6 +212,29 @@ public class FTPClientUtil {
         return fileInfo;
     }
 
+    private static OutputStream setWaterMark(Date weightingDate, String laneMid, BigDecimal speed,
+                                             String plate,InputStream input ) {
+        Font font = new Font("宋体", Font.BOLD, 45);
+        Color fontcolor = new Color(255, 0, 0);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = simpleDateFormat.format(weightingDate);
+        String week = dateToWeek(date);
+        //String msg = "2019-11-30 16:27:03:152 星期五 G105 K2954700 顺德区三洪奇大桥-上桥位（往北滘方向）车道5 粤A1243 触发源:线圈 测速:50";
+        String msg = date + " " + week + " " + ImageDownloadUtil.address + " 车道" + laneMid + " " + plate +
+                " 触发源:雷达 车速:" + speed + "km/h";
+        WaterMarkUtil waterMark = new WaterMarkUtil.Builder()
+                .inputStream(input)
+                //.outImagPath(outPath)
+                .border(0)
+                .lineHeight(30)
+                .contentPosition(0, 0)
+                .create();
+        waterMark.addMsg(msg, fontcolor, font);
+        //waterMark.outPutFile("jpg");
+        OutputStream outputStream = waterMark.getOutPutStream("jpg");
+        return outputStream;
+    }
 
 
     /**
@@ -346,6 +401,20 @@ public class FTPClientUtil {
                 }
             }
         }
+    }
+
+    private static ByteArrayOutputStream resizePicToOutputStream(InputStream shiJuInputStream) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Thumbnails.of(shiJuInputStream)
+                    .scale(0.4f)
+                    .outputQuality(0.5f)
+                    .toOutputStream(outputStream);
+            return outputStream;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

@@ -219,6 +219,11 @@ public class WeightData extends BaseEntity {
      */
     private String rightSidePath;
 
+    /**
+     * 栏板高
+     */
+    private String lbh;
+
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", getId())

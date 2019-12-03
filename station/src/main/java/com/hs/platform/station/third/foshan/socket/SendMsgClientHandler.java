@@ -32,7 +32,8 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
             FoshanRspMessage foshanRspMessage = (FoshanRspMessage) message;
             if ("5002".equals(foshanRspMessage.getInstrId())) {
                 //LOGGER.info("receive heartbeat:" + message.toString());
-            } else if ("5020".equals(foshanRspMessage.getInstrId())) {
+            }
+            else if ("5020".equals(foshanRspMessage.getInstrId())) {
                 receiveCount.increment();
                 String plate = waitingResponseMap.remove(foshanRspMessage.getSerialNo());
                 if (null != plate) {
@@ -71,10 +72,8 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
                 sendSuccessCount.increment();
             }
         } catch (Exception e) {
-            FoshanApiService.sendFailCount.increment();
             LOGGER.info("向服务器发送消息失败！" + message, e);
         }
-
     }
 
     @Override

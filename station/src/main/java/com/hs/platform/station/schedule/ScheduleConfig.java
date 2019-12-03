@@ -6,13 +6,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.concurrent.Executor;
 
 @Configuration
+@EnableAsync
 public class ScheduleConfig implements SchedulingConfigurer, AsyncConfigurer {
 
     /** 异步处理 */
@@ -26,7 +29,7 @@ public class ScheduleConfig implements SchedulingConfigurer, AsyncConfigurer {
     @Bean(destroyMethod = "shutdown")
     public ThreadPoolTaskScheduler taskScheduler(){
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(10);
+        scheduler.setPoolSize(15);
         scheduler.setThreadNamePrefix("task-");
         scheduler.setAwaitTerminationSeconds(60);
         scheduler.setWaitForTasksToCompleteOnShutdown(true);
@@ -35,9 +38,14 @@ public class ScheduleConfig implements SchedulingConfigurer, AsyncConfigurer {
 
     /** 异步处理 */
     @Override
-    public Executor getAsyncExecutor(){
-        Executor executor = taskScheduler();
-        return executor;
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setThreadNamePrefix("Async-");
+        taskExecutor.setCorePoolSize(30);
+        taskExecutor.setMaxPoolSize(40);
+        taskExecutor.setQueueCapacity(50);
+        taskExecutor.initialize();
+        return taskExecutor;
     }
 
     /** 异步处理 异常 */

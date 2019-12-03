@@ -57,8 +57,9 @@ public class UploadData {
     public void doUploadDbData() {
         // 下载20秒前数据，保证图片视频收集
         try {
-            Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
-            List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);
+/*            Date readyDate = new Date(new Date().getTime() - 1000 * NumberUtils.toInt(getDbConfigValue("data_upload_delay"), 30));
+            List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotAndWeightingDateBeforeOrderByUploadTagAscIdAsc(1, readyDate);*/
+            List<WeightData> weightDataList = weightDataRepository.findTop5ByUploadTagIsNotOrderByUploadTagDescIdAsc(1);
             if (null != weightDataList && weightDataList.size() != 0) {
                 long startTime = System.currentTimeMillis();
                 logger.info("to upload size" + weightDataList.size());
@@ -69,6 +70,7 @@ public class UploadData {
                 weightDataList.forEach(weightData -> {
                     boolean successTag = true;
                     try {
+                        long startTime2 = System.currentTimeMillis();
                         RemoteWeightDataData remoteWeightDataData = new RemoteWeightDataData();
                         BeanUtils.copyProperties(remoteWeightDataData, weightData);
                         remoteWeightDataData.setId(null);
@@ -78,8 +80,9 @@ public class UploadData {
                         updateRemoteWeightData(fileInfo,remoteWeightDataData);
                         // 文本数据
                         successTag = post(remoteUploadUrl, remoteWeightDataData);
+                        long endTime2 = System.currentTimeMillis();
                         if(successTag){
-                            logger.info("upload " + weightData.getTruckNumber());
+                            logger.info("upload " + weightData.getTruckNumber() + ",cost:" +(endTime2 - startTime2));
                         }
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);

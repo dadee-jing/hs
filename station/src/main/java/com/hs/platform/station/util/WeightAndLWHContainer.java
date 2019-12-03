@@ -52,7 +52,7 @@ public class WeightAndLWHContainer {
                 completeEntity(previousEntity, carNumber);
             } else {
                 //配置文件，只有称重数据也执行上传
-                if(previousEntity.isWeightTag() && onlyWeightUploadTag.equals("1")){
+                if(previousEntity.isWeightTag() && "1".equals(onlyWeightUploadTag)){
                     LOGGER.info("only weight upload " + carNumber);
                     completeEntity(previousEntity, carNumber);
                     return;
@@ -63,8 +63,12 @@ public class WeightAndLWHContainer {
                 String remarkInfo = "";
                 if (previousEntity.isWeightTag()) {
                     remarkInfo = "长宽高数据缺失。";
-                } else if(previousEntity.isSizeTag()) {
+                }
+                else if(previousEntity.isSizeTag()) {
                     remarkInfo = "衡器称重数据缺失。";
+                }
+                else{
+                    return;
                 }
                 previousEntity.setRemarkInfo(remarkInfo);
                 DbUtil.insertExceptionData(previousEntity);
@@ -81,14 +85,15 @@ public class WeightAndLWHContainer {
         //称重,测速可能多次触发
         int processStatus = currentEntity.getProcessStatus();
         String carNumber = processStatus == 0 ? currentEntity.getTruckNumber() : currentEntity.getPlate();
+        LOGGER.info("processData--" + carNumber + ",processStatus--" + processStatus);
         //无车牌的直接插入异常表
         if(StringUtils.isBlank(carNumber) || carNumber.contains("无车牌")){
             String remarkInfo = "";
             if (0 == processStatus) {
-                remarkInfo = "长宽高数据缺失。";
+                remarkInfo = "称重检测到无车牌。";
             }
             else if(1 == processStatus) {
-                remarkInfo = "衡器称重数据缺失。";
+                remarkInfo = "外廓检测到无车牌。";
             }
             else{
                 return;
@@ -97,6 +102,16 @@ public class WeightAndLWHContainer {
             DbUtil.insertExceptionData(currentEntity);
             return;
         }
+        //测速写入remark
+        if(null != currentEntity.getSpeed()){
+            if(processStatus == 0){
+                currentEntity.setRemarkInfo(currentEntity.getRemarkInfo() + "weight speed:" + currentEntity.getSpeed() +",");
+            }
+            if(processStatus == 2){
+                currentEntity.setRemarkInfo(currentEntity.getRemarkInfo() + "radar speed:" + currentEntity.getSpeed() +",");
+            }
+        }
+
         if(processStatus == 1){
             lwhLatestTimeSecond = new AtomicLong(System.currentTimeMillis()/1000);
         }
@@ -105,7 +120,6 @@ public class WeightAndLWHContainer {
         currentEntity.setTimeoutMillseconds(timeout);
         // 查询是否为第一部分数据
         WeightAndLwhEntity previousEntity = mapContainer.putIfAbsent(carNumber, currentEntity);
-        LOGGER.info("processData--" + carNumber + ",processStatus--" + processStatus);
         // 第一次插入
         if (null == previousEntity) {
             //插入内存队列，如果后续匹配不到，会删除内存中的数据并且插入异常数据到数据库
@@ -114,6 +128,7 @@ public class WeightAndLWHContainer {
             // 第二次插入，补全另一边数据数据，入库
             Integer stationId = station_id;
             previousEntity.setStationId(stationId);
+            previousEntity.setRemarkInfo(previousEntity.getRemarkInfo() + currentEntity.getRemarkInfo());
             // 补齐剩余字段
             if (0 == processStatus) {
                 // 超重的字段补充到previousEntity
@@ -207,6 +222,7 @@ public class WeightAndLWHContainer {
                 String laneMin = currentEntity.getLaneMin();
                 String laneMax = currentEntity.getLaneMax();
                 String passTime = currentEntity.getPassTime();
+                String lbh = currentEntity.getLbh();
                 previousEntity.setLwhDate(lwhDate);
                 previousEntity.setPlate(plate);
                 previousEntity.setWidth(width);
@@ -217,6 +233,7 @@ public class WeightAndLWHContainer {
                 previousEntity.setLaneMax(laneMax);
                 previousEntity.setPassTime(passTime);
                 previousEntity.setSizeTag(currentEntity.isSizeTag());
+                previousEntity.setLbh(lbh);
             } else if (2 == processStatus) {
                 //补充测速雷达数据
                 String plate = currentEntity.getPlate();
@@ -240,10 +257,8 @@ public class WeightAndLWHContainer {
             // 称重，外廓，测速，两张侧拍都匹配上了，执行插入。测速，侧拍作为补充，最后没有匹配上也会插入
             if (previousEntity.isSizeTag() && previousEntity.isWeightTag()
                     && previousEntity.isSpeedTag() && previousEntity.getPathTag() == 2) {
-                //LOGGER.info("mapContainer insert " + carNumber);
                 completeEntity(previousEntity, carNumber);
             } else {
-                //LOGGER.info("mapContainer put " + carNumber);
                 mapContainer.put(carNumber, previousEntity);
             }
         }
@@ -262,6 +277,9 @@ public class WeightAndLWHContainer {
         //使用本地侧拍
         if("1".equals(lwhUploadFileTag) && previousEntity.getPathTag() != 0){
             changeLocalFile(previousEntity);
+        }
+        if(StringUtils.isNotBlank(previousEntity.getRemarkInfo())){
+            previousEntity.setRemarkInfo(previousEntity.getRemarkInfo().replaceAll("null",""));
         }
         DbUtil.insertWeightAndLWH(previousEntity);
         LOGGER.info("insertDB : " + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
