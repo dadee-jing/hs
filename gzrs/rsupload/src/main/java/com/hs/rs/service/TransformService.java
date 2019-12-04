@@ -17,13 +17,10 @@ public class TransformService {
     public BlacksmokevehicleDto transBlacksmokevehicleDto(BlacksmokevehicleInfo source) {
         BlacksmokevehicleDto target = new BlacksmokevehicleDto();
         BeanUtils.copyProperties(source, target);
-        //target.setLgmhd(String.valueOf(source.getLgmhd()));
-        target.setLgmhd("100");
-        target.setJcsj(DateFormatUtils.format(source.getJcsj(), "YYYY-MM-DD HH:mm:ss"));
+        target.setLgmhd(String.valueOf(source.getLgmhd()));
+        target.setJcsj(format.format(source.getJcsj()));
         return target;
     }
-
-
     public LineDto transLineDto(Line source) {
         LineDto target = new LineDto();
         BeanUtils.copyProperties(source, target);

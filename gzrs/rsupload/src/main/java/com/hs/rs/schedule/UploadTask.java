@@ -133,7 +133,14 @@ public class UploadTask {
         LongAdder successCount = new LongAdder();
         blacksmokevehicleInfoList.forEach(blacksmokevehicleInfo -> {
             try {
+                if(StringUtils.isBlank(blacksmokevehicleInfo.getHpzl())){
+                    blacksmokevehicleInfo.setHpzl(parsePlateType(blacksmokevehicleInfo.getCpys(),blacksmokevehicleInfo.getHphm()));
+                }
+                if(StringUtils.isBlank(blacksmokevehicleInfo.getCdxh())){
+                    blacksmokevehicleInfo.setCdxh("1");
+                }
                 String requestBody = wrapperXml(transformService.transBlacksmokevehicleDto(blacksmokevehicleInfo), "blacksmokevehicle");
+                System.out.println(requestBody);
                 String responseStr = callApi(requestBody);
                 System.out.println("responseStr======"+responseStr);
                 JsonNode response = objectMapper.readTree(responseStr);

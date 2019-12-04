@@ -1,11 +1,19 @@
 package com.hs.rs.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.hs.rs.common.XStreamUtil;
+import com.hs.rs.model.Envelope;
 import com.hs.rs.persistence.dao.*;
 import com.hs.rs.persistence.entity.*;
+import com.hs.rs.service.TransformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 @RestController
 public class TestController {
@@ -19,6 +27,10 @@ VehicleInfoRepository vehicleInfoRepository;
 MonitorDataRepository monitorDataRepository;
 @Autowired
 BlacksmokevehicleInfoRepository blacksmokevehicleInfoRepository;
+@Autowired
+TransformService transformService;
+@Autowired
+ObjectMapper objectMapper;
     /**
      * 测试车辆轨迹数据
      * @return
@@ -75,9 +87,24 @@ BlacksmokevehicleInfoRepository blacksmokevehicleInfoRepository;
     public String testBlacksomkevehicle(){
         List<BlacksmokevehicleInfo> blacksmokevehicleInfoList= blacksmokevehicleInfoRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         System.out.println("blacksmokevehicleInfoList Size is :"+blacksmokevehicleInfoList.size());
-        for (int i=0;i<10;i++){
-            System.out.println(blacksmokevehicleInfoList.get(i).toString());
-        }
+        blacksmokevehicleInfoList.forEach(blacksmokevehicleInfo -> {
+                String requestBody = wrapperXml(transformService.transBlacksmokevehicleDto(blacksmokevehicleInfo), "blacksmokevehicle");
+                System.out.println("requestBody======"+requestBody);
+        });
         return "ok";
     }
+    public String wrapperXml(Object data, String datatype) {
+        ArrayNode datas = objectMapper.createArrayNode();
+        JsonNode node = objectMapper.convertValue(data, JsonNode.class);
+        datas.add(node);
+        try {
+            String datasStr = objectMapper.writeValueAsString(datas);
+            Envelope envelope = Envelope.BuildEnvelope(datatype, datasStr);
+            return XStreamUtil.objectToXml(envelope);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
