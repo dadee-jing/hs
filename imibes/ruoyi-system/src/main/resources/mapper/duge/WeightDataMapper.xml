@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.duge.mapper.WeightDataMapper">
-    <resultMap type="WeightData" id="WeightDataResult">
+    <resultMap type="com.ruoyi.duge.domain.WeightData" id="WeightDataResult">
         <result property="id" column="id"/>
         <result property="stationName" column="station_name"/>
         <result property="limitOverLevel" column="limit_over_level"/>
@@ -57,6 +57,7 @@
         <result property="uploadSj" column="upload_sj"/>
         <result property="uploadJj" column="upload_jj"/>
         <result property="markDel" column="mark_del"/>
+        <result property="lbh" column="lbh"/>
         <result property="laneId" column="lane_id"/>
     </resultMap>
 
@@ -67,11 +68,11 @@
            axle_weight6, axle_weight7, axle_weight8, sequence_tag, ftp_head, ftp_axle, ftp_tail, ftp_prior_head,
             ftp_plate, ftp_full_view, wd.create_by, wd.create_time, wd.update_by, wd.update_time, wd.remark,
              wd.device_code, station_id, lwh_date, plate, width, height, length, lane_mid, lane_min, lane_max,
-              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj from weight_data wd
+              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj, lbh from weight_data wd
         left join duge_station_info dsi on dsi.id = wd.station_id
     </sql>
 
-    <select id="selectDataList" parameterType="WeightData" resultMap="WeightDataResult">
+    <select id="selectDataList" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
             <if test="id != null ">and wd.id = #{id}</if>
@@ -150,7 +151,7 @@
         where wd.id = #{id}
     </select>
 
-    <insert id="insertData" parameterType="WeightData">
+    <insert id="insertData" parameterType="com.ruoyi.duge.domain.WeightData">
         insert into weight_data
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null  ">id,</if>
@@ -204,6 +205,7 @@
             <if test="uploadYhl != null  ">upload_yhl,</if>
             <if test="uploadSj != null  ">upload_sj,</if>
             <if test="uploadJj != null  ">upload_jj,</if>
+            <if test="lbh != null  and lbh != ''  ">lbh,</if>
             <if test="laneId != null  ">lane_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -258,11 +260,12 @@
             <if test="uploadYhl != null  ">#{uploadYhl},</if>
             <if test="uploadSj != null  ">#{uploadSj},</if>
             <if test="uploadJj != null  ">#{uploadJj},</if>
+            <if test="lbh != null  and lbh != ''  ">#{lbh},</if>
             <if test="laneId != null  ">#{laneId},</if>
         </trim>
     </insert>
 
-    <update id="updateData" parameterType="WeightData">
+    <update id="updateData" parameterType="com.ruoyi.duge.domain.WeightData">
         update weight_data
         <trim prefix="SET" suffixOverrides=",">
             <if test="limitOverLevel != null  ">limit_over_level = #{limitOverLevel},</if>
@@ -315,6 +318,7 @@
             <if test="uploadYhl != null  ">upload_yhl = #{uploadYhl},</if>
             <if test="uploadSj != null  ">upload_sj = #{uploadSj},</if>
             <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
+            <if test="lbh != null  and lbh != ''  ">lbh = #{lbh},</if>
             <if test="laneId != null  ">lane_id = #{laneId},</if>
         </trim>
         where id = #{id}
@@ -331,7 +335,7 @@
         </foreach>
     </delete>
 
-    <select id="selectNotUpload" parameterType="WeightData" resultMap="WeightDataResult">
+    <select id="selectNotUpload" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
             and upload_tag in (0, 2)
@@ -358,7 +362,7 @@
         limit 300
     </select>
 
-    <select id="selectNotUploadSj" parameterType="WeightData" resultMap="WeightDataResult">
+    <select id="selectNotUploadSj" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &gt; date_add(now(), interval - 5 minute)
@@ -369,7 +373,7 @@
         limit 5
     </select>
 
-    <select id="selectNotUploadJj" parameterType="WeightData" resultMap="WeightDataResult">
+    <select id="selectNotUploadJj" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &lt; date_add(now(), interval - 5 minute)
@@ -379,12 +383,12 @@
         limit 100
     </select>
 
-    <select id="selectStationStatistics" parameterType="WeightData" resultType="hashMap">
+    <select id="selectStationStatistics" parameterType="com.ruoyi.duge.domain.WeightData" resultType="hashMap">
          select count(*) as trafficFlow,sum(if(over_weight>0,1,0)) as overCount from weight_data wd
          where wd.weighting_date between #{params.beginTime} and #{params.endTime} and wd.station_id=#{stationId};
     </select>
 
-    <select id="selectCountHourList" parameterType="WeightData" resultType="hashMap">
+    <select id="selectCountHourList" parameterType="com.ruoyi.duge.domain.WeightData" resultType="hashMap">
         SELECT
           station_id,
           count(IF (over_weight > 0, TRUE, NULL)) as over_count
@@ -396,11 +400,21 @@
         station_id
     </select>
 
-    <select id="selectSpeedAvg" parameterType="WeightData" resultType="Double">
+    <select id="selectCarOutNumber" parameterType="CarOut" resultType="hashMap">
+    	SELECT carOutNum.* FROM
+		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number
+		FROM weight_data
+		WHERE station_id = #{stationId}
+		GROUP BY hour) carOutNum
+		WHERE carOutNum.`hour` BETWEEN  #{startDate} AND  #{endDate};
+
+    </select>
+
+    <select id="selectSpeedAvg" parameterType="com.ruoyi.duge.domain.WeightData" resultType="Double">
         SELECT avg(speed) FROM weight_data WHERE weighting_date >  #{params.timeStr}
     </select>
     <!--报警图片视频数据-->
-    <select id="selectIllegalAndOverDate" parameterType="WeightData" resultMap="WeightDataResult">
+    <select id="selectIllegalAndOverDate" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &gt; date_add(now(), interval - 2*356*24*60 minute)
@@ -504,12 +518,13 @@
         where id = #{id}
     </update>
 
+
     <select id="selectBefore40Days" parameterType="WeightData" resultMap="WeightDataResult">
         select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         ORDER BY  id DESC
         LIMIT 100
     </select>
-    <insert id="insertIntoWeightDataBefore40Days" parameterType="WeightData">
+    <insert id="insertIntoWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
         insert into weight_data_before_40days
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null  ">id,</if>
@@ -563,6 +578,7 @@
             <if test="uploadYhl != null  ">upload_yhl,</if>
             <if test="uploadSj != null  ">upload_sj,</if>
             <if test="uploadJj != null  ">upload_jj,</if>
+            <if test="lbh != null  and lbh != ''  ">lbh,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null  ">#{id},</if>
@@ -616,6 +632,7 @@
             <if test="uploadYhl != null  ">#{uploadYhl},</if>
             <if test="uploadSj != null  ">#{uploadSj},</if>
             <if test="uploadJj != null  ">#{uploadJj},</if>
+            <if test="lbh != null  and lbh != ''  ">#{lbh},</if>
         </trim>
     </insert>
 </mapper>

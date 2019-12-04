@@ -149,7 +149,7 @@ public class ShundeApiService implements ThirdApiService {
                     .checkDate(weightData.getWeightingDate())
                     .createDate(weightData.getCreateTime())
                     .modifyDate(weightData.getUpdateTime())
-                    .memo(weightData.getRemark())
+                    //.memo(weightData.getRemark())
                     .laneID(weightData.getLaneId())
                     .build();
             insertVehicleRecord(vehicleRecord);

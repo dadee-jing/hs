@@ -1,6 +1,7 @@
 package com.hs.platform.station.io;
 
 import com.hs.platform.station.handler.LWHClientHandler;
+import com.hs.platform.station.util.WeightAndLWHContainer;
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.filterchain.IoFilterAdapter;
 import org.apache.mina.core.future.ConnectFuture;
@@ -76,6 +77,12 @@ public class LWHClient {
 
     public void connect() {
         LOGGER.info("lwh connect");
+        long nowTime = System.currentTimeMillis();
+        if(LWHClientHandler.lwhHeartBeat && (nowTime - LWHClientHandler.heartBeatTime.get() > (60 * 1000))){
+            session.closeNow();
+            session = null;
+            LOGGER.info("timeout session close");
+        }
         if (null != session && session.isConnected() && connector.isActive()) {
             LOGGER.info("lwh connect," + session.isConnected() + "," + connector.isActive());
             try{

@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -81,6 +78,13 @@ public class StructUtil {
 
     public static byte[] getPicByStream(Date picDate, InputStream inputStream) {
         //byte[] fileBytes = resizeStream(1700, 1000, inputStream);
+        //市局图片都改成d:/pic.jpg文件
+/*        try {
+            inputStream =  new FileInputStream("d:/pic.jpg");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("d:/pic.jpg fail",e);
+        }*/
         try{
             byte[] fileBytes = toByteArray(inputStream);
             byte[] picDateBytes = getTime2t(picDate);
@@ -93,7 +97,7 @@ public class StructUtil {
             fillArray(result, currPos, fileBytes); //图片本身
             return result;
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
             log.info("toByteArray fail",e);
             return null;

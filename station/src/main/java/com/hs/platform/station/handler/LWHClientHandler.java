@@ -13,12 +13,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class LWHClientHandler extends IoHandlerAdapter {
 
     private static Logger LOGGER = LoggerFactory.getLogger(LWHClientHandler.class);
 
     public static final String INDEX_KEY = LWHClientHandler.class.getName() + ".INDEX";
+
+    public static AtomicLong heartBeatTime = new AtomicLong(System.currentTimeMillis());
+
+    public static Boolean lwhHeartBeat = false;
 
     @Override
     public void sessionOpened(IoSession session) throws Exception {
@@ -63,6 +68,13 @@ public class LWHClientHandler extends IoHandlerAdapter {
         try {
             String dataString = (String) message;
             //LOGGER.info("[duge_lwh_message]: " + dataString);
+            //每15s收到心跳包
+            if("heartbeat".equals(dataString.trim())){
+                lwhHeartBeat = true;
+                heartBeatTime = new AtomicLong(System.currentTimeMillis());
+                return;
+            }
+
             String[] dataArray = dataString.split(" ");
             Map<String, String> dataMap = new HashMap<>();
             for (int i = 0; i < dataArray.length; i++) {
@@ -115,6 +127,7 @@ public class LWHClientHandler extends IoHandlerAdapter {
                 String laneMin = dataMap.get("laneMin");
                 String laneMax = dataMap.get("laneMax");
                 String passTime = dataMap.get("passTime");
+                String lbh = dataMap.get("lbh");
                 entity.setProcessStatus(1);
                 entity.setLwhDate(lwhDate);
                 entity.setWidth(width);
@@ -125,6 +138,7 @@ public class LWHClientHandler extends IoHandlerAdapter {
                 entity.setLaneMax(laneMax);
                 entity.setPassTime(passTime);
                 entity.setSizeTag(true);
+                entity.setLbh(lbh);
             }
             // 解析报文->WeightAndLwhEntity
             WeightAndLWHContainer.processData(entity);

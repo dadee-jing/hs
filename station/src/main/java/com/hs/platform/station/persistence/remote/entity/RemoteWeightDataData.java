@@ -207,6 +207,10 @@ public class RemoteWeightDataData extends BaseEntity {
      * 上传标记
      */
     private Integer uploadTag;
+    /**
+     * 栏板高
+     */
+    private String lbh;
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)

@@ -1,11 +1,15 @@
 package com.ruoyi.duge.service.impl;
 
 import com.ruoyi.common.support.Convert;
+import com.ruoyi.duge.domain.CarOut;
 import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.service.IWeightDataMapperService;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -132,7 +136,7 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
         return dataMapper.selectByTruckNumberOver90Date(truckNum);
     }
 
-    @Override
+     @Override
     public List<WeightData> selectBefore40Days() {
         return dataMapper.selectBefore40Days();
     }
@@ -146,5 +150,11 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     public void updateWeightDataBefore40Days(WeightData weightData) {
         dataMapper.updateWeightDataBefore40Days(weightData);
     }
+
+	@Override
+	public List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,@Param("endDate")Date endDate) {
+		// TODO Auto-generated method stub
+		return dataMapper.selectCarOutNumber(stationId,startDate,endDate);
+	}
 
 }

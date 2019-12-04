@@ -54,7 +54,7 @@
                                     <h4>前抓拍</h4>
                                     <a th:href="${ctxPath +data.ftpPriorHead}" title="前抓拍" data-gallery=""
                                        th:if="${data.ftpPriorHead != null && data.ftpPriorHead ne ''}">
-                                        <img alt="image" class="img-responsive"
+                                        <img alt="image" class="img-responsive" style="width: 100vh; height: 30vh;"
                                              th:src="${ctxPath +data.ftpPriorHead}">
                                     </a>
                                 </div>
@@ -63,7 +63,7 @@
                                     <h4>后抓拍</h4>
                                     <a th:href="${ctxPath +data.ftpTail}" title="后抓拍" data-gallery=""
                                        th:if="${data.ftpTail != null && data.ftpTail ne ''}">
-                                        <img alt="image" class="img-responsive"
+                                        <img alt="image" class="img-responsive" style="width: 100vh; height: 30vh;"
                                              th:src="${ctxPath +data.ftpTail}">
                                     </a>
                                 </div>
@@ -74,7 +74,7 @@
                                     <a th:href="${ctxPath +data.ftpAxle}" title="右侧拍" data-gallery=""
                                        th:if="${data.ftpAxle != null && data.ftpAxle ne ''}">
                                         <!-- http://pic18.nipic.com/20120103/8993051_170340691334_2.jpg -->
-                                        <img alt="image" class="img-responsive"
+                                        <img alt="image" class="img-responsive" style="width: 100vh; height: 30vh;"
                                              th:src="${ctxPath +data.ftpAxle}">
                                     </a>
                                 </div>
@@ -82,7 +82,7 @@
                                     <h4>左侧拍</h4>
                                     <a th:href="${ctxPath + data.ftpHead}" title="左侧拍" data-gallery=""
                                        th:if="${data.ftpHead != null &&  data.ftpHead ne ''}">
-                                        <img alt="image" class="img-responsive"
+                                        <img alt="image" class="img-responsive" style="width: 100vh; height: 30vh;"
                                              th:src="${ctxPath +data.ftpHead}">
                                     </a>
                                 </div>
@@ -210,6 +210,11 @@
                 <div class="form-group-new">
                     <label class="col-sm-7 control-label-new">车高(m)：</label>
                     <div class="form-control-static-new" th:text="${data.height}/1000" id="heightDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">栏板高(m)：</label>
+                    <div class="form-control-static-new" th:text="${data.lbh}/1000" >
                     </div>
                 </div>
                 <div class="form-group-new weight_item">

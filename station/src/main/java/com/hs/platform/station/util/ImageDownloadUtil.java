@@ -32,6 +32,7 @@ public class ImageDownloadUtil {
     private FileSystemServiceImpl fileSystemService;
 
     public static int station_id = Integer.valueOf(DbUtil.getConfigValue("station_id"));
+    public static String address = DbUtil.getAddress(station_id);
     public static String newlx_ftp_server_host = DbUtil.getConfigValue("newlx_ftp_server_host");
     public static String lwh_server_host = DbUtil.getConfigValue("lwh_server_host");
     public static String led_ip = DbUtil.getConfigValue("led_ip");
@@ -146,7 +147,8 @@ public class ImageDownloadUtil {
             if (StringUtils.isNotBlank(filePath)) {
 
                 HashMap<String,Object> fileInfo = FTPClientUtil.ftpToFtp(filePath,
-                        targetParentPath + '/' + filePath, newlxFtpClient, fileSystemService,weightData.getWeightingDate());
+                        targetParentPath + '/' + filePath, newlxFtpClient, fileSystemService,
+                        weightData.getWeightingDate(),weightData.getLaneMid(),weightData.getSpeed(),weightData.getPlate());
                 String fileState = fileInfo.get("fileState").toString();
                 if("0".equals(fileState)){
                     fileInfoState.put(filePath.substring(filePath.length() - 14,filePath.length() - 8),"0");

@@ -1,9 +1,13 @@
 package com.ruoyi.duge.service;
 
+import com.ruoyi.duge.domain.CarOut;
 import com.ruoyi.duge.domain.WeightData;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 重量数据 服务层
@@ -71,8 +75,14 @@ public interface IWeightDataMapperService
 	List<WeightData> selectByTruckNumber(String truckNumber);
 	List<String> selectTruckNumberOver90Date();
 	List<WeightData> selectByTruckNumberOver90Date(String truckNum);
-    List<WeightData> selectBefore40Days();
+	List<WeightData> selectBefore40Days();
 	public int insertIntoWeightDataBefore40Days(WeightData weightData);
+
+	/**
+	 * 查询过车统计
+	 */
+
+	List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,@Param("endDate")Date endDate);
 
 	void updateWeightDataBefore40Days(WeightData weightData);
 }

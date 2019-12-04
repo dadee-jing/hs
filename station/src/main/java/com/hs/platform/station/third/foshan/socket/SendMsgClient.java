@@ -97,21 +97,20 @@ public class SendMsgClient {
     public boolean sendMessage(FoshanMessage foshanMessage) {
         if (connect()) {
             try{
-                synchronized (lockObject){
+/*                synchronized (lockObject){
                     // 同步发送， 10s超时
                     session.write(foshanMessage).awaitUninterruptibly(10000);
-                }
+                }*/
+                session.write(foshanMessage);
                 if(foshanMessage.getMessageType() == BODY_MSG){
                     FoshanApiService.sendCount.increment();
                 }
                 return true;
             }catch (Exception e){
-                FoshanApiService.sendFailCount.increment();
                 log.info("sendMessage error",e);
             }
         }
         else{
-            FoshanApiService.sendFailCount.increment();
             log.info("connect fail,send fail");
         }
         return false;
