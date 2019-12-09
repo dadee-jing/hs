@@ -533,7 +533,6 @@
 
     <select id="selectBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
-        ORDER BY  id DESC
         LIMIT 100
     </select>
     <insert id="insertIntoWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">

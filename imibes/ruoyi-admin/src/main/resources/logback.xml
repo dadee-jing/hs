@@ -97,41 +97,29 @@
         </encoder>
     </appender>
 
-<!--    <appender name="FoshanApiServiceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/FoshanApiService.log</file>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy" >
-            <FileNamePattern>${log.path}demo-all.%i.log</FileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>800MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
-        </encoder>
-    </appender>-->
-
     <appender name="FoshanApiServiceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <FileNamePattern>${log.path}/foshan/FoshanApiService.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
-            <MaxHistory>30</MaxHistory>
-            <maxFileSize>20MB</maxFileSize>
-            <totalSizeCap>1GB</totalSizeCap>
+        <file>${log.path}/sys-FoshanApiService.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/FoshanApiService.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
         </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{30} - %msg%n</pattern>
+        <encoder charset="UTF-8">
+            <Pattern>${log.pattern}</Pattern>
         </encoder>
     </appender>
-
-
+    <appender name="backupsAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys-backups.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/backups.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <Pattern>${log.pattern}</Pattern>
+        </encoder>
+    </appender>
     <logger name="com.ruoyi.duge.third.foshan" level="info" additivity="false">
         <appender-ref ref="FoshanApiServiceAppender" />
     </logger>
-
     <!--A易华录oracle写入-->
     <logger name="com.ruoyi.duge.third.shunde" level="info" additivity="false">
         <appender-ref ref="yihualuAppender" />
@@ -147,6 +135,10 @@
     <!--D删除文件定时任务-->
     <logger name="com.ruoyi.duge.third.storageManage" level="info" additivity="false">
         <appender-ref ref="storageManageAppender" />
+    </logger>
+    <!--备份数据定时任务-->
+    <logger name="com.ruoyi.duge.third.data.backups" level="info" additivity="false">
+        <appender-ref ref="backupsAppender" />
     </logger>
 
     <logger name="com.ruoyi" level="info" />
