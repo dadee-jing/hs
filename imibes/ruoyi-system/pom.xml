@@ -14,7 +14,6 @@
     <description>
 	    system系统模块
 	</description>
-	
     <dependencies>
 		<!-- 通用工具-->
         <dependency>
@@ -23,5 +22,4 @@
             <version>${ruoyi.version}</version>
         </dependency>
     </dependencies>
-	
 </project>

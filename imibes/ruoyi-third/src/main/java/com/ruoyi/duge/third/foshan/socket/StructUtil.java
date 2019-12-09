@@ -283,10 +283,8 @@ public class StructUtil {
                 bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
         return bufferedImage;
     }
-
     public static byte[] resize(int x, int y, File picFile) {
         byte[] b = null;
-
         try {
             BufferedImage bfi = ImageIO.read(picFile);
             ByteArrayOutputStream out = new ByteArrayOutputStream();

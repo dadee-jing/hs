@@ -61,7 +61,7 @@ public class MergedImages {
     public static BufferedImage resizeImage(int x, int y, BufferedImage bfi){
         BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
         bufferedImage.getGraphics().drawImage(
-                bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
+        bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
         return bufferedImage;
     }
 }
