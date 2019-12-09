@@ -132,6 +132,7 @@ public class UploadTask {
         log.info("uploadBlacksomkevehicle insert count:" + blacksmokevehicleInfoList.size());
         LongAdder successCount = new LongAdder();
         blacksmokevehicleInfoList.forEach(blacksmokevehicleInfo -> {
+
             try {
                 if(StringUtils.isBlank(blacksmokevehicleInfo.getHpzl())){
                     blacksmokevehicleInfo.setHpzl(parsePlateType(blacksmokevehicleInfo.getCpys(),blacksmokevehicleInfo.getHphm()));
@@ -139,6 +140,8 @@ public class UploadTask {
                 if(StringUtils.isBlank(blacksmokevehicleInfo.getCdxh())){
                     blacksmokevehicleInfo.setCdxh("1");
                 }
+                blacksmokevehicleInfo.setJlbh(blacksmokevehicleInfo.getJlbh().replace("B","D"));
+                blacksmokevehicleInfo.setDwbh(blacksmokevehicleInfo.getDwbh().replace("B","D"));
                 String requestBody = wrapperXml(transformService.transBlacksmokevehicleDto(blacksmokevehicleInfo), "blacksmokevehicle");
                 System.out.println(requestBody);
                 String responseStr = callApi(requestBody);
@@ -147,11 +150,13 @@ public class UploadTask {
                 // 根据文档判断 数据是否提交成功
                 if(response.get("status").toString().replace("\"", "").equals("1")) {  //  看文档实现
                     blacksmokevehicleInfo.setUpLoadStatus(1);
+                    blacksmokevehicleInfo.setJlbh(blacksmokevehicleInfo.getJlbh().replace("D","B"));
+                    blacksmokevehicleInfo.setDwbh(blacksmokevehicleInfo.getDwbh().replace("D","B"));
                     successCount.increment();
                 } else {
                     blacksmokevehicleInfo.setUpLoadStatus(2);
                 }
-                blacksmokevehicleInfoRepository.save(blacksmokevehicleInfo);
+                blacksmokevehicleInfoRepository.saveAndFlush(blacksmokevehicleInfo);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -173,20 +178,24 @@ public class UploadTask {
                 } else {
                     trafficFlow.setUpLoadStatus(2);
                 }
-                trafficFlowRepository.save(trafficFlow);
+                trafficFlowRepository.saveAndFlush(trafficFlow);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         log.info("uploadTrafficFlow success count:" + successCount);
     }
-    @Scheduled(cron="*/10 * * * * *")
+
     public void uploadVehicleInfo() {
         List<VehicleInfo> vehicleInfoList = vehicleInfoRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
         log.info("uploadVehicleInfo insert count:" + vehicleInfoList.size());
         LongAdder successCount = new LongAdder();
         vehicleInfoList.forEach(vehicleInfo -> {
             try {
+                if(vehicleInfo.getHphm().getBytes().length>18){
+                    vehicleInfo.setUpLoadStatus(1);
+                    vehicleInfoRepository.saveAndFlush(vehicleInfo);
+                    return;}
                 vehicleInfo.setHpzl(parsePlateType(vehicleInfo.getCpys(),vehicleInfo.getHphm()));
                 String requestBody = wrapperXml(transformService.transVehicleInfoDto(vehicleInfo), "vehicle");
                 String responseStr = callApi(requestBody);
@@ -198,7 +207,7 @@ public class UploadTask {
                 } else {
                     vehicleInfo.setUpLoadStatus(2);
                 }
-                vehicleInfoRepository.save(vehicleInfo);
+                vehicleInfoRepository.saveAndFlush(vehicleInfo);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -214,11 +223,14 @@ public class UploadTask {
         log.info("uploadMonitorData insert count:" + monitorDataLogList.size());
         LongAdder successCount = new LongAdder();
         monitorDataLogList.forEach(monitorDataLog -> {
-            if(monitorDataLog.getRlzl()=="Z"){
+            if(monitorDataLog.getRlzl().equals("Z")){
                 monitorDataLog.setRlzl("Y");
             }
             if(StringUtils.isBlank(monitorDataLog.getHpzl())){
                 monitorDataLog.setRlzl(parsePlateType(monitorDataLog.getCpys(),monitorDataLog.getHphm()));
+            }
+            if(monitorDataLog.getPdjg().equals("999")){
+                monitorDataLog.setPdjg("-2");
             }
             if (monitorDataLog.getClsd().equals("0")){
                 return;
@@ -237,7 +249,7 @@ public class UploadTask {
                 } else {
                     monitorDataLog.setUpLoadStatus(2);
                 }
-                monitorDataRepository.save(monitorDataLog);
+                monitorDataRepository.saveAndFlush(monitorDataLog);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -264,14 +276,14 @@ public class UploadTask {
                 } else {
                     vehicleTrajectory.setUpLoadStatus(2);
                 }
-                vehicleTrajectoryRepository.save(vehicleTrajectory);
+                vehicleTrajectoryRepository.saveAndFlush(vehicleTrajectory);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         log.info("uploadVehicleTrajectory success count:" + successCount);
     }
-
+    @Scheduled(cron="*/100 * * * * *")
     public void  ALLDay(){
         uploadVehicleTrajectory();
         uploadTrafficFlow();
