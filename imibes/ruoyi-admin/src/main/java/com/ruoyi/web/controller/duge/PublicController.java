@@ -96,21 +96,19 @@ public class PublicController extends BaseController {
      * @param data
      * @return
      */
-    @PostMapping("/stationInfo/update")
+    @PostMapping("/updateStationState")
     @ResponseBody
-    public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo data) {
+    public int updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo data) {
+        //id,time
         int result;
         try {
             result = stationInfoService.updateStationInfo(data);
-        } catch (DuplicateKeyException e) {
-            result = 1;
-            System.out.println("DuplicateKeyException");
-        } catch (Exception e) {
+        }catch (Exception e) {
             result = 0;
         }
         if(result == 1){
             LOGGER.info("update "+ data.getId() + " " + data.getName());
         }
-        return toAjax(result);
+        return result;
     }
 }

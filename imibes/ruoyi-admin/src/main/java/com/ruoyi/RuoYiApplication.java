@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -18,8 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(
         basePackages = {"com.ruoyi"},
         excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.ruoyi\\.duge\\.third\\.guangdong\\..*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.ruoyi\\.duge\\.third\\.trafficPolice\\..*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.ruoyi\\.quartz\\.task\\..*")})
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.ruoyi\\.duge\\.third\\.trafficPolice\\..*")})
 @EnableScheduling
 public class RuoYiApplication {
     public static void main(String[] args) {

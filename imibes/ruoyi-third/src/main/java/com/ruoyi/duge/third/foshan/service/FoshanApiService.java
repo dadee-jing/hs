@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getCarData2Info;
 import static com.ruoyi.duge.third.foshan.socket.StructUtil.getPic;
@@ -32,7 +34,12 @@ public class FoshanApiService implements ThirdApiService {
     private final SendMsgClient sendMsgClient;
     private final IWeightDataMapperService weightDataMapperService;
     private final IConfigDataService configDataService;
-
+    public static LongAdder totalCount = new LongAdder();//总记录数
+    public static LongAdder sendCount = new LongAdder();//执行发送的次数
+    public static LongAdder sendSuccessCount = new LongAdder();//发送成功的次数
+    public static LongAdder receiveCount = new LongAdder();//收到5020次数
+    public static ConcurrentHashMap<String, String> waitingResponseMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Integer> okPlateMap = new ConcurrentHashMap<>();
 
     @Autowired
     public FoshanApiService(SendMsgClient sendMsgClient,
@@ -53,9 +60,10 @@ public class FoshanApiService implements ThirdApiService {
     @Scheduled(cron = "${foshan.scheduled}")
     public void submitVehicleData() {
         if ("1".equals(configDataService.getConfigValue("do_foshan_scheduled"))) {
-            System.out.println("佛山市局定时任务执行");
             List<WeightData> list = weightDataMapperService.selectNotUploadSj();
+            System.out.println("佛山市局定时任务执行 size:" + list.size());
             for (WeightData weightData : list) {
+                totalCount.increment();
                 BaseThirdApiResponse baseThirdApiResponse = submitVehicleData(BaseVehicleDataRequest.builder()
                         .weightData(weightData).build());
                 if (baseThirdApiResponse.getBusinessStatus() == BusinessStatus.SUCCESS) {
@@ -63,6 +71,8 @@ public class FoshanApiService implements ThirdApiService {
                     System.out.println(weightData.getStationName()+"上送成功！！！");
                     weightDataMapperService.updateData(weightData);
                 }
+                log.info("sendCount:" + sendCount.longValue() + ",sendSuccessCount:" + sendSuccessCount.longValue() +
+                        ",receiveCount:" + receiveCount.longValue() + ",totalCount:" + totalCount.longValue() + ",lsize:" +list.size());
             }
         }
     }
@@ -82,13 +92,13 @@ public class FoshanApiService implements ThirdApiService {
                     picCount++;
                 }
             }
-            if (StringUtils.isNoneBlank(weightData.getFtpTail())) {
+/*            if (StringUtils.isNoneBlank(weightData.getFtpTail())) {
                 File file = new File(baseDir + weightData.getFtpTail());
                 if (file.exists() && file.length() > 0) {
                     foshanMessage.setPic2(getPic(weightData.getWeightingDate(), file));
                     picCount++;
                 }
-            }
+            }*/
             if (StringUtils.isNoneBlank(weightData.getFtpPlate())) {
                 File file = new File(baseDir + weightData.getFtpPlate());
                 if (file.exists() && file.length() > 0) {
@@ -96,7 +106,7 @@ public class FoshanApiService implements ThirdApiService {
                     picCount++;
                 }
             }
-            if (StringUtils.isNoneBlank(weightData.getFtpHead())) {
+/*            if (StringUtils.isNoneBlank(weightData.getFtpHead())) {
                 File file = new File(baseDir + weightData.getFtpHead());
                 if (file.exists() && file.length() > 0) {
                     foshanMessage.setPic4(getPic(weightData.getWeightingDate(), file));
@@ -109,7 +119,7 @@ public class FoshanApiService implements ThirdApiService {
                     foshanMessage.setPic5(getPic(weightData.getWeightingDate(), file));
                     picCount++;
                 }
-            }
+            }*/
             foshanMessage.setMessageType(FoshanMessage.BODY_MSG);
             foshanMessage.setCarData2Info(getCarData2Info(Integer.parseInt(configDataService.getConfigValue("site_id")),
                     weightData.getLane(),

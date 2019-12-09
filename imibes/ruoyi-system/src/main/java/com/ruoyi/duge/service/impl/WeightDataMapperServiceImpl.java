@@ -152,9 +152,20 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     }
 
 	@Override
-	public List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,@Param("endDate")Date endDate) {
+	public List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,
+                                           @Param("endDate")Date endDate) {
 		// TODO Auto-generated method stub
 		return dataMapper.selectCarOutNumber(stationId,startDate,endDate);
 	}
+
+    /**
+     * 查询过车超重统计
+     */
+    @Override
+    public List<CarOut> selectCarOverWeight(@Param("stationId")int stationId,@Param("startDate")Date startDate,
+                                           @Param("endDate")Date endDate) {
+        // TODO Auto-generated method stub
+        return dataMapper.selectCarOverWeight(stationId,startDate,endDate);
+    }
 
 }

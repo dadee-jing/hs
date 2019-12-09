@@ -100,5 +100,13 @@ public interface WeightDataMapper {
 	 * 查询过车统计
 	 */
 
-	List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,@Param("endDate")Date endDate);
+	List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,
+                                    @Param("endDate")Date endDate);
+
+    /**
+     * 查询过车超重统计
+     */
+
+    List<CarOut> selectCarOverWeight(@Param("stationId")int stationId,@Param("startDate")Date startDate,
+                                    @Param("endDate")Date endDate);
 }
