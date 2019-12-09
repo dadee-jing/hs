@@ -1,6 +1,5 @@
 package com.ruoyi.duge.third.foshan.socket;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +15,21 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.ruoyi.duge.third.foshan.socket.Byte2IntUtil.*;
+import static org.apache.commons.io.IOUtils.toByteArray;
 
 public class StructUtil {
 
     private static final Logger log = LoggerFactory.getLogger(StructUtil.class);
 
-    private static int serailNo = 0;
+    private static int serialNo = 0;
+
+    public synchronized static int getSerailNo() {
+        if (serialNo > 30000) {
+            return 1;
+        } else {
+            return serialNo++;
+        }
+    }
 
     public static byte[] getTime2t(Date date) {
         Instant instant = date.toInstant();
@@ -58,16 +66,51 @@ public class StructUtil {
     }
 
     public static byte[] getPic(Date picDate, File picFile) {
-        byte[] fileBytes = resize(1700, 1000, picFile);
-        byte[] picDateBytes = getTime2t(picDate);
-        byte[] picLengthBytes = getLongBytes(fileBytes.length);
-        byte[] result = new byte[9 + 4 + fileBytes.length];
-        AtomicInteger currPos = new AtomicInteger(0);
-        // 按顺序填数组
-        fillArray(result, currPos, picDateBytes);//抓拍日期信息
-        fillArray(result, currPos, picLengthBytes);//图片长度
-        fillArray(result, currPos, fileBytes); //图片本身
-        return result;
+        //byte[] fileBytes = resize(1700, 1000, picFile);
+        try {
+            FileInputStream fis = new FileInputStream(picFile);
+            byte[] fileBytes = toByteArray(fis);
+            byte[] picDateBytes = getTime2t(picDate);
+            byte[] picLengthBytes = getLongBytes(fileBytes.length);
+            byte[] result = new byte[9 + 4 + fileBytes.length];
+            AtomicInteger currPos = new AtomicInteger(0);
+            // 按顺序填数组
+            fillArray(result, currPos, picDateBytes);//抓拍日期信息
+            fillArray(result, currPos, picLengthBytes);//图片长度
+            fillArray(result, currPos, fileBytes); //图片本身
+            return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return null;
+    }
+
+    public static byte[] getPicByStream(Date picDate, InputStream inputStream) {
+        //byte[] fileBytes = resizeStream(1700, 1000, inputStream);
+        //市局图片都改成d:/pic.jpg文件
+/*        try {
+            inputStream =  new FileInputStream("d:/pic.jpg");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("d:/pic.jpg fail",e);
+        }*/
+        try{
+            byte[] fileBytes = toByteArray(inputStream);
+            byte[] picDateBytes = getTime2t(picDate);
+            byte[] picLengthBytes = getLongBytes(fileBytes.length);
+            byte[] result = new byte[9 + 4 + fileBytes.length];
+            AtomicInteger currPos = new AtomicInteger(0);
+            // 按顺序填数组
+            fillArray(result, currPos, picDateBytes);//抓拍日期信息
+            fillArray(result, currPos, picLengthBytes);//图片长度
+            fillArray(result, currPos, fileBytes); //图片本身
+            return result;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            log.info("toByteArray fail",e);
+            return null;
+        }
     }
 
     /**
@@ -149,6 +192,7 @@ public class StructUtil {
     }
 
     public static byte[] combineMsg(int instructionId,
+                                    int serialNo,
                                     byte[] carData2Info,
                                     byte[] picData1,
                                     byte[] picData2,
@@ -174,7 +218,7 @@ public class StructUtil {
         // 命令类型
         fillArray(result, currPos, new byte[]{0x00});
         // 流水号
-        fillArray(result, currPos, getWordBytes(serailNo++));
+        fillArray(result, currPos, getWordBytes(serialNo));
         // 进程id
         fillArray(result, currPos, getDwordBytes(0));
         // 保留
@@ -255,7 +299,7 @@ public class StructUtil {
         byte[] pic1 = getPic(new Date(), new File("d:\\6.jpg"));
         byte[] pic2 = getPic(new Date(), new File("d:\\6.jpg"));
         //byte[] msg = combineMsg(0x5020, car, pic1, pic2);
-        byte[] msg = combineMsg(0x5020, car, pic1, pic2, pic1, pic1, pic1);
+        byte[] msg = combineMsg(0x5020,1, car, pic1, pic2, pic1, pic1, pic1);
         byte[] result = combineAll(msg);
 
         byte[] lengthBytes = new byte[4];
@@ -289,6 +333,30 @@ public class StructUtil {
 
         try {
             BufferedImage bfi = ImageIO.read(picFile);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            if (bfi.getHeight() > x || bfi.getWidth() > y) {
+                BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
+                bufferedImage.getGraphics().drawImage(
+                        bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
+                boolean flag = ImageIO.write(bufferedImage, "jpg", out);
+                b = out.toByteArray();
+                out.close();
+                return b;
+            }
+            boolean flag = ImageIO.write(bfi, "jpg", out);
+            b = out.toByteArray();
+            out.close();
+            return b;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+    public static byte[] resizeStream(int x, int y, InputStream inputStream) {
+        byte[] b = null;
+
+        try {
+            BufferedImage bfi = ImageIO.read(inputStream);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             if (bfi.getHeight() > x || bfi.getWidth() > y) {
                 BufferedImage bufferedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);

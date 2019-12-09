@@ -279,7 +279,8 @@ public class WeightDataController extends BaseController {
 	@PostMapping("/selectCarOutNumber/{stationId}/{startDate}/{endDate}")
 	@ResponseBody
 	public List<CarOut> selectCarOutNumber(@PathVariable("stationId") int stationId,
-			@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
+			@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate
+			) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		Date startTime;
 		Date endTime;
@@ -288,6 +289,33 @@ public class WeightDataController extends BaseController {
 			startTime = sdf.parse(startDate);
 			endTime = sdf.parse(endDate);
 			list = dataService.selectCarOutNumber(stationId, startTime, endTime);
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+
+	/**
+	 * 过车超重统计
+	 */
+
+	@PostMapping("/selectCarOverWeight/{stationId}/{startDate}/{endDate}")
+	@ResponseBody
+	public List<CarOut> selectCarOverWeight(@PathVariable("stationId") int stationId,
+										   @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate
+										   ) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		Date startTime;
+		Date endTime;
+		List<CarOut> list = null;
+		try {
+			startTime = sdf.parse(startDate);
+			endTime = sdf.parse(endDate);
+			list = dataService.selectCarOverWeight(stationId, startTime, endTime);
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

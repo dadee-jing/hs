@@ -36,20 +36,20 @@
 			<div class="ibx float-e-margins">
 				<div class="ibox-content">
 					<div class="row">
-						<div class="col-sm-8 search-collapse" style="padding:0;margin: 0">
+						<div class="col-sm-3 search-collapse" style="padding:0;margin: 0">
 						    <form id="weightdata-form">
 						     	<div class="select-list">
 						         	<ul>
 						                 <li>
 						                      <label>站点： </label>
-						                      <select name="listClass" style = "width:140px;height:30px" id="selectId" >
-						                           <option value="">---请选择---</option>
+						                      <select name="listClass" style = "width:300px;height:30px" id="selectId" >
+						                           <option value="">-------------------请选择--------------------</option>
 						                       </select>
 						                  </li>
 						                            
 						                  <li class="select-time">
 	                                          <label>时间： </label>
-	                                          <input type="text" class="time-input" value="2019-7-13" style = "width:140px" id="startTime" placeholder="时间" name="params[beginTime]"/>
+	                                          <input type="text" class="time-input" value="" style = "width:140px" id="startTime" placeholder="时间" name="params[beginTime]"/>
 	                                          <span id="endTime" />
 	                                      </li>
 						                      <input type="hidden" id="hide-over-input" value="-1" name="params[overWeightMin]">
@@ -66,7 +66,18 @@
 			</div>
 		
 	</div>
-	
+
+	<div>
+
+		<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+	</div>
+	<div>
+
+		<ul class="nav nav-pills">
+			<li role="button" id="carOutNumber"class="active"><a href="#">过车统计</a></li>
+			<li role="button" id="overWeight" class=""><a href="#">超重统计</a></li>
+		</ul>
+	</div>
     <div id="main"></div>
     
     <div id="div-carout" style="height:300px;overflow:scroll;">
@@ -78,7 +89,7 @@
 		    </tr>
 		  	</thead>
   			<tbody id="tbody-carout">
-    
+
   			</tbody>
 		</table>
 	</div>
@@ -93,46 +104,88 @@
 		 $.post(ctx + "module/stationInfo/list",function (data) {
 			 	var res = "";
 		        for(var i=0; i<data.rows.length; ++i) {
+
 		          	res += "<option value="+data.rows[i].id+">"+data.rows[i].name+"</option>";
 		        }
 		        $("#selectId").append(res);
 		    });
 		 
 		 $("#table-carout").hide();
-	})
+	});
+
+	$(function(){
+		$("#overWeight").click(function(){
+			$("#overWeight").addClass('active');
+			$("#carOutNumber").removeClass('active');
+		});
+	}) ;
+
+	$(function(){
+		$("#carOutNumber").click(function(){
+			$("#carOutNumber").addClass('active');
+			$("#overWeight").removeClass('active');
+		});
+	}) ;
+
 	$(function() {
-	    $("#search-operation").click(function(){
+	    $("#search-operation,#overWeight,#carOutNumber").click(function(){
 	       
 	        	var startDate = $("#startTime").val()+" 00:00:00";
 	        	var endDate = $("#startTime").val()+" 23:59:59";
 	        	var stationId = $("#selectId").val();
-	        	
+	        	var url = "";
+	        	if($("#carOutNumber").hasClass('active'))
+				{
+					console.log("caroutnubmer");
+					url = "/duge/weightData/selectCarOutNumber/"+stationId+"/"+startDate+"/"+endDate;
+				}
+	        	else
+				{
+					console.log("overWeight")
+					url = "/duge/weightData/selectCarOverWeight/"+stationId+"/"+startDate+"/"+endDate;
+				}
 	        	$.ajax({
-	        		"url":"/duge/weightData/selectCarOutNumber/"+stationId+"/"+startDate+"/"+endDate,
+	        		"url":url,
 	        		"type":"post",
 	        		"dataType":"json",
 	        		"success":function(obj) {
 	        			if(obj.length==0){
+							$("#main").css("display","none");
+							$("#div-carout").css("display","none");
 	        				alert("没有查到任何数据!!!");
 	        				return;
 	        			}
 	        				
-	        				
-	        			
-	        			console.log(obj);
 	        			if (obj.state == 0) {
 	        				alert(obj.message);
 	        			} else {
+							$("#main").css("display","block");
+							$("#div-carout").css("display","block");
 	        				var myChart = echarts.init(document.getElementById('main'));
+	        				var text = "";
+	        				var data = "";
+	        				var name = "";
+							if($("#carOutNumber").hasClass('active'))
+							{
+								text = '过车统计';
+								data = ['过车统计'];
+								name = '过车统计';
+							}
+							else
+							{
+								text = '超载统计';
+								data = ['超载统计'];
+								name = '超载统计';
+							}
 	        				option = {
 	        				    title: {
-	        				        text: '过车统计'
+									text:text
 	        				    },
 	        				    tooltip: {
 	        				        trigger: 'axis'
 	        				    },
 	        				    legend: {
-	        				        data:['过车统计']
+	        				        data:data
 	        				    },
 	        				    grid: {
 	        				        left: '3%',
@@ -165,7 +218,7 @@
 	        				    },
 	        				    series: [
 	        				        {
-	        				            name:'过车统计',
+	        				            name:name,
 	        				            type:'line',
 	        				            stack: '总量',
 	        				            data: function(){
@@ -214,9 +267,6 @@
 	   							$("#tbody-carout").append(res);
 	        				}
 	        					
-	        				
-	        				
-	        		
 	        			}
 	        		}
 	        	

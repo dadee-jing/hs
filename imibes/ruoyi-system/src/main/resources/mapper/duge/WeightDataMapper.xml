@@ -123,6 +123,7 @@
             <if test="laneMid != null  and laneMid != '' ">and lane_mid = #{laneMid}</if>
             <if test="laneMin != null  and laneMin != '' ">and lane_min = #{laneMin}</if>
             <if test="laneMax != null  and laneMax != '' ">and lane_max = #{laneMax}</if>
+            <if test="lbh != null  and lbh != '' ">and lbh > 0 </if>
             <if test="passTime != null  and passTime != '' ">and pass_time = #{passTime}</if>
             <if test="uploadTag != null ">and upload_tag = #{uploadTag}</if>
             <if test="uploadYhl != null ">and upload_yhl = #{uploadYhl}</if>
@@ -343,7 +344,7 @@
         order by upload_tag
     </select>
 
-    <select id="selectNotUploadYhl" parameterType="WeightData" resultMap="WeightDataResult">
+    <select id="selectNotUploadYhl" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         select wd.id as id,wd.station_id as station_id,dsi.name as station_name,sli.lane_id as lane_id,limit_over_level, limit_mode, vehicle_type, weighting_id,
         weighting_date, lane, direction, truck_number, truck_corlor, speed, axle_count, axle_type, weight,
         limit_weight,over_weight, axle_weight1, axle_weight2, axle_weight3, axle_weight4, axle_weight5,
@@ -367,7 +368,7 @@
         <where>
             wd.create_time &gt; date_add(now(), interval - 5 minute)
             and upload_sj  in (0, 2)
-            and station_id = 1
+            and station_id = 2
         </where>
         order by upload_sj
         limit 5
@@ -404,7 +405,19 @@
     	SELECT carOutNum.* FROM
 		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number
 		FROM weight_data
-		WHERE station_id = #{stationId}
+		WHERE
+		station_id = #{stationId}
+		GROUP BY hour) carOutNum
+		WHERE carOutNum.`hour` BETWEEN  #{startDate} AND  #{endDate};
+
+    </select>
+
+    <select id="selectCarOverWeight" parameterType="CarOut" resultType="hashMap">
+    	SELECT carOutNum.* FROM
+		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number
+		FROM weight_data
+		WHERE
+		station_id = #{stationId} and over_weight>0
 		GROUP BY hour) carOutNum
 		WHERE carOutNum.`hour` BETWEEN  #{startDate} AND  #{endDate};
 
@@ -460,7 +473,7 @@
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and truck_number = #{truckNumber}
     </select>
-    <update id="updateWeightDataBefore40Days" parameterType="WeightData">
+    <update id="updateWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
         update weight_data_before_40days
         <trim prefix="SET" suffixOverrides=",">
             <if test="limitOverLevel != null  ">limit_over_level = #{limitOverLevel},</if>
@@ -518,8 +531,7 @@
         where id = #{id}
     </update>
 
-
-    <select id="selectBefore40Days" parameterType="WeightData" resultMap="WeightDataResult">
+    <select id="selectBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
         ORDER BY  id DESC
         LIMIT 100
@@ -578,7 +590,6 @@
             <if test="uploadYhl != null  ">upload_yhl,</if>
             <if test="uploadSj != null  ">upload_sj,</if>
             <if test="uploadJj != null  ">upload_jj,</if>
-            <if test="lbh != null  and lbh != ''  ">lbh,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null  ">#{id},</if>
@@ -632,7 +643,6 @@
             <if test="uploadYhl != null  ">#{uploadYhl},</if>
             <if test="uploadSj != null  ">#{uploadSj},</if>
             <if test="uploadJj != null  ">#{uploadJj},</if>
-            <if test="lbh != null  and lbh != ''  ">#{lbh},</if>
         </trim>
     </insert>
 </mapper>

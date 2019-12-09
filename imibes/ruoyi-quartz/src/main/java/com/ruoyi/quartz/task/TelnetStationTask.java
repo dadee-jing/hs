@@ -35,6 +35,7 @@ public class TelnetStationTask {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String nowHour = DateFormatUtils.format(new Date(), "yyyyMMddHH");
                     String latesTimeHour = DateFormatUtils.format(simpleDateFormat.parse(latestTime), "yyyyMMddHH");
+                    //三小时没有数据
                     if (Integer.parseInt(nowHour) - Integer.parseInt(latesTimeHour) > 3) {
                         remarkInfo = "<span style='color:red'> " + latestTime + "</span>";
                     } else {

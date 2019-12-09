@@ -6,6 +6,9 @@ import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import static com.ruoyi.duge.third.foshan.service.FoshanApiService.*;
+import static com.ruoyi.duge.third.foshan.socket.FoshanMessage.BODY_MSG;
+import static com.ruoyi.duge.third.foshan.socket.FoshanMessage.HEART_BEAT_MSG;
 
 @Component
 public class SendMsgClientHandler extends IoHandlerAdapter {
@@ -16,50 +19,68 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
     public void exceptionCaught(IoSession session, Throwable cause)
             throws Exception {
         // TODO Auto-generated method stub
-        session.closeNow();
+        //session.closeNow();
         LOGGER.warn(cause.getMessage(), cause);
     }
 
     @Override
-    public void messageReceived(IoSession session, Object message)
-            throws Exception {
-        // TODO Auto-generated method stub
-        super.messageReceived(session, message);
-        if (!"receive_online".equals(message.toString())) {
-            LOGGER.info("接收到的消息是：" + message.toString());
+    public void messageReceived(IoSession session, Object message) {
+        try {
+            super.messageReceived(session, message);
+            FoshanRspMessage foshanRspMessage = (FoshanRspMessage) message;
+            if ("5002".equals(foshanRspMessage.getInstrId())) {
+                //LOGGER.info("receive heartbeat:" + message.toString());
+            }
+            else if ("5020".equals(foshanRspMessage.getInstrId())) {
+                receiveCount.increment();
+                String plate = waitingResponseMap.remove(foshanRspMessage.getSerialNo());
+                if (null != plate) {
+                    okPlateMap.put(plate, 1);
+                }
+                LOGGER.info("receive 5020:" + ((FoshanRspMessage) message).getSerialNo() + " " + plate);
+            }
+        } catch (Exception e) {
+            LOGGER.info("接收到的消息失败！" + message, e);
         }
     }
 
     @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        // TODO Auto-generated method stub
-        super.messageSent(session, message);
-        LOGGER.info("向服务器发送消息成功！！！！" + message.toString());
+    public void messageSent(IoSession session, Object message) {
+        try {
+            super.messageSent(session, message);
+            int msgType = ((FoshanMessage) message).getMessageType();
+            if (msgType == HEART_BEAT_MSG) {
+                //LOGGER.info("send heartbeat");
+            } else if (msgType == BODY_MSG) {
+                sendSuccessCount.increment();
+            }
+        } catch (Exception e) {
+            LOGGER.info("向服务器发送消息失败！" + message, e);
+        }
     }
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionClosed");
         super.sessionClosed(session);
     }
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionCreated");
         super.sessionCreated(session);
     }
 
     @Override
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionIdle");
         super.sessionIdle(session, status);
     }
 
     @Override
     public void sessionOpened(IoSession session) throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionOpened");
         super.sessionOpened(session);
     }
-
 }
