@@ -1,5 +1,7 @@
 package com.ruoyi.duge.third.trafficPolice.scheduled;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.io.File;
@@ -12,24 +14,25 @@ import java.util.Date;
  */
 @Component
 public class TrafficPoliceClear {
-    Calendar calendar = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
     SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
     SimpleDateFormat sdfPeccancy = new SimpleDateFormat("yyyy-MM-dd");
-    @Scheduled(cron = "0 0 1 * * ?")
-    private void scheduled(){
-        deletePasscar3DaysAgo();
-        deletePeccancy3DaysAgo();
-    }
+    private static final Logger log = LoggerFactory.getLogger(TrafficPoliceClear.class);
+    @Scheduled(cron = "${deletePasscar3DaysAgo.scheduled}")
     private void deletePasscar3DaysAgo(){
+        Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -3);
         String passcarPath="/sharedata/ftp/passcar/"+sdf.format(calendar.getTime())+"/"+sdfDay.format(calendar.getTime());
+        log.info("delete the passcar file of "+passcarPath);
         File file=new File(passcarPath);
         delFile(file);
     }
+    @Scheduled(cron = "${deletePeccancy3DaysAgo.scheduled}")
     private void deletePeccancy3DaysAgo(){
+        Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -3);
         String peccancyPath="/sharedata/ftp/peccancybak/"+sdfPeccancy.format(calendar.getTime());
+        log.info("delete the peccancy file of "+peccancyPath);
         File file=new File(peccancyPath);
         delFile(file);
     }

@@ -147,7 +147,10 @@ storagemanage.scheduled2year: 0 1 * * * ?
 #上传交警定时任务执行
 trafficpolice.scheduled: 0/5 * * * * ?
 #数据备份
-databackups.scheduled: 0/3 * 3,4 * * ?
+databackups.scheduled: 0/3 * 1,2,3,4,5,6 * * ?
+#保底删除给交警的图片
+deletePasscar3DaysAgo.scheduled: 0 0 1 * * ?
+deletePeccancy3DaysAgo.scheduled: 0 0 1 * * ?
 ftp:
   host : 192.168.1.130
   port : 2121
