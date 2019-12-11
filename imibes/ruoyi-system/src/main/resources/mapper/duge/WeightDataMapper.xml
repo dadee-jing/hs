@@ -422,10 +422,10 @@
 		WHERE carOutNum.`hour` BETWEEN  #{startDate} AND  #{endDate};
 
     </select>
-
     <select id="selectSpeedAvg" parameterType="com.ruoyi.duge.domain.WeightData" resultType="Double">
         SELECT avg(speed) FROM weight_data WHERE weighting_date >  #{params.timeStr}
     </select>
+
     <!--报警图片视频数据-->
     <select id="selectIllegalAndOverDate" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
@@ -438,12 +438,13 @@
 
     <!--抽取时间区间内单个站点无报警的十辆车的车牌-->
     <select id="selectTruckNumberByTime" resultType="String">
-        select truck_number  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
+        select truck_number  from weight_data_before_40days  where create_time > date_add(now(), interval - 42*24*60 minute)
         and over_weight=0
         and mark_del= 0
         ORDER BY id DESC
         LIMIT 10
     </select>
+
     <!--根据车牌号查这辆车时间区间内是否有其他报警数据-->
     <select id="selectIsIllegalByTruckNumber" parameterType="String" resultMap="WeightDataResult">
         select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
@@ -457,7 +458,6 @@
         AND create_time > date_add(now(), interval - 41*24*60 minute)
         and truck_number = #{truckNumber}
     </select>
-
     <!--查询报警车辆对应其过车数据车牌号-->
     <select id="selectTruckNumberOver90Date" resultType="String">
         select truck_number  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)

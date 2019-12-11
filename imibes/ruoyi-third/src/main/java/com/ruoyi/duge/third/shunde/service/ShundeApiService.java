@@ -73,7 +73,7 @@ public class ShundeApiService implements ThirdApiService {
                                 //log.info("ok insert" + weightData.getTruckNumber());
                             } else {
                                 weightData.setUploadYhl(2);
-                                //log.info("error insert" + weightData.getTruckNumber());
+                                log.info("error insert" + weightData.getTruckNumber());
                             }
                             weightDataMapper.updateData(weightData);
                         }

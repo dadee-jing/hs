@@ -26,8 +26,9 @@ public class DataBackups {
        for(WeightData weightData:list){
             int result=weightDataMapperService.insertIntoWeightDataBefore40Days(weightData);
             if(result==1){
-            weightDataMapperService.deleteDataByIds(weightData.getId().toString());
-            successCount.increment();
+            int count=weightDataMapperService.deleteDataByIds(weightData.getId().toString());
+            if(count==1){
+            successCount.increment();}
             }
         }
         log.info("success count:" + successCount);
