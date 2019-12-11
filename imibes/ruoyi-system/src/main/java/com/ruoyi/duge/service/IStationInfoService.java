@@ -59,4 +59,6 @@ public interface IStationInfoService
 
 	String getStationLatesCarRecordTime(Integer stationId);
 
+	String getRecentTime(Integer stationId);
+
 }

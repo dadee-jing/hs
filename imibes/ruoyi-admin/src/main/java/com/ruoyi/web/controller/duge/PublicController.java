@@ -1,6 +1,8 @@
 package com.ruoyi.web.controller.duge;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.base.AjaxResult;
+import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.WeightData;
 import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.duge.third.foshan.service.FoshanApiService;
@@ -15,6 +17,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
@@ -93,22 +97,22 @@ public class PublicController extends BaseController {
 
     /**
      * 从站点发请求更新状态信息
-     * @param data
+     * @param stationInfo
      * @return
      */
     @PostMapping("/updateStationState")
     @ResponseBody
-    public int updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo data) {
-        //id,time
+    public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo stationInfo) {
         int result;
         try {
-            result = stationInfoService.updateStationInfo(data);
+            result = stationInfoService.updateStationInfo(stationInfo);
         }catch (Exception e) {
             result = 0;
         }
         if(result == 1){
-            LOGGER.info("update "+ data.getId() + " " + data.getName());
+            LOGGER.info("update "+ stationInfo.getId() + " " + stationInfo.getName());
         }
-        return result;
+        return toAjax(result);
     }
+
 }

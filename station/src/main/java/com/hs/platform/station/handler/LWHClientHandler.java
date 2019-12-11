@@ -72,6 +72,7 @@ public class LWHClientHandler extends IoHandlerAdapter {
             if("heartbeat".equals(dataString.trim())){
                 lwhHeartBeat = true;
                 heartBeatTime = new AtomicLong(System.currentTimeMillis());
+                LOGGER.info("lwh heartbeat receive");
                 return;
             }
 

@@ -24,7 +24,7 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
             FoshanMessage foshanMessage = (FoshanMessage) message;
             byte[] result;
             if (StringUtils.isBlank(foshanMessage.getMessageBody())) {
-                int serialNo = getSerailNo();
+                int serialNo = getSerailNo(foshanMessage.getPlate());
                 byte[] msg = combineMsg(foshanMessage.getMessageType(), serialNo,
                         foshanMessage.getCarData2Info(), foshanMessage.getPic1(), foshanMessage.getPic2(),
                         foshanMessage.getPic3(), foshanMessage.getPic4(), foshanMessage.getPic5());

@@ -21,7 +21,7 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
     public void exceptionCaught(IoSession session, Throwable cause)
             throws Exception {
         // TODO Auto-generated method stub
-        session.closeNow();
+        //session.closeNow();
         LOGGER.warn(cause.getMessage(), cause);
     }
 
@@ -78,26 +78,26 @@ public class SendMsgClientHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionClosed");
         super.sessionClosed(session);
     }
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionCreated");
         super.sessionCreated(session);
     }
 
     @Override
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionIdle");
         super.sessionIdle(session, status);
     }
 
     @Override
     public void sessionOpened(IoSession session) throws Exception {
-        // TODO Auto-generated method stub
+        LOGGER.info("sessionOpened");
         super.sessionOpened(session);
     }
 }

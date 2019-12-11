@@ -160,13 +160,13 @@ public class FTPClientUtil {
             InputStream uploadInputStream = null;
             InputStream shiJuInputStream = parse(outputStream);
 
-            if(sourcePath.contains("scene") && stationList.contains(station_id)){
+/*            if(sourcePath.contains("scene") && stationList.contains(station_id)){
                 waterOutputStream = setWaterMark(weightingDate,laneMid,speed,plate,inputStream);
                 if(null != waterOutputStream){
                     uploadInputStream = parse(waterOutputStream);
                     shiJuInputStream = parse(waterOutputStream);
                 }
-            }
+            }*/
             Boolean targetState = fileSystemService.uploadFile(targetPath,uploadInputStream == null ? inputStream:uploadInputStream);
             long endTime2 = System.currentTimeMillis();
             //targetState false 没有上传到服务器

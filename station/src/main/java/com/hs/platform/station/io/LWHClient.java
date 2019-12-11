@@ -29,10 +29,13 @@ public class LWHClient {
     private IoSession session;
     private NioSocketConnector connector;
     private ScheduledExecutorService scheduledExecutorService;
+    private final Object lockObject;
+
 
     public LWHClient(String host, int port) {
         this.host = host;
         this.port = port;
+        this.lockObject = new Object();
         connector = new NioSocketConnector();
         connector.setConnectTimeoutMillis(10000);// 10s 超时
 
@@ -42,14 +45,16 @@ public class LWHClient {
             public void sessionClosed(NextFilter nextFilter, IoSession ioSession) throws Exception {
                 for (; ; ) {
                     try {
-                        Thread.sleep(3000);
-                        ConnectFuture future = connector.connect();
-                        future.awaitUninterruptibly();// 等待连接创建成功
-                        session = future.getSession();// 获取会话
-                        if (session.isConnected()) {
-                            LOGGER.info("断线重连[" + connector.getDefaultRemoteAddress().getHostName() + ":"
-                                    + connector.getDefaultRemoteAddress().getPort() + "]成功");
-                            break;
+                        synchronized (lockObject) {
+                            Thread.sleep(3000);
+                            ConnectFuture future = connector.connect();
+                            future.awaitUninterruptibly();// 等待连接创建成功
+                            session = future.getSession();// 获取会话
+                            if (session.isConnected()) {
+                                LOGGER.info("断线重连[" + connector.getDefaultRemoteAddress().getHostName() + ":"
+                                        + connector.getDefaultRemoteAddress().getPort() + "]成功");
+                                break;
+                            }
                         }
                     } catch (Exception ex) {
                         LOGGER.info("重连服务器登录失败,3秒再连接一次:" + ex.getMessage());
@@ -76,37 +81,39 @@ public class LWHClient {
     }
 
     public void connect() {
-        LOGGER.info("lwh connect");
-        long nowTime = System.currentTimeMillis();
-        if(LWHClientHandler.lwhHeartBeat && (nowTime - LWHClientHandler.heartBeatTime.get() > (60 * 1000))){
-            session.closeNow();
-            session = null;
-            LOGGER.info("timeout session close");
-        }
-        if (null != session && session.isConnected() && connector.isActive()) {
-            LOGGER.info("lwh connect," + session.isConnected() + "," + connector.isActive());
-            try{
-                session.write("1");
-            }catch (Exception e){
+        synchronized (lockObject) {
+            LOGGER.info("lwh connect");
+            long nowTime = System.currentTimeMillis();
+            if (LWHClientHandler.lwhHeartBeat && (nowTime - LWHClientHandler.heartBeatTime.get() > (60 * 1000))) {
                 session.closeNow();
                 session = null;
-                LOGGER.info("lwh heartbeat fail",e);
+                LOGGER.info("timeout session close");
             }
-            return;
-        }
-        try {
-            ConnectFuture future = connector.connect();
-            // 等待连接创建成功
-            future.awaitUninterruptibly();
-            // 获取会话
-            session = future.getSession();
-            LOGGER.info("连接服务端" + host + ":" + port + "[成功],时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        } catch (RuntimeIoException e) {
-            LOGGER.error("连接服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e.getMessage());
+            if (null != session && session.isConnected() && connector.isActive()) {
+                //LOGGER.info("lwh connect," + session.isConnected() + "," + connector.isActive());
+                try {
+                    session.write("1");
+                } catch (Exception e) {
+                    session.closeNow();
+                    session = null;
+                    LOGGER.info("lwh heartbeat fail", e);
+                }
+                return;
+            }
             try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e1) {
-                LOGGER.error("连接服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e1.getMessage());
+                ConnectFuture future = connector.connect();
+                // 等待连接创建成功
+                future.awaitUninterruptibly();
+                // 获取会话
+                session = future.getSession();
+                LOGGER.info("连接服务端" + host + ":" + port + "[成功],时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            } catch (RuntimeIoException e) {
+                LOGGER.error("连接服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e.getMessage());
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    LOGGER.error("连接服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e1.getMessage());
+                }
             }
         }
     }
