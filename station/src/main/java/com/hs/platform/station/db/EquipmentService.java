@@ -1,11 +1,16 @@
 package com.hs.platform.station.db;
 
 import com.hs.platform.station.entity.DeviceInfo;
+import com.hs.platform.station.handler.LWHClientHandler;
 import com.hs.platform.station.util.DbUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class EquipmentService {
+    private static Logger log = LoggerFactory.getLogger(EquipmentService.class);
+
 
     public static List<DeviceInfo> getEquipmentList(Integer stationId) {
         String sql = "SELECT sdi.id,sdi.station_id,dsi.station_code,dsi.name AS station_name,dn.device_name,sdi.ipAddress,sdi.port " +
@@ -17,6 +22,7 @@ public class EquipmentService {
         if (null != resultList && !resultList.isEmpty()) {
             return resultList;
         }else{
+            log.info("判断对象属性为空异常");
             throw new RuntimeException("判断对象属性为空异常");
         }
     }

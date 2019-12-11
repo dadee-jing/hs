@@ -115,11 +115,11 @@ public class ImageDownloadUtil {
                  fileInfoState.put("left","0");
              }
              else{
-                 byte[] picLeftSide = (byte[]) fileInfo.get("pic");
+/*                 byte[] picLeftSide = (byte[]) fileInfo.get("pic");
                  if(picLeftSide != null && picLeftSide.length != 0){
                      foshanMessage.setPic3(picLeftSide);
                      picCount++;
-                 }
+                 }*/
              }
              pathList.remove(FtpHead);
         }
@@ -130,11 +130,11 @@ public class ImageDownloadUtil {
                 fileInfoState.put("right","0");
             }
             else{
-                byte[] picRightSide = (byte[]) fileInfo.get("pic");
+/*                byte[] picRightSide = (byte[]) fileInfo.get("pic");
                 if(picRightSide != null && picRightSide.length != 0){
                     foshanMessage.setPic4(picRightSide);
                     picCount++;
-                }
+                }*/
             }
             pathList.remove(FtpAxle);
         }
@@ -160,7 +160,7 @@ public class ImageDownloadUtil {
                             foshanMessage.setPic1(pic);
                             picCount++;
                         }
-                        else if(filePath.contains("back")){
+/*                        else if(filePath.contains("back")){
                             foshanMessage.setPic2(pic);
                             picCount++;
                         }
@@ -171,7 +171,7 @@ public class ImageDownloadUtil {
                         else if(filePath.contains("right")){
                             foshanMessage.setPic4(pic);
                             picCount++;
-                        }
+                        }*/
                         else if(filePath.contains("plate")){
                             foshanMessage.setPic5(pic);
                             picCount++;

@@ -44,7 +44,7 @@ public class UploadEquipmentData {
         processingData(deviceInfoList);
         // 上传设备状态信息
         post(url, deviceHealthStateList);
-        logger.info("uploaded equipment data end");
+        logger.info("uploaded equipment data end size:" + deviceInfoList.size());
     }
 
     /**

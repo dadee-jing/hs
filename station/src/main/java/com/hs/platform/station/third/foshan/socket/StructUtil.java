@@ -2,16 +2,21 @@ package com.hs.platform.station.third.foshan.socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import static com.hs.platform.station.third.foshan.socket.Byte2IntUtil.*;
 import static org.apache.commons.io.IOUtils.toByteArray;
 
@@ -20,12 +25,18 @@ public class StructUtil {
     private static final Logger log = LoggerFactory.getLogger(StructUtil.class);
 
     private static int serialNo = 0;
+    private static String curPlate = "";
 
-    public synchronized static int getSerailNo() {
-        if (serialNo > 30000) {
-            return 1;
+    public synchronized static int getSerailNo(String plate) {
+        if (curPlate.equals(plate)) {
+            return serialNo;
         } else {
-            return serialNo++;
+            curPlate = null == plate ? "" : plate;
+            if (serialNo > 30000) {
+                return 1;
+            } else {
+                return serialNo++;
+            }
         }
     }
 

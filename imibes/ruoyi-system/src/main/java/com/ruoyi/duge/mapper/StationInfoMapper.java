@@ -66,4 +66,6 @@ public interface StationInfoMapper
 	public List<StationInfo> selectStationStateInfo();
 
 	public String getStationLatesCarRecordTime(Integer stationId);
+
+	public String getRecentTime(Integer stationId);
 }

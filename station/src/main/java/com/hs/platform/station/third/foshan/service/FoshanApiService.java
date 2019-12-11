@@ -23,19 +23,21 @@ public class FoshanApiService {
     private final SendMsgClient sendMsgClient;
     private final ConfigDataRepository configDataRepository;
     private final FoshanAsyncService foshanAsyncService;
-    private static LinkedBlockingQueue<FoshanMessage> shiJuQueue = new LinkedBlockingQueue<>(500);
+    private static LinkedBlockingQueue<FoshanMessage> shiJuQueue = new LinkedBlockingQueue<>(5000);
     public static Boolean uploadShiJu = false;
     public static LongAdder totalCount = new LongAdder();//总记录数
     public static LongAdder queueCount = new LongAdder();//发送队列总数
     public static LongAdder sendCount = new LongAdder();//执行发送的次数
     //public static LongAdder sendFailCount = new LongAdder();
     public static LongAdder sendSuccessCount = new LongAdder();//发送成功的次数
-    public static LongAdder successCount = new LongAdder();//收到成功回调的次数
+    public static LongAdder successCount = new LongAdder();//发送时间内收到成功回调的次数
     public static LongAdder failCount = new LongAdder();//没收到回调次数
     public static LongAdder receiveCount = new LongAdder();//收到5020次数
     public static ConcurrentHashMap<String, String> waitingResponseMap = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<String, Integer> okPlateMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Integer> failPlateMap = new ConcurrentHashMap<>();
     public static ReentrantLock lock = new ReentrantLock();
+    public static Condition cond = lock.newCondition();
 
     @Autowired
     public FoshanApiService(SendMsgClient sendMsgClient, ConfigDataRepository configDataRepository,
@@ -54,7 +56,7 @@ public class FoshanApiService {
             shiJuQueue.poll();
             shiJuQueue.poll();
             shiJuQueue.offer(entity);
-            queueCount.add(-2);
+            queueCount.add(-3);
         }
     }
 
@@ -64,10 +66,11 @@ public class FoshanApiService {
             uploadShiJu = true;
             FoshanMessage foshanMessage = shiJuQueue.poll();
             while (null != foshanMessage) {
-                sendMsgClient.sendMessage(foshanMessage);
                 LOGGER.info("send "+ foshanMessage.getPlate());
+                sendMsgClient.sendMessage(foshanMessage);
+                reSendFail(foshanMessage);
                 //异步重发和回调
-                foshanAsyncService.reSendASync(sendMsgClient,foshanMessage);
+                //foshanAsyncService.reSendASync(sendMsgClient,foshanMessage);
                 foshanMessage = shiJuQueue.poll();
                 LOGGER.info("queueSize:" + queueCount.longValue() + ",sendCount:" + sendCount.longValue()
                         + ",sendSuccessCount:" + sendSuccessCount.longValue() + ",receiveCount:"
@@ -80,13 +83,13 @@ public class FoshanApiService {
         }
     }
 
-/*    private void reSendASync(FoshanMessage foshanMessage) {
+    private void reSendFail(FoshanMessage foshanMessage) {
         boolean ok;
         if (!(ok = getResponse(foshanMessage.getPlate(), 1000 * 10))) {
             sendMsgClient.sendMessage(foshanMessage);
             if (!(ok = getResponse(foshanMessage.getPlate(), 1000 * 10))) {
-                sendMsgClient.sendMessage(foshanMessage);
-                ok = getResponse(foshanMessage.getPlate(), 1000 * 10);
+                //sendMsgClient.sendMessage(foshanMessage);
+                //ok = getResponse(foshanMessage.getPlate(), 1000 * 10);
             }
         }
         if (ok) {
@@ -96,9 +99,9 @@ public class FoshanApiService {
         }
     }
 
+
     private boolean getResponse(String plate, long timeout) {
         timeout = TimeUnit.MILLISECONDS.toNanos(timeout);
-        Condition cond = lock.newCondition();
         boolean ok = false;
         try {
             lock.lockInterruptibly();
@@ -108,12 +111,14 @@ public class FoshanApiService {
                     break;
                 }
                 if (timeout <= 0) {
+                    failPlateMap.put(plate, 1);
                     return false;
                 }
                 try {
                     timeout = cond.awaitNanos(timeout);
                 } catch (InterruptedException ie) {
                     cond.signal();
+                    failPlateMap.put(plate, 1);
                     throw ie;
                 }
             }
@@ -123,7 +128,7 @@ public class FoshanApiService {
             lock.unlock();
         }
         return ok;
-    }*/
+    }
 
     private String getDbConfigValue(String key) {
         try {

@@ -46,7 +46,6 @@ public class SendMsgClient {
 
     @PostConstruct
     public void init() {
-
         connector = new NioSocketConnector();
         connector.setConnectTimeoutMillis(10000);// 10s 超时
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new FoshanCodecFactory()));
@@ -55,12 +54,13 @@ public class SendMsgClient {
         connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30000); // 读写都空闲时间:30秒
         connector.getSessionConfig().setIdleTime(IdleStatus.READER_IDLE, 40000);// 读(接收通道)空闲时间:40秒
         connector.getSessionConfig().setIdleTime(IdleStatus.WRITER_IDLE, 50000);// 写(发送通道)空闲时间:50秒
+        connector.getSessionConfig().setWriteTimeout(1000 * 10);
         // 添加处理器
         connector.setHandler(sendMsgClientHandler);
         connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));// 设置默认访问地址
     }
 
-    @Scheduled(fixedDelay = 1000 * 30, initialDelay = 10000)
+    @Scheduled(fixedDelay = 1000 * 5, initialDelay = 10000)
     public void heartbeat() {
         if(FoshanApiService.uploadShiJu){
             sendMessage(FoshanMessage.builder().messageType(FoshanMessage.HEART_BEAT_MSG).build());
@@ -97,14 +97,15 @@ public class SendMsgClient {
     public boolean sendMessage(FoshanMessage foshanMessage) {
         if (connect()) {
             try{
-/*                synchronized (lockObject){
+                synchronized (lockObject){
                     // 同步发送， 10s超时
                     session.write(foshanMessage).awaitUninterruptibly(10000);
-                }*/
-                session.write(foshanMessage);
-                if(foshanMessage.getMessageType() == BODY_MSG){
-                    FoshanApiService.sendCount.increment();
+                    if(foshanMessage.getMessageType() == BODY_MSG){
+                        FoshanApiService.sendCount.increment();
+                        log.info("write "+ foshanMessage.getPlate());
+                    }
                 }
+                //session.write(foshanMessage);
                 return true;
             }catch (Exception e){
                 log.info("sendMessage error",e);

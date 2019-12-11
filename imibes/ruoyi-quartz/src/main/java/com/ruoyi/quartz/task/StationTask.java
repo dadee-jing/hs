@@ -14,14 +14,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Component("telnetStationTask")
-public class TelnetStationTask {
+@Component("stationTask")
+public class StationTask {
 
     @Autowired
     private IStationInfoService stationInfoService;
 
     /**
-     * 测试站点的ip和端口是否可用
+     * telnet站点的ip和端口是否可用
      */
     public void TelnetStations() {
         List<StationInfo> stationInfoList = stationInfoService.selectStationStateInfo();
@@ -35,13 +35,14 @@ public class TelnetStationTask {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String nowHour = DateFormatUtils.format(new Date(), "yyyyMMddHH");
                     String latesTimeHour = DateFormatUtils.format(simpleDateFormat.parse(latestTime), "yyyyMMddHH");
-                    //三小时没有数据
-                    if (Integer.parseInt(nowHour) - Integer.parseInt(latesTimeHour) > 3) {
+                    latestTime = latestTime.replace(".0","");
+                    //2小时没有数据
+                    if (Integer.parseInt(nowHour) - Integer.parseInt(latesTimeHour) > 2) {
                         remarkInfo = "<span style='color:red'> " + latestTime + "</span>";
                     } else {
                         remarkInfo = "<span style='color:green'> " + latestTime + "</span>";
                     }
-                    stationInfo.setRemarkInfo(remarkInfo);
+                    stationInfo.setRecentTime(remarkInfo);
                     InetSocketAddress address = new InetSocketAddress(stationInfo.getIp(), stationInfo.getPort());
                     server.connect(address, 5000);
                     stationInfo.setState(1);
@@ -63,6 +64,30 @@ public class TelnetStationTask {
                 }
             }
         }
+    }
+
+    /**
+     * 更新站点状态
+     */
+    public void updateStationState() throws ParseException {
+        List<StationInfo> stationInfoList = stationInfoService.selectStationStateInfo();
+        for (StationInfo stationInfo : stationInfoList) {
+            int stationId = stationInfo.getId();
+            String latestTime = stationInfoService.getRecentTime(stationId);
+            if (StringUtils.isNotBlank(latestTime)) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String nowHour = DateFormatUtils.format(new Date(), "yyyyMMddHH");
+                String latesTimeHour = DateFormatUtils.format(simpleDateFormat.parse(latestTime), "yyyyMMddHH");
+                //2小时没有数据
+                if (Integer.parseInt(nowHour) - Integer.parseInt(latesTimeHour) > 2) {
+                    stationInfo.setState(0);
+                } else {
+                    stationInfo.setState(1);
+                }
+                stationInfoService.updateStationInfo(stationInfo);
+            }
+        }
+
     }
 
     public void ryNoParams() {
