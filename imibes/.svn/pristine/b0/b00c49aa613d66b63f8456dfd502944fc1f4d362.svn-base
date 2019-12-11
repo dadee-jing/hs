@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="module:vehicleInfo:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="module:vehicleInfo:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="module:vehicleInfo:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('module:vehicleInfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('module:vehicleInfo:remove')}]];
+        var prefix = ctx + "yaogan/vehicleInfo";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "车辆数据",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'iD', 
+					title : 'ID' 
+				},
+				{
+					field : 'xZQHDM', 
+					title : '行政区划代码' 
+				},
+				{
+					field : 'hPHM', 
+					title : '号牌号码' 
+				},
+				{
+					field : 'hPYS', 
+					title : '车牌颜色' 
+				},
+				{
+					field : 'hPZL', 
+					title : '号牌种类' 
+				},
+				{
+					field : 'cLXH', 
+					title : '车辆型号' 
+				},
+				{
+					field : 'sCQY', 
+					title : '生产企业' 
+				},
+				{
+					field : 'rLZL', 
+					title : '燃料种类' 
+				},
+				{
+					field : 'sYXZ', 
+					title : '使用性质' 
+				},
+				{
+					field : 'cCDJRQ', 
+					title : '初次登记日期' 
+				},
+				{
+					field : 'cLSBDH', 
+					title : '车辆识别代号'
+				},
+				{
+					field : 'pFBZJD', 
+					title : '排放标准阶段' 
+				},
+				{
+					field : 'sCJYRQ', 
+					title : '上次环保定期检验日期' 
+				},
+				{
+					field : 'sCJYJG', 
+					title : '上次环保定期检验机构' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.iD + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.iD + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

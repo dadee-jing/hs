@@ -1,0 +1,8 @@
+original.driver=com.mysql.jdbc.Driver
+original.url=jdbc:mysql://localhost:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true
+original.user=root
+original.password=root
+target.driver=oracle.jdbc.driver.OracleDriver
+target.url=jdbc:oracle:thin:@192.168.159.128:1521:orcl
+target.user=root
+target.password=root

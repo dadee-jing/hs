@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-line-edit" th:object="${line}">
+            <input id="iD" name="iD" th:field="*{iD}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">点位编号：</label>
+                <div class="col-sm-8">
+                    <input id="dWBH" name="dWBH" th:field="*{dWBH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">遥感线编号：</label>
+                <div class="col-sm-8">
+                    <input id="yCXBH" name="yCXBH" th:field="*{yCXBH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">：</label>
+                <div class="col-sm-8">
+                    <input id="cDXH" name="cDXH" th:field="*{cDXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">检测系统型号：</label>
+                <div class="col-sm-8">
+                    <input id="jCXTXH" name="jCXTXH" th:field="*{jCXTXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">检测系统名称：</label>
+                <div class="col-sm-8">
+                    <input id="jCXTMC" name="jCXTMC" th:field="*{jCXTMC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">检测系统编号：</label>
+                <div class="col-sm-8">
+                    <input id="jCXTBH" name="jCXTBH" th:field="*{jCXTBH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">检测系统制作厂：</label>
+                <div class="col-sm-8">
+                    <input id="jCXTZZC" name="jCXTZZC" th:field="*{jCXTZZC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">测速仪型号：</label>
+                <div class="col-sm-8">
+                    <input id="cSYXH" name="cSYXH" th:field="*{cSYXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">测速仪生产厂：</label>
+                <div class="col-sm-8">
+                    <input id="cSYSCC" name="cSYSCC" th:field="*{cSYSCC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">测速仪有效期：</label>
+                <div class="col-sm-8">
+                    <input id="cSYXQ" name="cSYXQ" th:field="*{cSYXQ}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">气体测试仪型号：</label>
+                <div class="col-sm-8">
+                    <input id="qTCSYXH" name="qTCSYXH" th:field="*{qTCSYXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">气体测试仪生产厂：</label>
+                <div class="col-sm-8">
+                    <input id="qTCSYSCC" name="qTCSYSCC" th:field="*{qTCSYSCC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">气体测试仪有效期：</label>
+                <div class="col-sm-8">
+                    <input id="qTCSYYXQ" name="qTCSYYXQ" th:field="*{qTCSYYXQ}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">烟度计型号：</label>
+                <div class="col-sm-8">
+                    <input id="yDJXH" name="yDJXH" th:field="*{yDJXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">烟度计生产厂：</label>
+                <div class="col-sm-8">
+                    <input id="yDJSCC" name="yDJSCC" th:field="*{yDJSCC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">烟度计有效期：</label>
+                <div class="col-sm-8">
+                    <input id="yDJYXQ" name="yDJYXQ" th:field="*{yDJYXQ}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">摄像系统型号：</label>
+                <div class="col-sm-8">
+                    <input id="sXXTXH" name="sXXTXH" th:field="*{sXXTXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">摄像系统生产厂：</label>
+                <div class="col-sm-8">
+                    <input id="sXXTSCC" name="sXXTSCC" th:field="*{sXXTSCC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">摄像系统有效期：</label>
+                <div class="col-sm-8">
+                    <input id="sXXTYXQ" name="sXXTYXQ" th:field="*{sXXTYXQ}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">坡度计型号：</label>
+                <div class="col-sm-8">
+                    <input id="pDJXH" name="pDJXH" th:field="*{pDJXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">坡度计生产厂：</label>
+                <div class="col-sm-8">
+                    <input id="pDJSCC" name="pDJSCC" th:field="*{pDJSCC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">坡度计有效期：</label>
+                <div class="col-sm-8">
+                    <input id="pDJYXQ" name="pDJYXQ" th:field="*{pDJYXQ}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">气象站型号：</label>
+                <div class="col-sm-8">
+                    <input id="qXZXH" name="qXZXH" th:field="*{qXZXH}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">气象站生产厂：</label>
+                <div class="col-sm-8">
+                    <input id="qXZSCC" name="qXZSCC" th:field="*{qXZSCC}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">气象站有效期：</label>
+                <div class="col-sm-8">
+                    <input id="qXZYXQ" name="qXZYXQ" th:field="*{qXZYXQ}" class="form-control" type="text">
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "yaogan/line"
+		$("#form-line-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-line-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>
