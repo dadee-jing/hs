@@ -77,9 +77,9 @@ public class StationTask {
             if (StringUtils.isNotBlank(latestTime)) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String nowHour = DateFormatUtils.format(new Date(), "yyyyMMddHH");
-                String latesTimeHour = DateFormatUtils.format(simpleDateFormat.parse(latestTime), "yyyyMMddHH");
+                String latestTimeHour = DateFormatUtils.format(simpleDateFormat.parse(latestTime), "yyyyMMddHH");
                 //2小时没有数据
-                if (Integer.parseInt(nowHour) - Integer.parseInt(latesTimeHour) > 2) {
+                if (Integer.parseInt(nowHour) - Integer.parseInt(latestTimeHour) > 2) {
                     stationInfo.setState(0);
                 } else {
                     stationInfo.setState(1);

@@ -93,6 +93,6 @@ public class StationInfoServiceImpl implements IStationInfoService
 
 	@Override
 	public String getRecentTime(Integer stationId){
-		return stationInfoMapper.getStationLatesCarRecordTime(stationId);
+		return stationInfoMapper.getRecentTime(stationId);
 	}
 }
