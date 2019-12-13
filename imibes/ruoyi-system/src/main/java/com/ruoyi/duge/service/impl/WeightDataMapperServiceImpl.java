@@ -100,8 +100,8 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     }
 
     @Override
-    public List<WeightData> selectIllegalAndOverDate() {
-        return dataMapper.selectIllegalAndOverDate();
+    public List<WeightData> selectIllegalAnd2YearAgo() {
+        return dataMapper.selectIllegalAnd2YearAgo();
     }
 
     @Override
@@ -112,28 +112,22 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
 
 
     @Override
-    public List<String> selectTruckNumberByTime() {
+    public List<WeightData> selectTruckNumberByTime() {
         return dataMapper.selectTruckNumberByTime();
     }
 
     @Override
-    public List<WeightData> selectIsIllegalByTruckNumber(String truckNumber) {
-        return dataMapper.selectIsIllegalByTruckNumber(truckNumber);
+    public Integer selectByTruckNumber(Date weightingDate, String truckNumber) {
+        return dataMapper.selectByTruckNumber(weightingDate,truckNumber);
     }
-
     @Override
-    public List<WeightData> selectByTruckNumber(String truckNumber) {
-        return dataMapper.selectByTruckNumber(truckNumber);
-    }
-
-    @Override
-    public List<String> selectTruckNumberOver90Date() {
+    public List<WeightData> selectTruckNumberOver90Date() {
         return dataMapper.selectTruckNumberOver90Date();
     }
 
     @Override
-    public List<WeightData> selectByTruckNumberOver90Date(String truckNum) {
-        return dataMapper.selectByTruckNumberOver90Date(truckNum);
+    public List<WeightData> selectByTruckNumberOver90Date(Date weightingDate,String truckNum) {
+        return dataMapper.selectByTruckNumberOver90Date(weightingDate,truckNum);
     }
 
      @Override
@@ -151,7 +145,16 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
         dataMapper.updateWeightDataBefore40Days(weightData);
     }
 
-	@Override
+    @Override
+    public boolean checkIsExist(Long id) {
+        if(dataMapper.selectWeightDataBefore40DaysById(id).size()>0){
+         return true;
+        }else {
+         return false;
+        }
+    }
+
+    @Override
 	public List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,
                                            @Param("endDate")Date endDate) {
 		// TODO Auto-generated method stub
