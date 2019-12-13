@@ -30,14 +30,12 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>${pagehelper.boot.version}</version>
 		</dependency>
-
 		<!-- swagger2-->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
-		
 		<!-- swagger2-UI-->
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -85,5 +83,4 @@
         </plugins>
         <finalName>${artifactId}</finalName>
     </build>
-
 </project>

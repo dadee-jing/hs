@@ -80,26 +80,21 @@ public interface WeightDataMapper {
     public Double selectSpeedAvg(com.ruoyi.duge.domain.WeightData data);
 
     /**报警图片视频数据*/
-    public List<WeightData> selectIllegalAndOverDate();
+    public List<WeightData> selectIllegalAnd2YearAgo();
     /**正常图片视频数据*/
-    List<String> selectTruckNumberByTime();
-    List<WeightData> selectIsIllegalByTruckNumber(String truckNumber);
-    List<WeightData> selectByTruckNumber(String truckNumber);
+    List<WeightData> selectTruckNumberByTime();
+    Integer selectByTruckNumber(@Param("weightingDate")Date weightingDate ,@Param("truckNumber")String truckNumber);
 
    /**报警车辆对应其过车数据*/
-    List<String> selectTruckNumberOver90Date();
-    List<WeightData> selectByTruckNumberOver90Date(String truckNum);
+    List<WeightData> selectTruckNumberOver90Date();
+    List<WeightData> selectByTruckNumberOver90Date(@Param("weightingDate")Date weightingDate ,@Param("truckNumber")String truckNumber);
 
-     List<WeightData> selectBefore40Days();
-
+    List<WeightData> selectBefore40Days();
     public int insertIntoWeightDataBefore40Days(WeightData weightData);
-
     void updateWeightDataBefore40Days(WeightData weightData);
-
     /**
 	 * 查询过车统计
 	 */
-
 	List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,
                                     @Param("endDate")Date endDate);
 
@@ -109,4 +104,6 @@ public interface WeightDataMapper {
 
     List<CarOut> selectCarOverWeight(@Param("stationId")int stationId,@Param("startDate")Date startDate,
                                     @Param("endDate")Date endDate);
+
+    List<WeightData> selectWeightDataBefore40DaysById(Long id);
 }

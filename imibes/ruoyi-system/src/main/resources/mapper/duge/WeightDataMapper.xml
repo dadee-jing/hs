@@ -378,7 +378,7 @@
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &lt; date_add(now(), interval - 5 minute)
-            and upload_jj in (0, 2)
+            and upload_jj =0
         </where>
         order by id DESC
         limit 100
@@ -427,50 +427,42 @@
     </select>
 
     <!--报警图片视频数据-->
-    <select id="selectIllegalAndOverDate" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+    <select id="selectIllegalAnd2YearAgo" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &gt; date_add(now(), interval - 2*356*24*60 minute)
             and wd.over_weight  > 0
         </where>
-        limit 10
+        limit 100
     </select>
-
     <!--抽取时间区间内单个站点无报警的十辆车的车牌-->
-    <select id="selectTruckNumberByTime" resultType="String">
-        select truck_number  from weight_data_before_40days  where create_time > date_add(now(), interval - 42*24*60 minute)
+    <select id="selectTruckNumberByTime" resultMap="WeightDataResult">
+        select *  from weight_data_before_40days  where create_time > date_add(now(), interval - 42*24*60 minute)
         and over_weight=0
         and mark_del= 0
         ORDER BY id DESC
-        LIMIT 10
+        LIMIT 100
+    </select>
+    <!--查这辆车一天内有没有违法-->
+    <select id="selectByTruckNumber"  resultType="Integer">
+       select COUNT(0) from weight_data_before_40days where to_days(weighting_date) = to_days(#{weightingDate})
+       AND truck_number = #{truckNumber}
+       AND over_weight>0
     </select>
 
-    <!--根据车牌号查这辆车时间区间内是否有其他报警数据-->
-    <select id="selectIsIllegalByTruckNumber" parameterType="String" resultMap="WeightDataResult">
-        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
-        AND  create_time > date_add(now(), interval - 41*24*60 minute)
-        and  over_weight  > 0
-        and truck_number = #{truckNumber}
-    </select>
-    <!--查这辆车40天前那一天内所有数据-->
-    <select id="selectByTruckNumber" parameterType="String" resultMap="WeightDataResult">
-        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
-        AND create_time > date_add(now(), interval - 41*24*60 minute)
-        and truck_number = #{truckNumber}
-    </select>
     <!--查询报警车辆对应其过车数据车牌号-->
-    <select id="selectTruckNumberOver90Date" resultType="String">
-        select truck_number  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
+    <select id="selectTruckNumberOver90Date" resultMap="WeightDataResult">
+        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and over_weight=0
         and mark_del= 0
-        ORDER BY  id DESC
-        LIMIT 10
+        ORDER BY id DESC
+        LIMIT 100
     </select>
     <!--查这辆车90天前那一天内所有数据-->
-    <select id="selectByTruckNumberOver90Date" parameterType="String" resultMap="WeightDataResult">
-        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
-        AND create_time > date_add(now(), interval - 91*24*60 minute)
+    <select id="selectByTruckNumberOver90Date"  resultMap="WeightDataResult">
+        select *  from weight_data_before_40days  where
+        to_days(weighting_date) = to_days(#{weightingDate})
         and truck_number = #{truckNumber}
     </select>
     <update id="updateWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
@@ -527,6 +519,7 @@
             <if test="uploadSj != null  ">upload_sj = #{uploadSj},</if>
             <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
             <if test="markDel != null  ">mark_del = #{markDel},</if>
+            <if test="laneId != null  ">lane_id = #{laneId},</if>
         </trim>
         where id = #{id}
     </update>
@@ -642,6 +635,10 @@
             <if test="uploadYhl != null  ">#{uploadYhl},</if>
             <if test="uploadSj != null  ">#{uploadSj},</if>
             <if test="uploadJj != null  ">#{uploadJj},</if>
+            <if test="laneId != null  ">#{laneId},</if>
         </trim>
     </insert>
+    <select id="selectWeightDataBefore40DaysById" parameterType="Long" resultMap="WeightDataResult">
+        select * from weight_data_before_40days where id = #{id}
+    </select>
 </mapper>

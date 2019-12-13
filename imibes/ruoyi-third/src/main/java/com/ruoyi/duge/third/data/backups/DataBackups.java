@@ -24,11 +24,16 @@ public class DataBackups {
        log.info("to insert count:" + list.size());
        LongAdder successCount = new LongAdder();
        for(WeightData weightData:list){
-            int result=weightDataMapperService.insertIntoWeightDataBefore40Days(weightData);
-            if(result==1){
-            int count=weightDataMapperService.deleteDataByIds(weightData.getId().toString());
-            if(count==1){
-            successCount.increment();}
+            if(!weightDataMapperService.checkIsExist(weightData.getId())){
+                int result=weightDataMapperService.insertIntoWeightDataBefore40Days(weightData);
+                if(result==1){
+                    int count=weightDataMapperService.deleteDataByIds(weightData.getId().toString());
+                    if(count==1){
+                    successCount.increment();
+                    } else {
+                        weightDataMapperService.deleteDataByIds(weightData.getId().toString());
+                    }
+                }
             }
         }
         log.info("success count:" + successCount);

@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -18,73 +17,78 @@ import java.util.concurrent.atomic.LongAdder;
 @Component
 public class StorageManage {
     private static final Logger log = LoggerFactory.getLogger(StorageManage.class);
-    @Autowired
     private final IWeightDataMapperService weightDataMapperService;
     private final IConfigDataService configDataService;
     SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    @Autowired
     public StorageManage(IWeightDataMapperService weightDataMapperService, IConfigDataService configDataService) {
         this.weightDataMapperService = weightDataMapperService;
         this.configDataService = configDataService;
     }
     /**过车数据删除*/
     @Scheduled(cron = "${storagemanage.scheduled40DayAgo}")
-    public void deleteOverDate(){
-    if ("1".equals(configDataService.getConfigValue("do_storage_manage"))) {
-        List<String> list=weightDataMapperService.selectTruckNumberByTime();
-        LongAdder successCount = new LongAdder();
-        for (String  truckNumber:list){
-            if( 0==weightDataMapperService.selectIsIllegalByTruckNumber(truckNumber).size()){
-                List<WeightData> weightDatalist=weightDataMapperService.selectByTruckNumber(truckNumber);
-                log.info("to delete passcar and 40 days ago count:" + weightDatalist.size());
-                deleteFileByWeightDataList(weightDatalist);
-                for(WeightData weightData : weightDatalist ){
-                    weightData.setMarkDel(1);
+    public void delete40DayAgo() {
+        System.out.println("定时任务执行了");
+        if ("1".equals(configDataService.getConfigValue("do_storage_manage"))) {
+            List<WeightData> list = weightDataMapperService.selectTruckNumberByTime();
+            LongAdder successCount = new LongAdder();
+            log.info("passcar and 40 days ago delete count:" + list.size());
+            if(list.size()>0) {
+                for (WeightData weightData : list) {
+                    if (weightDataMapperService.selectByTruckNumber(weightData.getWeightingDate(), weightData.getTruckNumber()) > 0) {
+                        continue;
+                    }
+                    System.out.println(weightData.getStationId());
+                    deleteFileByWeightData(weightData);
                     successCount.increment();
+                    weightData.setMarkDel(1);
                     weightDataMapperService.updateWeightDataBefore40Days(weightData);
                 }
             }
+            log.info("passcar and 40 days ago success count:" + successCount);
         }
-        log.info("passcar and 40 days ago success count:" + successCount);
-        }
-   }
-
+    }
     /**报警车辆对应其过车数据删除*/
-//    @Scheduled(cron = "${storagemanage.scheduled90day}")
-    public void deleteIllegalOrOverDate(){
+    @Scheduled(cron = "${storagemanage.scheduled90DayAgo}")
+    public void deleteIllegalOr90DayAgo(){
         if ("1".equals(configDataService.getConfigValue("do_storage_manage"))) {
-        List<String> list=weightDataMapperService.selectTruckNumberOver90Date();
-        System.out.println("list.size()="+list.size());
+        List<WeightData> list=weightDataMapperService.selectTruckNumberOver90Date();
+        log.info("passcar  and 90 days ago delete count:" + list.size());
+        LongAdder successCount = new LongAdder();
         if(list.size()>0) {
-            for (String truckNumber : list) {
-                System.out.println("truckNumber=" + truckNumber);
-                List<WeightData> weightDatalist = weightDataMapperService.selectByTruckNumberOver90Date(truckNumber);
-                System.out.println("weightDatalist.size()=" + weightDatalist.size());
-                deleteFileByWeightDataList(weightDatalist);
-                for (WeightData weightData : weightDatalist) {
-                    weightData.setMarkDel(1);
-                    weightDataMapperService.updateData(weightData);
+            for (WeightData weightData : list) {
+                List<WeightData> weightDatalist = weightDataMapperService
+                        .selectByTruckNumberOver90Date(weightData.getWeightingDate(),weightData.getTruckNumber());
+                for (WeightData weight : weightDatalist) {
+                    deleteFileByWeightData(weightData);
+                    successCount.increment();
+                    weight.setMarkDel(1);
+                    weightDataMapperService.updateWeightDataBefore40Days(weightData);
                 }
             }
+            log.info("passcar and 90 days ago success count:" + successCount);
         }
         }
     }
-//    @Scheduled(cron = "${storagemanage.scheduled2year}")
-    public void deleteIllegalAndOverDate(){
+    @Scheduled(cron = "${storagemanage.scheduled2YearAgo}")
+    public void deleteIllegalAnd2YearAgo(){
         if ("1".equals(configDataService.getConfigValue("do_storage_manage"))) {
-            List<WeightData> list=weightDataMapperService.selectIllegalAndOverDate();
+            List<WeightData> list=weightDataMapperService.selectIllegalAnd2YearAgo();
+            LongAdder successCount = new LongAdder();
+            log.info("peccancy  and 2 years ago delete count:" + list.size());
             if(list.size()>0) {
-                deleteFileByWeightDataList(list);
                 for (WeightData weightData : list) {
+                    deleteFileByWeightData(weightData);
+                    successCount.increment();
                     weightData.setMarkDel(1);
-                    weightDataMapperService.updateData(weightData);
+                    weightDataMapperService.updateWeightDataBefore40Days(weightData);
                 }
             }
+            log.info("peccancy  and 2 years ago success count:" + successCount);
         }
     }
-    public void deleteFileByWeightDataList(List<WeightData> list){
-        for (WeightData wd:list) {
-            log.info("Delete file of "+wd.getTruckNumber()+" CreateTime:"+format.format(wd.getCreateTime()));
+    public void deleteFileByWeightData(WeightData wd){
             String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
             if(StringUtils.isNotBlank(wd.getFtpHead())){
                 new File(basePath+wd.getFtpHead()).delete();}
@@ -99,5 +103,4 @@ public class StorageManage {
             else if(StringUtils.isNotBlank(wd.getFtpFullView())){
                 new File(basePath+wd.getFtpFullView()).delete();}
         }
-    }
 }

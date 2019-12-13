@@ -69,19 +69,17 @@ public interface IWeightDataMapperService
 	 * 查询违法并且过时的数据
 	 * @return
 	 */
-	List<WeightData> selectIllegalAndOverDate();
-	List<String> selectTruckNumberByTime();
-	List<WeightData> selectIsIllegalByTruckNumber(String truckNumber);
-	List<WeightData> selectByTruckNumber(String truckNumber);
-	List<String> selectTruckNumberOver90Date();
-	List<WeightData> selectByTruckNumberOver90Date(String truckNum);
+	List<WeightData> selectIllegalAnd2YearAgo();
+	List<WeightData> selectTruckNumberByTime();
+	Integer selectByTruckNumber(Date weightingDate ,String truckNumber);
+	List<WeightData> selectTruckNumberOver90Date();
+	List<WeightData> selectByTruckNumberOver90Date(Date weightingDate ,String truckNum);
 	List<WeightData> selectBefore40Days();
 	public int insertIntoWeightDataBefore40Days(WeightData weightData);
 
 	/**
 	 * 查询过车统计
 	 */
-
 	List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,
 									@Param("endDate")Date endDate
 									);
@@ -95,4 +93,8 @@ public interface IWeightDataMapperService
 									);
 
 	void updateWeightDataBefore40Days(WeightData weightData);
+	/**
+	 * 查询是否存在
+	 */
+    boolean checkIsExist(Long id);
 }

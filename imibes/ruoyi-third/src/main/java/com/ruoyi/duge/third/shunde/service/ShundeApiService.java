@@ -425,6 +425,7 @@ public class ShundeApiService implements ThirdApiService {
                 //配置初始化大小、最小、最大
                 dataSource.setInitialSize(1);
                 dataSource.setMinIdle(1);
+                dataSource.setMaxIdle(4);
                 dataSource.setMaxActive(8);
                 //连接泄漏监测
                 dataSource.setRemoveAbandoned(true);
