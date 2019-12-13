@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg" style="margin: 15px;">
+<div class="row wrapper wrapper-content animated fadeIn ibox"  style="margin: 15px;">
+    <div class="ibox-title row">
+        <h5>详细报表信息 <small class="m-l-sm"></small></h5>
+        <button class="btn btn-success btn-sm" style="float: right"  onclick="window.location.href=  '/report'">返回列表</button>
+    </div>
+    <div class="row ibox-content">
+            <div class="col-sm-2 m-b-xs">
+                <div data-toggle="buttons" class="btn-group">
+                    <label class="btn btn-sm btn-white">
+                        <input type="radio" id="option1" name="options">天</label>
+                    <label class="btn btn-sm btn-white active">
+                        <input type="radio" id="option2" name="options">周</label>
+                    <label class="btn btn-sm btn-white">
+                        <input type="radio" id="option3" name="options">月</label>
+                </div>
+            </div>
+            <div class="col-sm-8 m-b-xs">
+                <form role="form" class="form-inline">
+                    <div class="form-group">
+                        <label for="exampleInputEmail2" class="sr-only">车牌号</label>
+                        <input type="email" placeholder="车牌号" id="exampleInputEmail2" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                        <label class="font-noraml">时间</label>
+                        <div class="input-daterange input-group" id="datepicker">
+                            <input type="text" class="input-sm form-control" name="start" value="2014-11-11" />
+                            <span class="input-group-addon">到</span>
+                            <input type="text" class="input-sm form-control" name="end" value="2014-11-17" />
+                        </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+                    </div>
+                </form>
+            </div>
+
+            <!--<div class="col-sm-2">-->
+                <!--<div class="input-group">-->
+                    <!--&lt;!&ndash;<input type="text" placeholder="请输入关键词" class="input-sm form-control"> <span class="input-group-btn">&ndash;&gt;-->
+                                        <!--<button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>-->
+                <!--</div>-->
+            <!--</div>-->
+        <div class="col-sm-12">
+            <div class="example">
+                <!--<div class="alert alert-success" id="examplebtTableEventsResult" role="alert">-->
+                    <!--在车辆列表的右上方有【下拉】按钮，点击该按钮，同样可以打开-->
+                    <!--或者保存车辆信息到本地文件夹中-->
+                <!--</div>-->
+                <table id="exampleTableEvents" data-height="400" data-mobile-responsive="true">
+                    <thead>
+                    <tr>
+                        <th data-field="state" data-checkbox="true"></th>
+                        <th data-field="id">车牌号</th>
+                        <th data-field="name">车型</th>
+                        <th data-field="price">超限级别</th>
+                        <th data-field="price">总重（千克）</th>
+                        <th data-field="price">车型限重（千克）</th>
+                        <th data-field="price">超重率</th>
+                        <th data-field="price">速度（公里/小时）</th>
+                        <th data-field="price">限速（公里/小时）</th>
+                        <th data-field="price">超速率</th>
+                        <th data-field="price">录入时间</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    $('#exampleTableEvents').bootstrapTable({
+        url: "js/demo/bootstrap_table_test.json",
+        search: true,
+        pagination: true,
+        showExport: true,
+        showRefresh: true,
+        showToggle: true,
+        showColumns: true,
+        iconSize: 'outline',
+        toolbar: '#exampleTableEventsToolbar',
+        icons: {
+            refresh: 'glyphicon-repeat',
+            toggle: 'glyphicon-list-alt',
+            columns: 'glyphicon-list'
+        }
+    });
+</script>
+</body>
+</html>

@@ -104,6 +104,9 @@ public class PublicController extends BaseController {
     @ResponseBody
     public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo stationInfo) {
         int result;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now = simpleDateFormat.format(new Date());
+        stationInfo.setRemarkInfo(now);
         try {
             result = stationInfoService.updateStationInfo(stationInfo);
         }catch (Exception e) {

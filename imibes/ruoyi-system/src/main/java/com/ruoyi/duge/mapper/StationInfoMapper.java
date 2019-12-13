@@ -1,5 +1,6 @@
 package com.ruoyi.duge.mapper;
 
+import com.ruoyi.duge.domain.DeviceEnum;
 import com.ruoyi.duge.domain.StationInfo;
 
 import java.util.List;
@@ -68,4 +69,5 @@ public interface StationInfoMapper
 	public String getStationLatesCarRecordTime(Integer stationId);
 
 	public String getRecentTime(Integer stationId);
+
 }

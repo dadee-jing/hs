@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.duge.mapper.RefittedVehicleMapper">
+    
+    <resultMap type="com.ruoyi.duge.domain.RefittedVehicle" id="RefittedVehicleResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleLength"    column="vehicle_length"    />
+        <result property="vehicleWidth"    column="vehicle_width"    />
+        <result property="vehicleHeight"    column="vehicle_height"    />
+        <result property="vehicleRailHeight"    column="vehicle_rail_height"    />
+        <result property="originalVehicleRailHeight"    column="original_vehicle_rail_height"    />
+        <result property="laneNumber"    column="lane_number"    />
+        <result property="truckNumber"    column="truck_number"    />
+        <result property="truckColor"    column="truck_color"    />
+        <result property="time"    column="time"    />
+        <result property="scenePictureName"    column="scene_picture_name"    />
+        <result property="platePictureName"    column="plate_picture_name"    />
+        <result property="graphicModelName"    column="graphic_model_name"    />
+        <result property="limitOverTag"    column="limit_over_tag"    />
+    </resultMap>
+	
+	<sql id="selectRefittedVehicleVo">
+        select id, vehicle_length, vehicle_width, vehicle_height, vehicle_rail_height, original_vehicle_rail_height, lane_number, truck_number, truck_color, time, scene_picture_name, plate_picture_name, graphic_model_name, limit_over_tag from refitted_vehicle_info
+    </sql>
+
+    <select id="listRefittedVehicles" parameterType="com.ruoyi.duge.domain.RefittedVehicle" resultMap="RefittedVehicleResult">
+        <include refid="selectRefittedVehicleVo"/>
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="vehicleLength != null "> and vehicle_length = #{vehicleLength}</if>
+            <if test="vehicleWidth != null "> and vehicle_width = #{vehicleWidth}</if>
+            <if test="vehicleHeight != null "> and vehicle_height = #{vehicleHeight}</if>
+            <if test="vehicleRailHeight != null "> and vehicle_rail_height = #{vehicleRailHeight}</if>
+            <if test="originalVehicleRailHeight != null "> and original_vehicle_rail_height = #{originalVehicleRailHeight}</if>
+            <if test="laneNumber != null "> and lane_number = #{laneNumber}</if>
+            <if test="truckNumber != null  and truckNumber != '' "> and truck_number = #{truckNumber}</if>
+            <if test="truckColor != null  and truckColor != '' "> and truck_color = #{truckColor}</if>
+            <if test="time != null  and time != '' "> and time = #{time}</if>
+            <if test="scenePictureName != null  and scenePictureName != '' "> and scene_picture_name = #{scenePictureName}</if>
+            <if test="platePictureName != null  and platePictureName != '' "> and plate_picture_name = #{platePictureName}</if>
+            <if test="graphicModelName != null  and graphicModelName != '' "> and graphic_model_name = #{graphicModelName}</if>
+            <if test="limitOverTag != null "> and limit_over_tag = #{limitOverTag}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+        order by time desc
+    </select>
+
+    <select id="getRefittedVehicleById" parameterType="Integer" resultMap="RefittedVehicleResult">
+        <include refid="selectRefittedVehicleVo"/>
+        where id = #{id}
+    </select>
+
+
+    
+</mapper>

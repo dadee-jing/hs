@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+
+<style>
+    #parent,#signupForm{
+        height: 100%;
+        width: 100%;
+    }
+    #refitted_vehicle_info{
+        padding-left: 20px;
+        width: 100%;
+        height: 40%;
+    }
+    #signupForm .info_title{
+        font-size: 24px;
+        font-weight: bold;
+    }
+    #col_parent{
+        width: 100%;
+        height: 85%;
+    }
+   #col_parent .col-sm-3{
+       padding: 0px 30px;
+       height: 30%;
+       font-size: 18px;
+       margin: 2px 0px;
+       width: 40%;
+   }
+    #picture_info{
+        padding-left: 20px;
+        width: 100%;
+        height: 60%;
+        margin-top: 30px;
+    }
+    #item_parent{
+        width: 100%;
+        height: 90%;
+    }
+    #item_parent .item{
+        float: left;
+        height: 100%;
+        width: 30%;
+        padding-left: 10px;
+    }
+    #refitted_vehicle_info .form-group-new{
+        margin-bottom: 5px;
+    }
+    #col-sm-3-title{
+        padding:0px 30px;
+        height:15%;
+        font-size:18px;
+        margin:2px 0px;
+    }
+    .table{
+        width: 60%;
+    }
+    .table td{
+        width: 180px;
+        font-size: 15px;
+        padding: 3px;
+    }
+</style>
+
+<body class="white-bg">
+<div id="parent">
+    <form class="form-horizontal" id="signupForm">
+        <!--改装车信息-->
+        <div id="refitted_vehicle_info">
+            <div class="info_title" style="height:15%;">违法车辆信息：</div>
+
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td>检测时间</td>
+                    <td th:text="${#strings.substring(data.time,0,19)}"></td>
+                    <td >地点</td>
+                    <td  th:text="${data.laneNumber}"></td>
+
+                </tr>
+
+                <tr>
+                    <td>车牌号码</td>
+                    <td  th:text="${data.truckNumber}"></td>
+                    <td>号牌种类</td>
+                    <td th:text="${data.truckColor}"></td>
+                </tr>
+                <tr>
+                    <td>车辆类型</td>
+                    <td >货车</td>
+                    <td>实测货箱内部高度</td>
+                    <td th:text="${data.vehicleRailHeight}"></td>
+                </tr>
+                <tr>
+                    <td>栏板超高值</td>
+                    <td>312</td>
+                    <td>栏板超高百分比</td>
+                    <td>40%</td>
+                </tr>
+                <tr>
+                    <td >车辆外廓尺寸登记值</td>
+                    <td  th:text="${data.vehicleLength+20 }+ '*' + ${data.vehicleWidth+30} + '*' + ${data.vehicleHeight+12}"></td>
+                    <td>货箱内部尺寸登记值</td>
+                    <td  th:text="4542 + '*' + 2480 + '*' + ${data.vehicleRailHeight -312}"></td>
+                </tr>
+                <tr>
+                    <td >车辆外廓尺寸实测值</td>
+                    <td  th:text="${data.vehicleLength} + '*' + ${data.vehicleWidth} + '*' + ${data.vehicleHeight}"></td>
+                    <td>货箱内部尺寸实测值</td>
+                    <td  th:text="4536 + '*' + 2489 + '*' + ${data.vehicleRailHeight}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--图片信息-->
+        <div id="picture_info">
+            <div class="info_title" style="height:10%;">图片信息：</div>
+            <div id="item_parent">
+                <div class="item" th:if="${data.scenePictureName != null && data.scenePictureName ne ''}">
+                    <h4>场景图片1</h4>
+                    <!--http://39.100.228.188/ftp/gaizhuangche/20190904/20190904_171106_闽AE5C36_scene.jpg-->
+<!--                    <a th:href="  ${data.scenePictureName}" title="场景图片" data-gallery="">
+                        <img alt="image" class="img-responsive" height="280" th:src="${ctxPath+data.scenePictureName}">
+                    </a>-->
+                    <a th:href="${picPath} + ${#strings.substring(data.scenePictureName,0,8)} + '/'+ ${data.scenePictureName}" title="场景图片" data-gallery="">
+                        <img alt="image" class="img-responsive" height="280" th:src=" ${picPath} +${#strings.substring(data.scenePictureName,0,8)} + '/'+ ${data.scenePictureName}">
+                    </a>
+                </div>
+                <div class="item" th:if="${data.platePictureName != null && data.platePictureName ne ''}">
+                    <h4>场景图片2</h4>
+                    <a th:href="${picPath} +${#strings.substring(data.scenePictureName,0,8)} + '/'+ ${data.platePictureName}" title="车牌图片" data-gallery="">
+                        <img alt="image" class="img-responsive" height="280" th:src="${picPath} +${#strings.substring(data.scenePictureName,0,8)} + '/'+ ${data.scenePictureName}">
+                    </a>
+                </div>
+                <div class="item" th:if="${data.graphicModelName != null && data.graphicModelName ne ''}">
+                    <h4>三维图</h4>
+                    <a th:href="${picPath} +${#strings.substring(data.scenePictureName,0,8)} + '/'+ ${data.graphicModelName}" title="三维图" data-gallery="">
+                        <img alt="image" class="img-responsive" height="280" src="http://39.100.228.188/ftp/gaizhuangche/sanweitu.png">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.yaogan.mapper.AirQualityRecordMapper">
+    
+    <resultMap type="AirQualityRecord" id="AirQualityRecordResult">
+        <result property="jLSJ"    column="JLSJ"    />
+        <result property="dWBH"    column="DWBH"    />
+        <result property="pM25"    column="PM25"    />
+        <result property="pM10"    column="PM10"    />
+        <result property="cO"    column="CO"    />
+        <result property="sO2"    column="SO2"    />
+        <result property="o3"    column="O3"    />
+        <result property="nO2"    column="NO2"    />
+    </resultMap>
+	
+	<sql id="selectAirQualityRecordVo">
+        select JLSJ, DWBH, PM25, PM10, CO, SO2, O3, NO2 from rs_air_quality_record
+    </sql>
+	
+    <select id="selectAirQualityRecordList" parameterType="AirQualityRecord" resultMap="AirQualityRecordResult">
+        <include refid="selectAirQualityRecordVo"/>
+        <where>  
+            <if test="jLSJ != null  and jLSJ != '' "> and JLSJ = #{jLSJ}</if>
+             <if test="dWBH != null  and dWBH != '' "> and DWBH = #{dWBH}</if>
+             <if test="pM25 != null "> and PM25 = #{pM25}</if>
+             <if test="pM10 != null "> and PM10 = #{pM10}</if>
+             <if test="cO != null "> and CO = #{cO}</if>
+             <if test="sO2 != null "> and SO2 = #{sO2}</if>
+             <if test="o3 != null "> and O3 = #{o3}</if>
+             <if test="nO2 != null "> and NO2 = #{nO2}</if>
+         </where>
+    </select>
+    
+    <select id="selectAirQualityRecordById" parameterType="String" resultMap="AirQualityRecordResult">
+        <include refid="selectAirQualityRecordVo"/>
+        where JLSJ = #{jLSJ}
+    </select>
+        
+    <insert id="insertAirQualityRecord" parameterType="AirQualityRecord">
+        insert into rs_air_quality_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="jLSJ != null  and jLSJ != ''  ">JLSJ,</if>
+			<if test="dWBH != null  and dWBH != ''  ">DWBH,</if>
+			<if test="pM25 != null  ">PM25,</if>
+			<if test="pM10 != null  ">PM10,</if>
+			<if test="cO != null  ">CO,</if>
+			<if test="sO2 != null  ">SO2,</if>
+			<if test="o3 != null  ">O3,</if>
+			<if test="nO2 != null  ">NO2,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="jLSJ != null  and jLSJ != ''  ">#{jLSJ},</if>
+			<if test="dWBH != null  and dWBH != ''  ">#{dWBH},</if>
+			<if test="pM25 != null  ">#{pM25},</if>
+			<if test="pM10 != null  ">#{pM10},</if>
+			<if test="cO != null  ">#{cO},</if>
+			<if test="sO2 != null  ">#{sO2},</if>
+			<if test="o3 != null  ">#{o3},</if>
+			<if test="nO2 != null  ">#{nO2},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAirQualityRecord" parameterType="AirQualityRecord">
+        update rs_air_quality_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dWBH != null  and dWBH != ''  ">DWBH = #{dWBH},</if>
+            <if test="pM25 != null  ">PM25 = #{pM25},</if>
+            <if test="pM10 != null  ">PM10 = #{pM10},</if>
+            <if test="cO != null  ">CO = #{cO},</if>
+            <if test="sO2 != null  ">SO2 = #{sO2},</if>
+            <if test="o3 != null  ">O3 = #{o3},</if>
+            <if test="nO2 != null  ">NO2 = #{nO2},</if>
+        </trim>
+        where JLSJ = #{jLSJ}
+    </update>
+
+	<delete id="deleteAirQualityRecordById" parameterType="String">
+        delete from rs_air_quality_record where JLSJ = #{jLSJ}
+    </delete>
+	
+    <delete id="deleteAirQualityRecordByIds" parameterType="String">
+        delete from rs_air_quality_record where JLSJ in 
+        <foreach item="jLSJ" collection="array" open="(" separator="," close=")">
+            #{jLSJ}
+        </foreach>
+    </delete>
+    
+</mapper>
