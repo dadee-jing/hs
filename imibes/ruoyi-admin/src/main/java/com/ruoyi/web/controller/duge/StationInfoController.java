@@ -127,7 +127,7 @@ public class StationInfoController extends BaseController {
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
-        StationInfo stationInfo = stationInfoService.selectStationInfoById(id);
+        StationInfo stationInfo = stationInfoService.selectStationInfoById(id,"1");
         mmap.put("stationInfo", stationInfo);
         return prefix + "/edit";
     }

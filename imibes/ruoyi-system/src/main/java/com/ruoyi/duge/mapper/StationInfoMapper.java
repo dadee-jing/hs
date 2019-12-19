@@ -1,6 +1,7 @@
 package com.ruoyi.duge.mapper;
 
 import com.ruoyi.duge.domain.StationInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface StationInfoMapper
      * @param id 站点ID
      * @return 站点信息
      */
-	public StationInfo selectStationInfoById(Integer id);
+	public StationInfo selectStationInfoById(@Param("id") Integer id,@Param("laneMid") String laneMid);
 	
 	/**
      * 查询站点列表
@@ -68,4 +69,5 @@ public interface StationInfoMapper
 	public String getStationLatesCarRecordTime(Integer stationId);
 
 	public String getRecentTime(Integer stationId);
+
 }

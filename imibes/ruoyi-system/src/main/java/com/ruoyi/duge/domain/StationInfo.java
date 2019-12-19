@@ -47,7 +47,7 @@ public class StationInfo extends BaseEntity
 	/** 详细地址 */
 	private String address;
 	/** 车辆限速 */
-	private Double speedLimit;
+	private Integer speedLimit;
 	/** 创建者 */
 	private String createBy;
 	/** 创建时间 */

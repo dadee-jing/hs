@@ -21,8 +21,7 @@ public class TrafficPoliceController {
     public String  ftpServer(String id) throws UnsupportedEncodingException {
         long weightId = Long.parseLong(id);
         WeightData weightData = weightDataMapperService.selectDataById(weightId);
-        StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue());
-
+        StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue(), weightData.getLaneMid());
     Double overRate = weightData.getOverWeight().doubleValue() / weightData.getLimitWeight().doubleValue();
     int overLevel = overRate > 0 ? overRate >= 0.3 ? 2 : 1 : 0;
     if (overLevel > 0){

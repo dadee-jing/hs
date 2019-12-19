@@ -345,24 +345,13 @@
     </select>
 
     <select id="selectNotUploadYhl" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
-        select wd.id as id,wd.station_id as station_id,dsi.name as station_name,sli.lane_id as lane_id,limit_over_level, limit_mode, vehicle_type, weighting_id,
-        weighting_date, lane, direction, truck_number, truck_corlor, speed, axle_count, axle_type, weight,
-        limit_weight,over_weight, axle_weight1, axle_weight2, axle_weight3, axle_weight4, axle_weight5,
-        axle_weight6, axle_weight7, axle_weight8, sequence_tag, ftp_head, ftp_axle, ftp_tail, ftp_prior_head,
-        ftp_plate, ftp_full_view, wd.create_by, wd.create_time, wd.update_by, wd.update_time, wd.remark,
-        wd.device_code, lwh_date, plate, width, height, length, lane_mid, lane_min, lane_max,
-        pass_time, upload_tag, upload_yhl, upload_sj, upload_jj
-        FROM  weight_data wd ,duge_station_info dsi,station_lane_info sli
+        <include refid="selectDataVo"/>
         <where>
-            wd.station_id=dsi.id
-            AND wd.station_id=sli.station_id
-            AND wd.lane=sli.land_no
-            and upload_yhl in (0, 2)
+            AND upload_yhl in (0, 2)
         </where>
-        order by upload_yhl
+        order by id DESC
         limit 300
     </select>
-
     <select id="selectNotUploadSj" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
@@ -380,7 +369,7 @@
             wd.create_time &lt; date_add(now(), interval - 5 minute)
             and upload_jj =0
         </where>
-        order by id DESC
+        order by create_time DESC
         limit 100
     </select>
 
@@ -640,5 +629,8 @@
     </insert>
     <select id="selectWeightDataBefore40DaysById" parameterType="Long" resultMap="WeightDataResult">
         select * from weight_data_before_40days where id = #{id}
+    </select>
+    <select id="selectLaneId" resultType="Integer" >
+        select lane_id from station_lane_info where station_id = #{stationId} and  lane_no = #{lane}
     </select>
 </mapper>

@@ -43,6 +43,8 @@ public class ShundeApiService implements ThirdApiService {
 
     private static final Logger log = LoggerFactory.getLogger(ShundeApiService.class);
 
+    LongAdder NotAllFileExistCount= new LongAdder();
+
     @PostConstruct
     public void init() {
         try {
@@ -51,65 +53,46 @@ public class ShundeApiService implements ThirdApiService {
             log.error(e.getMessage(), e);
         }
     }
-
     @Scheduled(cron = "${upload_yhl_task_cron}")
-    public void scanVehicleData() {
+    public void ScanVehicleData() {
         if ("1".equals(configDataService.getConfigValue("upload_yhl"))) {
             List<WeightData> weightDataList = weightDataMapper.selectNotUploadYhl();
             if (null != weightDataList && weightDataList.size() > 0) {
                 log.info("to insert count:" + weightDataList.size());
                 LongAdder successCount = new LongAdder();
-                    weightDataList.forEach(weightData -> {
-                        // log.info("to insert" + weightData.getTruckNumber());
-                        if(isAllFileExist(weightData)) {
-                            BaseVehicleDataRequest baseVehicleDataRequest = BaseVehicleDataRequest.builder()
-                                    .weightData(weightData)
-                                    .build();
-                            BaseThirdApiResponse baseThirdApiResponse =
-                                    submitVehicleData(baseVehicleDataRequest);
-                            if (BusinessStatus.SUCCESS == baseThirdApiResponse.getBusinessStatus()) {
-                                weightData.setUploadYhl(1);
-                                successCount.increment();
-                                //log.info("ok insert" + weightData.getTruckNumber());
-                            } else {
-                                weightData.setUploadYhl(2);
-                                log.info("error insert" + weightData.getTruckNumber());
-                            }
-                            weightDataMapper.updateData(weightData);
+                weightDataList.forEach(weightData -> {
+                    Integer laneId = weightDataMapper.selectLaneId(weightData.getStationId().intValue(), Integer.parseInt(weightData.getLaneMid()));
+                    if (laneId == null) {
+                        return;
+                    }
+                    weightData.setLaneId(laneId);
+                    if (isAllFileExist(weightData)) {
+                        BaseVehicleDataRequest baseVehicleDataRequest = BaseVehicleDataRequest.builder()
+                                .weightData(weightData)
+                                .build();
+                        BaseThirdApiResponse baseThirdApiResponse =
+                                submitVehicleData(baseVehicleDataRequest);
+                        if (BusinessStatus.SUCCESS == baseThirdApiResponse.getBusinessStatus()) {
+                            weightData.setUploadYhl(1);
+                            successCount.increment();
+
+                        } else {
+                            weightData.setUploadYhl(2);
                         }
-                        else{
-                            weightData.setUploadYhl(3);
-                            weightDataMapper.updateData(weightData);
-                        }
-                    });
+                        weightDataMapper.updateData(weightData);
+                    } else {
+                        weightData.setUploadYhl(3);
+                        weightDataMapper.updateData(weightData);
+                    }
+                });
                 log.info("success count:" + successCount);
+                log.info("NotAllFileExist Count:" + NotAllFileExistCount);
+                NotAllFileExistCount.reset();
             }
         }
     }
-
-    /**
-     * 10t以上，6个文件都全才插入
-     * 10t以下，只要5张图片全，就插入，视频有也不插入
-     */
-    private boolean isAllFileExist(WeightData weightData) {
-        String sids = configDataService.getConfigValue("all_pic_upload_yhl");
-        if (null == sids || !sids.contains("," + weightData.getStationId() + ",")) {
-            return true;
-        } else if (StringUtils.isNotBlank(weightData.getFtpPriorHead()) && StringUtils.isNotBlank(weightData.getFtpTail()) &&
-                StringUtils.isNotBlank(weightData.getFtpHead()) && StringUtils.isNotBlank(weightData.getFtpAxle()) &&
-                StringUtils.isNotBlank(weightData.getFtpPlate())) {
-            if (weightData.getWeight().compareTo(new BigDecimal(10)) > -1) {
-                return StringUtils.isNotBlank(weightData.getFtpFullView());
-            }
-            weightData.setFtpFullView(null);
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public synchronized BaseThirdApiResponse submitVehicleData(BaseVehicleDataRequest request) {
-
         WeightData weightData = null;
         VehicleRecord vehicleRecord = null;
         try {
@@ -366,7 +349,6 @@ public class ShundeApiService implements ThirdApiService {
         ps.setString(26, vehicleRecord.getOverLengthRadio());
         ps.setString(27, vehicleRecord.getOverSpeedRadio());
         ps.setInt(28,vehicleRecord.getLaneID());
-        log.debug(ps.toString());
         ps.executeUpdate();
         conn.commit();
     }
@@ -425,7 +407,6 @@ public class ShundeApiService implements ThirdApiService {
                 //配置初始化大小、最小、最大
                 dataSource.setInitialSize(1);
                 dataSource.setMinIdle(1);
-                dataSource.setMaxIdle(4);
                 dataSource.setMaxActive(8);
                 //连接泄漏监测
                 dataSource.setRemoveAbandoned(true);
@@ -443,4 +424,26 @@ public class ShundeApiService implements ThirdApiService {
             throw e;
         }
     }
+    /**
+     * 10t以上，6个文件都全才插入
+     * 10t以下，只要5张图片全，就插入，视频有也不插入
+     */
+    private boolean isAllFileExist(WeightData weightData) {
+        String sids = configDataService.getConfigValue("all_pic_upload_yhl");
+        if (null == sids || !sids.contains("," + weightData.getStationId() + ",")) {
+            return true;
+        } else if (StringUtils.isNotBlank(weightData.getFtpPriorHead()) && StringUtils.isNotBlank(weightData.getFtpTail()) &&
+                StringUtils.isNotBlank(weightData.getFtpHead()) && StringUtils.isNotBlank(weightData.getFtpAxle()) &&
+                StringUtils.isNotBlank(weightData.getFtpPlate())) {
+            if (weightData.getWeight().compareTo(new BigDecimal(10)) > -1) {
+                return StringUtils.isNotBlank(weightData.getFtpFullView());
+            }
+            weightData.setFtpFullView(null);
+            return true;
+        }
+        NotAllFileExistCount.increment();
+
+        return false;
+    }
+
 }

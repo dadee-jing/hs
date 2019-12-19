@@ -5,11 +5,11 @@ import com.ruoyi.duge.domain.WeightData;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -27,9 +27,9 @@ public class IOUtil {
         if(file.exists() && file.length()>0){
         StringBuffer imageName=new StringBuffer();
         imageName.append("a")
-                .append(sdf.format(new Date()))
+                .append(sdf.format(wd.getWeightingDate()))
                 .append("_b")
-                .append("")
+                .append(parsePlateType(wd.getTruckCorlor(),wd.getTruckNumber()))
                 .append("_c")
                 .append(new String((wd.getTruckNumber()!=null ? wd.getTruckNumber() :"无牌").getBytes(),
                         "utf-8"))
@@ -42,7 +42,7 @@ public class IOUtil {
                 .append("_g")
                 .append(st.getSpeedLimit())
                 .append("_h")
-                .append("60")
+                .append(calculateSpeedingPercentage(wd.getSpeed().intValue(),st.getSpeedLimit()))
                 .append("_i")
                 .append("")
                 .append("_j")
@@ -56,20 +56,19 @@ public class IOUtil {
                 .append("_x")
                 .append("TEST")
                 .append("_y")
-                .append("TEST")
+                .append("治超")
                 .append("_z")
                 .append("11")
                 .append(".JPG");
-        Date date=new Date();
         String img=basePath+(wd.getFtpPriorHead()!=null ? wd.getFtpPriorHead():wd.getFtpPlate());
         String img1=basePath+(wd.getFtpTail()!=null ? wd.getFtpTail():wd.getFtpPlate());
         String img3=basePath+(wd.getFtpHead()!=null ? wd.getFtpHead():wd.getFtpPlate());
         String img4=basePath+(wd.getFtpAxle()!=null ? wd.getFtpAxle():wd.getFtpPlate());
         String txt =format0.format(wd.getCreateTime())+"  "+st.getAddress();
-        String targetPath="/sharedata/ftp/peccancy/"+yearmonth.format(date)+"/"+day.format(date)
-                +"/"+wd.getStationId() +"/"+imageName.toString();
+        String targetPath="/sharedata/ftp/peccancy/"+yearmonth.format(wd.getLwhDate())+"/"+day.format(wd.getLwhDate())
+                    +"/"+wd.getStationId() +"/"+new String(imageName.toString().getBytes(),"UTf-8");
         LOGGER.info("upload the IllegalImages of "+wd.getTruckNumber()+ ",targetPath="+targetPath);
-            mergedImages(img,img1,img3,img4,targetPath,txt);
+        mergedImages(img,img1,img3,img4,targetPath,txt);
             return true;
         }
         return false;
@@ -98,9 +97,8 @@ public class IOUtil {
                     .append("_z")
                     .append("11")
                     .append(".JPG");
-            Date date=new Date();
-            String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(date)+"/"+day.format(date)
-                    +"/"+wd.getStationId() +"/"+imageName.toString();
+            String targetPath="/sharedata/ftp/passcar/"+yearmonth.format(wd.getLwhDate())+"/"+day.format(wd.getLwhDate())
+                    +"/"+wd.getStationId() +"/"+new String(imageName.toString().getBytes(),"UTf-8");
             IOOperate(sourcePath,targetPath);
             LOGGER.info("upload the normalImages of "+wd.getTruckNumber()+ ",targetPath="+targetPath);
             return true;
@@ -210,7 +208,6 @@ public class IOUtil {
             ImageIO.setUseCache(false);
             File outFile = new File(outPath);
             if (outFile.getParentFile() != null || !outFile.getParentFile().isDirectory()) {
-                // 创建父文件夹
                 outFile.getParentFile().mkdirs();
             }
             ImageIO.write(buf, "jpg", outFile);
@@ -230,5 +227,12 @@ public class IOUtil {
         bufferedImage.getGraphics().drawImage(
                 bfi.getScaledInstance(x, y, Image.SCALE_SMOOTH), 0, 0, null);
         return bufferedImage;
+    }
+    public static String  calculateSpeedingPercentage(Integer speed, Integer speedLimit){
+        System.out.println(speed);
+        System.out.println(speedLimit);
+        DecimalFormat df=new DecimalFormat("0");
+        Integer SpeedingPercentage=Integer.parseInt(df.format(((float)speed/speedLimit -1)*100));
+        return SpeedingPercentage>0 ? SpeedingPercentage.toString() : "";
     }
 }
