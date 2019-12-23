@@ -425,8 +425,9 @@ public class ShundeApiService implements ThirdApiService {
         }
     }
     /**
+     * 10t以下，只要5张图片全，就插入，不全有视频也不插入
      * 10t以上，6个文件都全才插入
-     * 10t以下，只要5张图片全，就插入，视频有也不插入
+     *
      */
     private boolean isAllFileExist(WeightData weightData) {
         String sids = configDataService.getConfigValue("all_pic_upload_yhl");
@@ -442,8 +443,6 @@ public class ShundeApiService implements ThirdApiService {
             return true;
         }
         NotAllFileExistCount.increment();
-
         return false;
     }
-
 }
