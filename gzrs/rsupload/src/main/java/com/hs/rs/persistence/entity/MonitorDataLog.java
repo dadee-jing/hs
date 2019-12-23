@@ -1,12 +1,11 @@
 package com.hs.rs.persistence.entity;
 
 import lombok.*;
-
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 /**
  * 遥感监测数据表 rs_monitor_data_log
@@ -49,7 +48,8 @@ public class MonitorDataLog {
     /**
      * 监测时间
      */
-    private String jcsj;
+    @Column(name = "TSTIME")
+    private Date jcsj;
     /**
      * 地点经度
      */
