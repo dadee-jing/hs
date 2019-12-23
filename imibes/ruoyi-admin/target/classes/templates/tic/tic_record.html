@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="row" style="height: 100%;">
+    <div class="col-md-10" style="height: 100%;">
+        <div class="col-md-12" style="height: 100%;">
+            <div id="map_1" style="height: 100%;"></div>
+        </div>
+    </div>
+    <div class="col-md-2" >
+        <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+</div>
+
+<div th:include="include::footer"></div>
+<script th:inline="javascript">
+
+    var map;
+    function initialize() {
+        map = new BMap.Map("map_1");
+        map.setMapStyle({style:'light'});
+        var point = new BMap.Point(113.316719, 22.80082);
+        map.centerAndZoom(point, 13);
+
+
+        $.post(ctx + "module/stationInfo/list",function (data) {
+            for(var i=0; i<data.rows.length; ++i) {
+                showMap(data.rows[i].latitude,data.rows[i].longitude)
+            }
+        });
+    }
+
+    function showMap(lat,lon) {
+        var point = new BMap.Point(lat, lon);
+        var marker = new BMap.Marker(point);  // 创建标注
+        map.addOverlay(marker);               // 将标注添加到地图中
+    }
+
+    function loadScript() {
+        var script = document.createElement("script");
+        script.src = "http://api.map.baidu.com/api?v=2.0&ak=vcdaqzcATO13jw541leScUNSPs7CZGeo&callback=initialize";
+        document.body.appendChild(script);
+    }
+
+    window.onload = loadScript;
+    var ctx = [[@{/}]];
+    var prefix = ctx + "module/stationInfo";
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            modalName: "站点",
+            pageSize:20,
+            pagination:false,
+            search: false,
+            showExport: false,
+            showToggle:false,
+            showSearch: false,
+            columns: [{
+                field: 'id',
+                title: 'ID'
+            },
+                {
+                    field: 'name',
+                    title: '站点名称'
+                },
+                {
+                    field: 'situation',
+                    title: '交通状况'
+                }]
+        };
+        $.table.init(options);
+        $(".fixed-table-toolbar").hide()
+    });
+</script>

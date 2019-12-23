@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="module:monitorDataLog:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="module:monitorDataLog:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="module:monitorDataLog:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('module:monitorDataLog:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('module:monitorDataLog:remove')}]];
+        var prefix = ctx + "yaogan/monitorDataLog";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "遥感监测数据",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'jLBH', 
+					title : '记录编号' 
+				},
+				{
+					field : 'dWBH', 
+					title : '点位编号' 
+				},
+				{
+					field : 'yCXBH', 
+					title : '遥测线编号' 
+				},
+				{
+					field : 'jCDWRZH', 
+					title : '监测点位日志号' 
+				},
+				{
+					field : 'cDXH', 
+					title : '车道序号' 
+				},
+				{
+					field : 'jCRQ', 
+					title : '监测时间' 
+				},
+				{
+					field : 'dDJD', 
+					title : '地点经度' 
+				},
+				{
+					field : 'dDWD', 
+					title : '地点维度' 
+				},
+				{
+					field : 'cDPD', 
+					title : '车道坡度' 
+				},
+				{
+					field : 'pDJG', 
+					title : '判定结果' 
+				},
+				{
+					field : 'hPHM', 
+					title : '号牌号码' 
+				},
+				{
+					field : 'cPYS', 
+					title : '' 
+				},
+				{
+					field : 'hPZL', 
+					title : '号牌种类' 
+				},
+				{
+					field : 'rLZL', 
+					title : '燃料种类' 
+				},
+				{
+					field : 'cO2JG', 
+					title : 'CO2结果' 
+				},
+				{
+					field : 'cOCO2', 
+					title : 'CO/CO2比率' 
+				},
+				{
+					field : 'hCCO2', 
+					title : 'HC/CO2比率' 
+				},
+				{
+					field : 'nOCO2', 
+					title : 'NO/CO2比率' 
+				},
+				{
+					field : 'cOJG', 
+					title : 'CO结果' 
+				},
+				{
+					field : 'hCJG', 
+					title : 'HC结果' 
+				},
+				{
+					field : 'nOJG', 
+					title : 'NO结果' 
+				},
+				{
+					field : 'bTGDJG', 
+					title : '不透光度结果' 
+				},
+				{
+					field : 'lGMHD', 
+					title : '林格曼黑度' 
+				},
+				{
+					field : 'cOXZ', 
+					title : 'CO限制'
+				},
+				{
+					field : 'nOXZ', 
+					title : 'NO限值' 
+				},
+				{
+					field : 'bTGDXZ', 
+					title : '不透光度限值' 
+				},
+				{
+					field : 'hDXZ', 
+					title : '黑度限值' 
+				},
+				{
+					field : 'cLSD', 
+					title : '车辆速度' 
+				},
+				{
+					field : 'cLJSD', 
+					title : '车辆加速度' 
+				},
+				{
+					field : 'vSP', 
+					title : 'VSP' 
+				},
+				{
+					field : 'fS', 
+					title : '风速' 
+				},
+				{
+					field : 'fX', 
+					title : '风向'
+				},
+				{
+					field : 'hJWD', 
+					title : '环境温度'
+				},
+				{
+					field : 'sD', 
+					title : '湿度'
+				},
+				{
+					field : 'dQY', 
+					title : '大气压' 
+				},
+				{
+					field : 'gJXXBH', 
+					title : '轨迹信息编号' 
+				},
+				{
+					field : 'tP1', 
+					title : '图像1文件名' 
+				},
+				{
+					field : 'tP2', 
+					title : '图像2文件名' 
+				},
+				{
+					field : 'sP1', 
+					title : '视频1文件名' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.jLBH + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.jLBH + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

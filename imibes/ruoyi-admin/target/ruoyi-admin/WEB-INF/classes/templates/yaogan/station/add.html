@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-station-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">点位名称：</label>
+				<div class="col-sm-8">
+					<input id="dWMC" name="dWMC" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">点位类型：</label>
+				<div class="col-sm-8">
+					<input id="dWLX" name="dWLX" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">运行日期：</label>
+				<div class="col-sm-8">
+					<input id="yXRQ" name="yXRQ" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">点位状态：</label>
+				<div class="col-sm-8">
+					<input id="dWZT" name="dWZT" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">点位地址：</label>
+				<div class="col-sm-8">
+					<input id="dWDZ" name="dWDZ" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地点经度：</label>
+				<div class="col-sm-8">
+					<input id="dDJD" name="dDJD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地点维度：</label>
+				<div class="col-sm-8">
+					<input id="dDWD" name="dDWD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车流方向：</label>
+				<div class="col-sm-8">
+					<input id="cLFX" name="cLFX" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车道数量：</label>
+				<div class="col-sm-8">
+					<input id="cDSL" name="cDSL" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车道坡度：</label>
+				<div class="col-sm-8">
+					<input id="cDPD" name="cDPD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">遥测线数：</label>
+				<div class="col-sm-8">
+					<input id="yCXS" name="yCXS" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">号牌号码：</label>
+				<div class="col-sm-8">
+					<input id="hPHM" name="hPHM" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">装载车型号：</label>
+				<div class="col-sm-8">
+					<input id="cLXH" name="cLXH" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "yaogan/station"
+		$("#form-station-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-station-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

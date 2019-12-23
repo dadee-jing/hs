@@ -1,0 +1,7 @@
+com\ruoyi\generator\domain\TableInfo.class
+com\ruoyi\generator\service\impl\GenServiceImpl.class
+com\ruoyi\generator\domain\ColumnInfo.class
+com\ruoyi\generator\util\GenUtils.class
+com\ruoyi\generator\util\VelocityInitializer.class
+com\ruoyi\generator\mapper\GenMapper.class
+com\ruoyi\generator\service\IGenService.class

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="station:maintenanceRecord:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="station:maintenanceRecord:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="station:maintenanceRecord:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('station:maintenanceRecord:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('station:maintenanceRecord:remove')}]];
+        var prefix = ctx + "station/maintenanceRecord";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "站点维护记录",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : 'id' 
+				},
+				{
+					field : 'stationId', 
+					title : '站点ID',
+					visible:false
+				},
+				{
+					field : 'stationName',
+					title : '站点'
+				},
+				{
+					field : 'maintenanceDate', 
+					title : '维护日期'
+				},
+				{
+					field : 'siteCondition', 
+					title : '现场状况描述' 
+				},
+				{
+					field : 'operationLog', 
+					title : '操作记录' 
+				},
+				{
+					field : 'operator', 
+					title : '操作人' 
+				},
+				{
+					field : 'operatorPhone', 
+					title : '操作人手机号' 
+				},
+				{
+					field : 'remark', 
+					title : '备注' 
+				},
+				{
+					field : 'createTime', 
+					title : '创建日期' 
+				},
+				{
+					field : 'createBy', 
+					title : '创建人' 
+				},
+				{
+					field : 'updateTime', 
+					title : '更新日期' ,
+					visible:false
+				},
+				{
+					field : 'updateBy', 
+					title : '更新人' ,
+					visible:false
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

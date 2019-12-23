@@ -1,5 +1,6 @@
 package com.ruoyi.duge.mapper;
 
+import com.ruoyi.duge.domain.DeviceEnum;
 import com.ruoyi.duge.domain.StationInfo;
 import org.apache.ibatis.annotations.Param;
 

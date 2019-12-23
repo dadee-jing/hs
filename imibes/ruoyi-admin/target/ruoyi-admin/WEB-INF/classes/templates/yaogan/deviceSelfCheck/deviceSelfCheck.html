@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="module:deviceSelfCheck:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="module:deviceSelfCheck:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="module:deviceSelfCheck:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('module:deviceSelfCheck:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('module:deviceSelfCheck:remove')}]];
+        var prefix = ctx + "yaogan/deviceSelfCheck";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "遥测设备自检过程数据",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'iD', 
+					title : 'ID' 
+				},
+				{
+					field : 'dWBH', 
+					title : '点位编号' 
+				},
+				{
+					field : 'yCXBH', 
+					title : '遥测线编号' 
+				},
+				{
+					field : 'zJKSRQ', 
+					title : '自检开始时间' 
+				},
+				{
+					field : 'cO2BZZ', 
+					title : 'CO2标准值' 
+				},
+				{
+					field : 'cOBZZ', 
+					title : 'CO标准值' 
+				},
+				{
+					field : 'dEXBZZ', 
+					title : '1,3-丁二烯标准值' 
+				},
+				{
+					field : 'bWBZZ', 
+					title : '丙烷标准值' 
+				},
+				{
+					field : 'nOBZZ', 
+					title : 'NO标准值' 
+				},
+				{
+					field : 'cO2CLZ', 
+					title : 'CO2测量值' 
+				},
+				{
+					field : 'cOCLZ', 
+					title : 'CO测量值' 
+				},
+				{
+					field : 'dEXCLZ', 
+					title : '1,3-丁二烯测量值' 
+				},
+				{
+					field : 'bWCLZ', 
+					title : '丙烷测量值' 
+				},
+				{
+					field : 'nOCLZ', 
+					title : 'NO测量值' 
+				},
+				{
+					field : 'yDP1BZZ', 
+					title : '烟度片1标准值' 
+				},
+				{
+					field : 'yDP2BZZ', 
+					title : '烟度片2标准值' 
+				},
+				{
+					field : 'yDP3BZZ', 
+					title : '烟度片3标准值' 
+				},
+				{
+					field : 'yDP4BZZ', 
+					title : '烟度片4标准值' 
+				},
+				{
+					field : 'yDP5BZZ', 
+					title : '烟度片5标准值' 
+				},
+				{
+					field : 'yDP1CLZ', 
+					title : '烟度片1测量值' 
+				},
+				{
+					field : 'yDP2CLZ', 
+					title : '烟度片2测量值' 
+				},
+				{
+					field : 'yDP3CLZ', 
+					title : '烟度片3测量值' 
+				},
+				{
+					field : 'yDP4CLZ', 
+					title : '烟度片4测量值' 
+				},
+				{
+					field : 'yDP5CLZ', 
+					title : '烟度片5测量值' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.iD + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.iD + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
