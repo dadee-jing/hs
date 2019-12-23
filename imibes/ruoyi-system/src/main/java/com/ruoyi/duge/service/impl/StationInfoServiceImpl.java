@@ -28,9 +28,9 @@ public class StationInfoServiceImpl implements IStationInfoService
      * @return 站点信息
      */
     @Override
-	public StationInfo selectStationInfoById(Integer id)
+	public StationInfo selectStationInfoById(Integer id, String laneMid)
 	{
-	    return stationInfoMapper.selectStationInfoById(id);
+	    return stationInfoMapper.selectStationInfoById(id,laneMid);
 	}
 	
 	/**

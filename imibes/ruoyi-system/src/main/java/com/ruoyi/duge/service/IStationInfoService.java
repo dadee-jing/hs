@@ -18,7 +18,7 @@ public interface IStationInfoService
      * @param id 站点ID
      * @return 站点信息
      */
-	public StationInfo selectStationInfoById(Integer id);
+	public StationInfo selectStationInfoById(Integer id, String laneMid);
 
 	/**
 	 * 查询站点列表

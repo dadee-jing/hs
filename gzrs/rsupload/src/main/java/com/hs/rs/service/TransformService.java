@@ -2,6 +2,7 @@ package com.hs.rs.service;
 
 import com.hs.rs.model.DTO.*;
 import com.hs.rs.persistence.entity.*;
+import com.hs.rs.utils.CommonUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,15 @@ public class TransformService {
     SimpleDateFormat myFmt2=new SimpleDateFormat("yyMMddHHmmss");
     public BlacksmokevehicleDto transBlacksmokevehicleDto(BlacksmokevehicleInfo source) {
         BlacksmokevehicleDto target = new BlacksmokevehicleDto();
+        target.setJlbh(source.getJlbh().replace("B","D"));
+        target.setDwbh(source.getDwbh().replace("B","D"));
+        if(source.getPdjg().equals("0")){
+            target.setTp1(CommonUtils.toBase64(source.getDwbh(),source.getJcsj(),source.getTp5()));
+            target.setTp2(CommonUtils.toBase64(source.getDwbh(),source.getJcsj(),source.getTp2()));
+        }else if (source.getPdjg().equals("1")){
+            target.setTp1(CommonUtils.newPath(source.getDwbh(),source.getJcsj(),source.getTp5()));
+            target.setTp2(CommonUtils.newPath(source.getDwbh(),source.getJcsj(),source.getTp2()));
+        }
         BeanUtils.copyProperties(source, target);
         target.setLgmhd(String.valueOf(source.getLgmhd()));
         target.setJcsj(format.format(source.getJcsj()));
@@ -32,14 +42,25 @@ public class TransformService {
         target.setQxzyxq(format.format(source.getQxzyxq()));
         return target;
     }
-
     public MonitorDataDto transMonitorDataDto(MonitorDataLog source) {
         MonitorDataDto target = new MonitorDataDto();
-        target.setJcsj(source.getJcsj());
+        target.setJcsj(format.format(source.getJcsj()));
+        if(source.getRlzl().equals("Z")){
+            target.setRlzl("Y");
+        }
+        if(source.getPdjg().equals("0")){
+            System.out.println("判定结果为不通过");
+            target.setTp1(CommonUtils.toBase64(source.getDwbh(),source.getJcsj(),source.getTp1()));
+            target.setTp2(CommonUtils.toBase64(source.getDwbh(),source.getJcsj(),source.getTp2()));
+        }else if (source.getPdjg().equals("1")){
+            target.setTp1(CommonUtils.newPath(source.getDwbh(),source.getJcsj(),source.getTp1()));
+            target.setTp2(CommonUtils.newPath(source.getDwbh(),source.getJcsj(),source.getTp2()));
+        }else if (source.getPdjg().equals("999")){
+            target.setPdjg("2");
+        }
         BeanUtils.copyProperties(source, target);
         return target;
     }
-
     public StationDto transStationDto(Station source) {
         StationDto target = new StationDto();
         BeanUtils.copyProperties(source, target);

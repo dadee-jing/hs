@@ -125,14 +125,13 @@ public class UploadTask {
         System.out.println("responseStr======"+responseStr);
     }
     // 理解这个，其他按照这个写
-
+    @Scheduled(cron="*/10 * * * * *")
     public void uploadBlacksomkevehicle() {
         List<BlacksmokevehicleInfo> blacksmokevehicleInfoList = blacksmokevehicleInfoRepository.findTop200ByUpLoadStatusIsNotOrderByUpLoadStatusDesc(1);
-//         逐条数据提交
+        //逐条数据提交
         log.info("uploadBlacksomkevehicle insert count:" + blacksmokevehicleInfoList.size());
         LongAdder successCount = new LongAdder();
         blacksmokevehicleInfoList.forEach(blacksmokevehicleInfo -> {
-
             try {
                 if(StringUtils.isBlank(blacksmokevehicleInfo.getHpzl())){
                     blacksmokevehicleInfo.setHpzl(parsePlateType(blacksmokevehicleInfo.getCpys(),blacksmokevehicleInfo.getHphm()));
@@ -140,8 +139,7 @@ public class UploadTask {
                 if(StringUtils.isBlank(blacksmokevehicleInfo.getCdxh())){
                     blacksmokevehicleInfo.setCdxh("1");
                 }
-                blacksmokevehicleInfo.setJlbh(blacksmokevehicleInfo.getJlbh().replace("B","D"));
-                blacksmokevehicleInfo.setDwbh(blacksmokevehicleInfo.getDwbh().replace("B","D"));
+
                 String requestBody = wrapperXml(transformService.transBlacksmokevehicleDto(blacksmokevehicleInfo), "blacksmokevehicle");
                 System.out.println(requestBody);
                 String responseStr = callApi(requestBody);
@@ -150,8 +148,6 @@ public class UploadTask {
                 // 根据文档判断 数据是否提交成功
                 if(response.get("status").toString().replace("\"", "").equals("1")) {  //  看文档实现
                     blacksmokevehicleInfo.setUpLoadStatus(1);
-                    blacksmokevehicleInfo.setJlbh(blacksmokevehicleInfo.getJlbh().replace("D","B"));
-                    blacksmokevehicleInfo.setDwbh(blacksmokevehicleInfo.getDwbh().replace("D","B"));
                     successCount.increment();
                 } else {
                     blacksmokevehicleInfo.setUpLoadStatus(2);
@@ -223,14 +219,8 @@ public class UploadTask {
         log.info("uploadMonitorData insert count:" + monitorDataLogList.size());
         LongAdder successCount = new LongAdder();
         monitorDataLogList.forEach(monitorDataLog -> {
-            if(monitorDataLog.getRlzl().equals("Z")){
-                monitorDataLog.setRlzl("Y");
-            }
             if(StringUtils.isBlank(monitorDataLog.getHpzl())){
                 monitorDataLog.setRlzl(parsePlateType(monitorDataLog.getCpys(),monitorDataLog.getHphm()));
-            }
-            if(monitorDataLog.getPdjg().equals("999")){
-                monitorDataLog.setPdjg("-2");
             }
             if (monitorDataLog.getClsd().equals("0")){
                 return;
@@ -243,6 +233,7 @@ public class UploadTask {
                 String requestBody = wrapperXml(transformService.transMonitorDataDto(monitorDataLog), "monitoringdata");
                 String responseStr = callApi(requestBody);
                 JsonNode response = objectMapper.readTree(responseStr);
+                System.out.println("responseStr===="+responseStr);
                 if(response.get("status").toString().replace("\"", "").equals("1")) {
                     monitorDataLog.setUpLoadStatus(1);
                     successCount.increment();
@@ -256,6 +247,7 @@ public class UploadTask {
         });
         log.info("uploadMonitorData success count:" + successCount);
     }
+
 
     /**
      * 上传车辆轨道信息
@@ -283,7 +275,7 @@ public class UploadTask {
         });
         log.info("uploadVehicleTrajectory success count:" + successCount);
     }
-    @Scheduled(cron="*/100 * * * * *")
+
     public void  ALLDay(){
         uploadVehicleTrajectory();
         uploadTrafficFlow();
@@ -296,9 +288,9 @@ public class UploadTask {
             case "0":
                 return "02";
             case "1":
-                    return "16";
+                return "16";
             case "2":
-                    return "23";
+                return "23";
             case "3":
                 if(truckNumber.contains("使")){
                     return "03";
@@ -310,7 +302,7 @@ public class UploadTask {
                     return "05";
                 }
             case "4":
-                    return "52";
+                return "52";
             default:
                 return "99";
         }
