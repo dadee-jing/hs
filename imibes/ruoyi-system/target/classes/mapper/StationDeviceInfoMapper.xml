@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="stationName"    column="station_name"    />
         <result property="deviceTypeName"    column="device_type_name"    />
         <result property="deviceName"    column="device_name"    />
+        <result property="snCode"    column="sn_code"    />
     </resultMap>
 
     <resultMap type="com.ruoyi.duge.domain.StationDeviceInfo" id="StationDeviceInfoResult">
@@ -27,12 +28,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="port"    column="port"    />
         <result property="state"    column="state"    />
         <result property="createTime"    column="create_time"    />
+        <result property="snCode"    column="sn_code"    />
     </resultMap>
 
 
     <insert id="insertStationDeviceInfo" parameterType="com.ruoyi.duge.domain.StationDeviceInfo">
-    INSERT INTO station_device_info (station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark)
-    VALUES (#{stationId},#{deviceTypeId},#{deviceNameId},#{ipAddress},#{port},#{state},#{remark})
+    INSERT INTO station_device_info (station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark,sn_code)
+    VALUES (#{stationId},#{deviceTypeId},#{deviceNameId},#{ipAddress},#{port},#{state},#{remark},#{snCode})
     </insert>
 
     <update id="updateStationDeviceInfo">
@@ -45,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ipAddress != null  and ipAddress != ''">ipAddress = #{ipAddress},</if>
             <if test="port != null  and port != ''">port = #{port},</if>
             <if test="state != null ">state = #{state},</if>
+            <if test="snCode != null  and snCode != ''">sn_code = #{snCode},</if>
         </trim>
         where id = #{id}
     </update>
@@ -53,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="selectStationDeviceInfoList" resultMap="StationDeviceInfoVoResult">
-        SELECT sdi.id,sdi.station_id,dsi.name station_name,sdi.state,sdi.create_time,
+        SELECT sdi.id,sdi.station_id,dsi.name station_name,sdi.state,sdi.create_time,sdi.sn_code,sdi.ipAddress,
         de.value device_name,de2.value device_type_name
         FROM station_device_info sdi
         LEFT JOIN duge_station_info dsi ON sdi.station_id = dsi.id
@@ -71,8 +74,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectDeviceById"  resultMap="StationDeviceInfoResult" parameterType="integer">
-        select id,station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark,create_time
+        select id,station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark,create_time,sn_code
         from station_device_info where id = #{id}
     </select>
 
+    <select id="selectStationDeviceListByStationId" resultMap="StationDeviceInfoVoResult">
+        SELECT sdi.id,sdi.station_id,dsi.name station_name,sdi.state,sdi.create_time,sdi.sn_code,
+        de.value device_name,de2.value device_type_name
+        FROM station_device_info sdi
+        LEFT JOIN duge_station_info dsi ON sdi.station_id = dsi.id
+        LEFT JOIN device_enum de ON sdi.deviceName_id = de.id
+        LEFT JOIN device_enum de2 ON sdi.deviceType_id = de2.id
+        where sdi.station_id = #{stationId}
+    </select>
 </mapper>

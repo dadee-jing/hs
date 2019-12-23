@@ -6,6 +6,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.WeightData;
+import com.ruoyi.duge.mapper.StationInfoMapper;
 import com.ruoyi.duge.mapper.WeightDataMapper;
 import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.framework.web.page.TableDataInfo;
@@ -40,6 +41,8 @@ public class StationInfoController extends BaseController {
 
     @Autowired
     private WeightDataMapper weightDataMapper;
+    @Autowired
+    private StationInfoMapper stationInfoMapper;
 
 
     /**
@@ -47,7 +50,7 @@ public class StationInfoController extends BaseController {
      *
      * @return
      */
-    @RequiresPermissions("module:stationInfo:manager")
+//    @RequiresPermissions("module:stationInfo:manager")
     @GetMapping()
     public String stationInfo() {
         return prefix + "/stationInfo";
@@ -58,10 +61,18 @@ public class StationInfoController extends BaseController {
      *
      * @return
      */
-    @RequiresPermissions("module:stationInfo:view")
-    @GetMapping("/stationDashboard")
-    public String stationDashboard() {
-        return prefix + "/stationDashboard";
+//    @RequiresPermissions("module:stationInfo:view")
+    @GetMapping("/stationDashboard/{stationId}")
+    public String stationDashboard(@PathVariable("stationId") Integer stationId, ModelMap mmap) {
+        List<StationInfo> stationInfoList = stationInfoMapper.selectStationInfoList(null);
+        StationInfo stationInfo = stationInfoMapper.selectStationInfoById(stationId);
+        if(null != stationInfo.getInstallTime()){
+            stationInfo.setInstallTime(stationInfo.getInstallTime().substring(0,stationInfo.getInstallTime().length()-2));
+        }
+        mmap.put("stationId",stationId);
+        mmap.put("stationInfoList",stationInfoList);
+        mmap.put("stationInfo",stationInfo);
+        return prefix + "/stationInfoDetails";
     }
 
     /**
@@ -114,7 +125,7 @@ public class StationInfoController extends BaseController {
     /**
      * 新增保存站点
      */
-    @RequiresPermissions("module:stationInfo:add")
+//    @RequiresPermissions("module:stationInfo:add")
     @Log(title = "站点", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
@@ -135,7 +146,7 @@ public class StationInfoController extends BaseController {
     /**
      * 修改保存站点
      */
-    @RequiresPermissions("module:stationInfo:edit")
+//    @RequiresPermissions("module:stationInfo:edit")
     @Log(title = "站点", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
@@ -146,7 +157,7 @@ public class StationInfoController extends BaseController {
     /**
      * 删除站点
      */
-    @RequiresPermissions("module:stationInfo:remove")
+//    @RequiresPermissions("module:stationInfo:remove")
     @Log(title = "站点", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody

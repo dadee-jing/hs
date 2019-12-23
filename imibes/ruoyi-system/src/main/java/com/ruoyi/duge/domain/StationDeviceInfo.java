@@ -29,4 +29,5 @@ public class StationDeviceInfo{
 	private Integer state;
 	private Timestamp createTime;
 	private String remark;
+	private String snCode;
 }

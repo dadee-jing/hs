@@ -4,14 +4,18 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.base.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.duge.domain.MaintenanceRecord;
+import com.ruoyi.duge.domain.StationInfo;
+import com.ruoyi.duge.mapper.StationInfoMapper;
 import com.ruoyi.duge.service.IMaintenanceRecordService;
 import com.ruoyi.framework.web.page.TableDataInfo;
+import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.web.core.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +33,9 @@ public class MaintenanceRecordController extends BaseController
 	@Autowired
 	private IMaintenanceRecordService maintenanceRecordService;
 
+	@Autowired
+	private StationInfoMapper stationInfoMapper;
+
 	@GetMapping()
 	public String maintenanceRecord()
 	{
@@ -40,10 +47,17 @@ public class MaintenanceRecordController extends BaseController
 	 */
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(MaintenanceRecord maintenanceRecord)
-	{
+	public TableDataInfo list(MaintenanceRecord maintenanceRecord) {
 		startPage();
         List<MaintenanceRecord> list = maintenanceRecordService.selectMaintenanceRecordList(maintenanceRecord);
+		return getDataTable(list);
+	}
+
+	@PostMapping("/stationRecordList/{stationId}")
+	@ResponseBody
+	public TableDataInfo stationRecordList(@PathVariable("stationId") Integer stationId, ModelMap mmap) {
+		startPage();
+        List<MaintenanceRecord> list = maintenanceRecordService.selectMaintenanceRecordListByStationId(stationId);
 		return getDataTable(list);
 	}
 	
@@ -51,8 +65,11 @@ public class MaintenanceRecordController extends BaseController
 	 * 新增站点维护记录
 	 */
 	@GetMapping("/add")
-	public String add()
-	{
+	public String add(ModelMap mmap) {
+		List<StationInfo> stationInfoList = stationInfoMapper.selectStationInfoList(null);
+		SysUser user = getUser();
+		mmap.put("stationList",stationInfoList);
+		mmap.put("user",user);
 	    return prefix + "/add";
 	}
 	
@@ -62,8 +79,11 @@ public class MaintenanceRecordController extends BaseController
 	@Log(title = "站点维护记录", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(MaintenanceRecord maintenanceRecord)
-	{		
+	public AjaxResult addSave(MaintenanceRecord maintenanceRecord) {
+		maintenanceRecord.setCreateTime(new Date());
+		maintenanceRecord.setCreateBy(getLoginName());
+		maintenanceRecord.setUpdateTime(new Date());
+		maintenanceRecord.setUpdateBy(getLoginName());
 		return toAjax(maintenanceRecordService.insertMaintenanceRecord(maintenanceRecord));
 	}
 
@@ -71,10 +91,13 @@ public class MaintenanceRecordController extends BaseController
 	 * 修改站点维护记录
 	 */
 	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable("id") Integer id, ModelMap mmap)
-	{
+	public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
 		MaintenanceRecord maintenanceRecord = maintenanceRecordService.selectMaintenanceRecordById(id);
+		List<StationInfo> stationInfoList = stationInfoMapper.selectStationInfoList(null);
+		SysUser user = getUser();
 		mmap.put("maintenanceRecord", maintenanceRecord);
+		mmap.put("stationList",stationInfoList);
+		mmap.put("user",user);
 	    return prefix + "/edit";
 	}
 	
@@ -84,8 +107,9 @@ public class MaintenanceRecordController extends BaseController
 	@Log(title = "站点维护记录", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editSave(MaintenanceRecord maintenanceRecord)
-	{		
+	public AjaxResult editSave(MaintenanceRecord maintenanceRecord) {
+		maintenanceRecord.setUpdateTime(new Date());
+		maintenanceRecord.setUpdateBy(getLoginName());
 		return toAjax(maintenanceRecordService.updateMaintenanceRecord(maintenanceRecord));
 	}
 	
@@ -99,5 +123,19 @@ public class MaintenanceRecordController extends BaseController
 	{		
 		return toAjax(maintenanceRecordService.deleteMaintenanceRecordByIds(ids));
 	}
-	
+
+
+	/**
+	 * 修改站点维护记录
+	 */
+	@GetMapping("/detail/{id}")
+	public String detail(@PathVariable("id") Integer id, ModelMap mmap) {
+		MaintenanceRecord maintenanceRecord = maintenanceRecordService.selectMaintenanceRecordById(id);
+		Integer stationId = maintenanceRecordService.getStationIdByRecordId(id);
+		StationInfo stationInfo = stationInfoMapper.selectStationInfoById(stationId);
+		mmap.put("record", maintenanceRecord);
+		mmap.put("station",stationInfo);
+		return prefix + "/detail";
+	}
+
 }

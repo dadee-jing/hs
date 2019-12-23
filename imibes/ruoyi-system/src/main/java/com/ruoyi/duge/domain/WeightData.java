@@ -221,6 +221,11 @@ public class WeightData extends BaseEntity {
      */
     private String lbh;
 
+    /**
+     * 外廓前抓拍
+     */
+    private String lwhScenePath;
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)

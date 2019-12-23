@@ -59,6 +59,7 @@
         <result property="markDel" column="mark_del"/>
         <result property="lbh" column="lbh"/>
         <result property="laneId" column="lane_id"/>
+        <result property="lwhScenePath" column="lwh_scene_path"/>
     </resultMap>
 
     <sql id="selectDataVo">
@@ -68,7 +69,7 @@
            axle_weight6, axle_weight7, axle_weight8, sequence_tag, ftp_head, ftp_axle, ftp_tail, ftp_prior_head,
             ftp_plate, ftp_full_view, wd.create_by, wd.create_time, wd.update_by, wd.update_time, wd.remark,
              wd.device_code, station_id, lwh_date, plate, width, height, length, lane_mid, lane_min, lane_max,
-              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj, lbh from weight_data wd
+              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj, lbh,lwh_scene_path from weight_data wd
         left join duge_station_info dsi on dsi.id = wd.station_id
     </sql>
 
@@ -84,7 +85,7 @@
             <if test="lane != null ">and lane = #{lane}</if>
             <if test="direction != null  and direction != '' ">and direction = #{direction}</if>
             <if test="truckNumber != null  and truckNumber != '' ">
-                AND truck_number like concat(#{truckNumber}, '%')
+                AND truck_number like concat('%',#{truckNumber}, '%')
             </if>
             <if test="truckCorlor != null  and truckCorlor != '' ">and truck_corlor = #{truckCorlor}</if>
             <if test="speed != null ">and speed = #{speed}</if>
@@ -208,6 +209,7 @@
             <if test="uploadJj != null  ">upload_jj,</if>
             <if test="lbh != null  and lbh != ''  ">lbh,</if>
             <if test="laneId != null  ">lane_id,</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null  ">#{id},</if>
@@ -263,6 +265,7 @@
             <if test="uploadJj != null  ">#{uploadJj},</if>
             <if test="lbh != null  and lbh != ''  ">#{lbh},</if>
             <if test="laneId != null  ">#{laneId},</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">#{lwhScenePath},</if>
         </trim>
     </insert>
 
@@ -321,6 +324,7 @@
             <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
             <if test="lbh != null  and lbh != ''  ">lbh = #{lbh},</if>
             <if test="laneId != null  ">lane_id = #{laneId},</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path = #{lwhScenePath},</if>
         </trim>
         where id = #{id}
     </update>
@@ -520,6 +524,7 @@
             <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
             <if test="markDel != null  ">mark_del = #{markDel},</if>
             <if test="laneId != null  ">lane_id = #{laneId},</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path = #{lwhScenePath},</if>
         </trim>
         where id = #{id}
     </update>

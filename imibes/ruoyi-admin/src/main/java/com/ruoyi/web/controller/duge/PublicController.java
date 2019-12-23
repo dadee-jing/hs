@@ -2,8 +2,10 @@ package com.ruoyi.web.controller.duge;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.base.AjaxResult;
+import com.ruoyi.duge.domain.StationDeviceInfo;
 import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.WeightData;
+import com.ruoyi.duge.mapper.StationDeviceInfoMapper;
 import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.duge.third.foshan.service.FoshanApiService;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
@@ -33,6 +35,9 @@ public class PublicController extends BaseController {
 
     @Autowired
     private IStationInfoService stationInfoService;
+
+    @Autowired
+    private StationDeviceInfoMapper stationDeviceInfoMapper;
 
     @PostMapping("/weightData/add")
     @ResponseBody
@@ -116,6 +121,18 @@ public class PublicController extends BaseController {
             LOGGER.info("update "+ stationInfo.getId() + " " + stationInfo.getName());
         }
         return toAjax(result);
+    }
+
+
+    /**
+     * 从站点新增设备信息
+     * @param stationDeviceInfo
+     * @return
+     */
+    @PostMapping("/addStationDeviceInfo")
+    @ResponseBody
+    public AjaxResult addStationDeviceInfo(@RequestBody StationDeviceInfo stationDeviceInfo) {
+        return toAjax(stationDeviceInfoMapper.insertStationDeviceInfo(stationDeviceInfo));
     }
 
 }

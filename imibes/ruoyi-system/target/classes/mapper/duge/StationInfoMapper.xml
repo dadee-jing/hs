@@ -34,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="kakoCode"    column="kako_code"    />
         <result property="typeId"    column="type_id"    />
         <result property="recentTime"    column="recent_time"    />
+        <result property="installTime"    column="install_time"    />
         <association property="stationType"    column="type_id" javaType="com.ruoyi.duge.domain.StationType" resultMap="typeResult" />
     </resultMap>
 
@@ -49,7 +50,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select dsi.id, dsi.name, dsi.abbreviation, dsi.latitude, dsi.longitude, dsi.user_id, dsi.bureau, dsi.province,
         dsi.city, dsi.county, dsi.address, dsi.create_by,dsi.create_time, dsi.update_by, dsi.update_time, dsi.remark,
         dsi.longitude_WGS84,dsi.latitude_WGS84,dsi.longitude_GCJ02,dsi.latitude_GCJ02,dsi.longitude_BD09,dsi.latitude_BD09,
-        dsi.ip ,dsi.port ,dsi.state,dsi.remark_info,dsi.kako_code ,dsi.type_id, dsi.recent_time, st.type_name from duge_station_info dsi
+        dsi.ip ,dsi.port ,dsi.state,dsi.remark_info,dsi.kako_code ,dsi.type_id, dsi.recent_time, dsi.install_time,st.type_name
+        from duge_station_info dsi
         left join station_type st on dsi.type_id = st.type_id
     </sql>
 	
@@ -106,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="ip != null  and ip != ''  ">ip,</if>
 			<if test="port != null ">port,</if>
 			<if test="typeId != null ">type_id,</if>
+			<if test="installTime != null and installTime != '' ">install_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null  ">#{id},</if>
@@ -127,6 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ip != null  and ip != ''  ">#{ip},</if>
             <if test="port != null ">#{port},</if>
             <if test="typeId != null ">#{typeId},</if>
+            <if test="installTime != null  and installTime != '' ">#{installTime},</if>
          </trim>
     </insert>
 	 
@@ -154,6 +158,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remarkInfo != null  and remarkInfo != ''  ">remark_info = #{remarkInfo},</if>
             <if test="typeId != null ">type_id = #{typeId},</if>
             <if test="recentTime != null  and recentTime != ''  ">recent_time = #{recentTime},</if>
+            <if test="installTime != null  and installTime != ''  ">install_time = #{installTime},</if>
         </trim>
         where id = #{id}
     </update>

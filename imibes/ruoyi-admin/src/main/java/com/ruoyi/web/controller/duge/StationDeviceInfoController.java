@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 站点 信息操作处理
+ * 站点设备
  *
  * @author ruoyi
  * @date 2018-11-22
@@ -49,6 +49,16 @@ public class StationDeviceInfoController extends BaseController {
     public TableDataInfo list(StationDeviceInfo stationDeviceInfo) {
         startPage();
         List<StationDeviceInfoVo> stationDeviceInfoList = stationDeviceInfoMapper.selectStationDeviceInfoList(stationDeviceInfo);
+        return getDataTable(stationDeviceInfoList);
+    }
+
+    @PostMapping("/stationDeviceList/{stationId}")
+    @ResponseBody
+    public TableDataInfo stationDeviceInfoList(@PathVariable("stationId") Integer stationId, ModelMap mmap) {
+        startPage();
+        List<StationDeviceInfoVo> stationDeviceInfoList
+                = stationDeviceInfoMapper.selectStationDeviceListByStationId(stationId);
+        mmap.put("stationDeviceInfoList",stationDeviceInfoList);
         return getDataTable(stationDeviceInfoList);
     }
 

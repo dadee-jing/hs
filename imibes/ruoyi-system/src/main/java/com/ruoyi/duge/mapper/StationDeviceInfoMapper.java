@@ -19,6 +19,8 @@ public interface StationDeviceInfoMapper {
 
 	List<StationDeviceInfoVo> selectStationDeviceInfoList(StationDeviceInfo stationDeviceInfo);
 
+	List<StationDeviceInfoVo> selectStationDeviceListByStationId(@Param("stationId") Integer stationId);
+
 	List<DeviceEnum> selectDeviceEnumList(@Param("type") Integer type);
 
 	int insertStationDeviceInfo(StationDeviceInfo stationDeviceInfo);

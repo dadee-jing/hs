@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: header"></head>
+
+<style type="text/css">
+    /*===============================公共样式===========================================*/
+    body{
+        background-color: #f3f3f4;
+    }
+    #parent{
+        width: 100%;
+        height: 100%;
+    }
+    #div_title{
+        font-size: 17px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    #div_title select{
+        height: 50%;
+    }
+    #div_information{
+        width: 100%;
+        height: 92%;
+        padding: 0px 20px;
+    }
+    #div_information .table_title{
+        font-size: 19px;
+        margin-top: 10px;
+        letter-spacing: 1px;
+    }
+    #div_information .table_style{
+        background: #fff;
+        border-radius: 6px;
+        box-shadow: 1px 1px 3px rgba(0,0,0,.2);
+        padding: 5px 13px 13px;
+    }
+    #device_status{
+        min-height: 98%;
+    }
+    .details{
+        margin-bottom: 15px;
+    }
+</style>
+
+<body class="gray-bg-bg">
+    <!--父级DIV-->
+    <div id="parent">
+        <div id="div_information">
+            <input id="isStationId" name="isStationId" th:value="*{stationId}"  type="hidden">
+            <!--站点标题-->
+            <div id="div_title"  class="details table_style">
+                <ul>
+                    <li>
+                        <select name="stationId" th:field="*{stationId}" id="selectStation">
+                            <option th:each="station : ${stationInfoList}" th:text="${station.name}"
+                                    th:value="${station.id}"></option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+            <!--站点信息-->
+            <div class="details table_style">
+                <h3 class="table_title">站点信息</h3>
+                    <ul>
+                        <li><h3 th:text="'站点名称：'+${stationInfo.name}"></h3></li>
+                        <li><h3 th:text="'业务类型：'+${stationInfo.stationType.typeName}"></h3></li>
+                        <li><h3 th:text="'位置：'+${stationInfo.address}"></h3></li>
+                        <li><h3 th:text="'安装时间：'+${stationInfo.installTime}"></h3></li>
+                    </ul>
+            </div>
+
+            <div class="details">
+                <!--设备状态信息-->
+                <div id="device_status" class="table_style">
+                    <h3 class="table_title">设备状态信息</h3>
+                    <table id="device_status_table" data-mobile-responsive="true"></table>
+                </div>
+            </div>
+            <div class="details">
+                <!--设备维护信息-->
+                <div id="device_maintain" class="table_style">
+                    <h3 class="table_title">站点维护信息</h3>
+                    <table id="device_maintain_table" data-mobile-responsive="true"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<div th:include="include::footer"></div>
+
+<script th:src="@{/ajax/libs/echart/echarts.min.js}"></script>
+<script th:inline="javascript">
+
+    $("#selectStation").bind("change", function () {
+        var id = $("#selectStation option:selected").val();
+        window.location = id;
+    });
+    function formatTableUnit(value, row, index) {
+        return {
+            css: {
+                "cursor": 'pointer'
+            }
+        }
+    }
+    $(function (){
+        var stationId = $("#isStationId").val();
+        $("#selectStation").find('option[value='+stationId+']').prop("selected", 'selected');
+        // 设备状态信息表格
+        $('#device_status_table').bootstrapTable({
+            method: 'post',                                          // 请求方式
+            url: "/module/stationDeviceInfo/stationDeviceList/" + stationId,                             // 请求后台的URL
+            contentType: "application/x-www-form-urlencoded",        // 编码类型
+            cache: false,                                           // 是否使用缓存
+            sortName: "id",                                  // 排序列名称
+            sortOrder: "asc",                                       // 排序方式  asc 或者 desc
+            pagination: true,                                       // 显示分页
+            pageNumber: 1,                                          // 初始化加载第一页，默认第一页
+            pageSize: 10,                                           // 每页的记录行数
+            pageList: [],                                           // 可供选择的每页的行数
+            sidePagination: "server",                               // 启用服务端分页
+            columns: [
+                {
+                    field: 'id',
+                    title: '设备编号'
+                },
+                {
+                    field: 'deviceTypeName',
+                    title: '设备类型'
+                },
+                {
+                    field: 'deviceName',
+                    title: '设备名称'
+                },
+                {
+                    field: 'ipAddress',
+                    title: 'ip'
+                },
+                {
+                    field: 'snCode',
+                    title: 'SN码'
+                },
+                {
+                    field : 'state',
+                    title : '状态',
+                    formatter: function(value, row, index) {
+                        if(value == 0){
+                            return "<span style='color:red'> 异常</span>";
+                        }
+                        else if (value ==1 ){
+                            return "<span style='color:green'> 正常</span>";
+                        }
+                        else if (value ==2 ){
+                            return "<span> -- </span>";
+                        }
+                    }
+                }],                                       // 显示列信息
+            queryParams: function(params) {
+                return {
+                    // 传递参数查询参数
+                    pageSize : params.limit,
+                    pageNum : params.offset / params.limit + 1,
+                    orderByColumn : params.sort,
+                    isAsc : params.order,
+                    stationCode : 'OL0402'
+                };
+            },                    // 传递参数
+            responseHandler: function(res) {
+                if (res.code == 0) {
+                    return { rows: res.rows, total: res.total };
+                } else {
+                    $.modal.alertWarning(res.msg);
+                    return { rows: [], total: 0 };
+                }
+            }                   // 回调函数
+
+        });
+
+        // 设备维护信息表格
+        $('#device_maintain_table').bootstrapTable({
+            method: 'post',                                          // 请求方式
+            url: "/station/maintenanceRecord/stationRecordList/" + stationId,                 // 请求后台的URL
+            contentType: "application/x-www-form-urlencoded",        // 编码类型
+            cache: false,                                           // 是否使用缓存
+            pagination: true,                                       // 显示分页
+            pageNumber: 1,                                          // 首页页码
+            pageSize: 10,                                            // 每页数据数
+            pageList: [],                                           // 可供选择的每页的行数
+            sidePagination: "server",                                // 启用服务端分页
+            columns: [
+                {
+                    field : 'id',
+                    title : '记录编号',
+                    cellStyle:formatTableUnit
+                },
+                {
+                    field : 'maintenanceDate',
+                    title : '维护日期'
+                },
+                {
+                    field : 'siteCondition',
+                    title : '现场状况描述'
+                },
+                {
+                    field : 'operationLog',
+                    title : '操作记录'
+                },
+                {
+                    field : 'operator',
+                    title : '操作人'
+                },
+                {
+                    field : 'operatorPhone',
+                    title : '操作人手机号'
+                },
+                {
+                    field : 'coordinator',
+                    title : '协同人'
+                },
+                {
+                    field : 'coordinatorPhone',
+                    title : '协同人人手机号'
+                },
+                {
+                    field : 'remark',
+                    title : '备注'
+                },
+                {
+                    field : 'createTime',
+                    title : '创建日期'
+                },
+                {
+                    field : 'createBy',
+                    title : '创建人'
+                },
+                {
+                    field : 'updateTime',
+                    title : '更新日期' ,
+                    visible:false
+                },
+                {
+                    field : 'updateBy',
+                    title : '更新人' ,
+                    visible:false
+                }],                                         // 显示列信息
+
+        });
+
+
+        $('#device_maintain_table').on('click-cell.bs.table', function (e,field, value,  row, $element) {
+            //console.log(value + "," + field);
+            if(!!value && field != 18){
+                $.operate.detailWithUrl(row.id,"/station/maintenanceRecord/detail/{id}","500px");
+            }
+        })
+
+    });
+</script>
+</html>

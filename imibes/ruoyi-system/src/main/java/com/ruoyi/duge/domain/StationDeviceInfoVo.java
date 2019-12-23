@@ -26,5 +26,6 @@ public class StationDeviceInfoVo {
 	private String stationName;
 	private String deviceTypeName;
 	private String deviceName;
+	private String snCode;
 
 }

@@ -38,15 +38,15 @@
 			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:user:add">
 				<i class="fa fa-plus"></i> 新增
 			</a>
-			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="system:user:edit">
-				<i class="fa fa-edit"></i> 修改
-			</a>
-			<a class="btn btn-danger btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:user:remove">
-				<i class="fa fa-remove"></i> 删除
-			</a>
-			<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:user:export">
-				<i class="fa fa-download"></i> 导出
-			</a>
+			<!--			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="system:user:edit">
+                            <i class="fa fa-edit"></i> 修改
+                        </a>
+                        <a class="btn btn-danger btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:user:remove">
+                            <i class="fa fa-remove"></i> 删除
+                        </a>
+                        <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:user:export">
+                            <i class="fa fa-download"></i> 导出
+                        </a>-->
 		</div>
 
 		<div class="col-sm-12 select-table table-striped">
@@ -68,7 +68,40 @@
 		$('body').layout({ west__size: 185 });
 		queryUserList();
 		queryDeptTree();
+		//点击表格行事件
+/*		$('#bootstrap-table').on('click-row.bs.table', function (e,row,$element) {
+			stationDetail(row.id)
+		});*/
+
+		//点击表格单元格事件
+		$('#bootstrap-table').on('click-cell.bs.table', function (e,field, value,  row, $element) {
+			if(!!value && field != 18){
+				stationDetail(row.id);
+			}
+		})
 	});
+
+
+
+	function stationDetail(id) {
+		var dataUrl = "/module/stationInfo/stationDashboard/" + id,
+				menuName = "站点信息",
+				dataIndex = 100;
+		var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
+		$('.menuTab', parent.document).removeClass('active');
+
+		// 添加选项卡对应的iframe
+		var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+		$('.mainContent', parent.document).find('iframe.RuoYi_iframe', parent.document).hide().parents('.mainContent', parent.document).append(str1);
+
+		//$.modal.loading("数据加载中，请稍后...");
+		$('.mainContent iframe:visible', parent.document).load(function () {
+			$.modal.closeLoading();
+		});
+		// 添加选项卡
+		$('.menuTabs .page-tabs-content', parent.document).append(str);
+		//scrollToTab($('.menuTab.active'));
+	}
 
 	function queryUserList() {
 		var options = {
@@ -83,6 +116,9 @@
 			showExport: false,
 			showToggle:false,
 			showSearch: false,
+			onClickRow: function (row, $element, field) {
+				alert("ss")
+			},
 			columns: [
 				{
 					field : 'id',
@@ -90,7 +126,8 @@
 				},
 				{
 					field : 'name',
-					title : '站点名称'
+					title : '站点名称',
+					cellStyle:formatTableUnit
 				},
 				{
 					field : 'abbreviation',
@@ -133,6 +170,10 @@
 				{
 					field : 'address',
 					title : '详细地址'
+				},
+				{
+					field : 'installTime',
+					title : '安装时间'
 				},
 				{
 					field : 'createBy',
@@ -183,13 +224,16 @@
 					formatter: function(value, row, index) {
 						var actions = [];
 						actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+/*
 						actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+*/
 						return actions.join('');
 					}
 				}]
 		};
 		$.table.init(options);
 	}
+
 
 	function queryDeptTree() {
 		var url = ctx + "module/stationType/stationTypeTreeDataNoRoot";
@@ -229,7 +273,13 @@
 		createMenuItem(url, "站点类型管理");
 	}
 
-
+	function formatTableUnit(value, row, index) {
+		return {
+			css: {
+				"cursor": 'pointer'
+			}
+		}
+	}
 </script>
 </body>
 </html>

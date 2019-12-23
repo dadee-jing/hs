@@ -94,6 +94,8 @@ public class StationInfo extends BaseEntity
 
 	private String recentTime;
 
+	private String installTime;
+
 	@Override
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

@@ -438,6 +438,29 @@
             	    }
             	});
             },
+			// 详细信息指定url
+            detailWithUrl: function(id,url,width) {
+        		if(!width) {
+                    width = '800px'
+				}
+            	var _url = $.common.isEmpty(id) ? url : url.replace("{id}", id);
+            	layer.open({
+            		type: 2,
+            		area: [$(window).width() + 'px', $(window).height() + 'px'],
+            		fix: false,
+            		//不固定
+            		maxmin: true,
+            		shade: 0.3,
+            		title: "详情",
+            		content: _url,
+            		btn: ['<i class="fa fa-close"></i> 关闭'],
+            	    // 弹层外区域关闭
+            		shadeClose: true,
+            	    cancel: function(index) {
+            	        return true;
+            	    }
+            	});
+            },
             // 删除信息
             remove: function(id) {
             	$.modal.confirm("确定删除该条" + $.table._option.modalName + "信息吗？", function() {
