@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectStationDeviceInfoList" resultMap="StationDeviceInfoVoResult">
         SELECT sdi.id,sdi.station_id,dsi.name station_name,sdi.state,sdi.create_time,sdi.sn_code,sdi.ipAddress,
-        de.value device_name,de2.value device_type_name
+        sdi.port,de.value device_name,de2.value device_type_name
         FROM station_device_info sdi
         LEFT JOIN duge_station_info dsi ON sdi.station_id = dsi.id
         LEFT JOIN device_enum de ON sdi.deviceName_id = de.id
@@ -86,5 +86,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN device_enum de ON sdi.deviceName_id = de.id
         LEFT JOIN device_enum de2 ON sdi.deviceType_id = de2.id
         where sdi.station_id = #{stationId}
+    </select>
+    <select id="selectStationIdByDeviceId" resultType="java.lang.Integer">
+        select station_id from station_device_info where id = #{id}
     </select>
 </mapper>

@@ -21,7 +21,10 @@ public interface StationInfoMapper
      * @return 站点信息
      */
 	public StationInfo selectStationInfoById(@Param("id") Integer id,@Param("laneMid") String laneMid);
-	
+
+
+	public StationInfo selectStationInfoByIdNoLane(@Param("id") Integer id);
+
 	/**
      * 查询站点列表
      * 

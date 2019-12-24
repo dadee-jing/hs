@@ -68,8 +68,15 @@ public class MaintenanceRecordController extends BaseController
 	public String add(ModelMap mmap) {
 		List<StationInfo> stationInfoList = stationInfoMapper.selectStationInfoList(null);
 		SysUser user = getUser();
+		//当天登记的记录数
+		int todayCount = maintenanceRecordService.getTodayRecordCount() + 1;
+		String count = todayCount + "";
+		if(todayCount < 10){
+			count = "0" + todayCount;
+		}
 		mmap.put("stationList",stationInfoList);
 		mmap.put("user",user);
+		mmap.put("count",count);
 	    return prefix + "/add";
 	}
 	
@@ -95,8 +102,11 @@ public class MaintenanceRecordController extends BaseController
 		MaintenanceRecord maintenanceRecord = maintenanceRecordService.selectMaintenanceRecordById(id);
 		List<StationInfo> stationInfoList = stationInfoMapper.selectStationInfoList(null);
 		SysUser user = getUser();
+		int stationId = maintenanceRecordService.getStationIdByRecordId(id);
+		StationInfo stationInfo = stationInfoMapper.selectStationInfoByIdNoLane(stationId);
 		mmap.put("maintenanceRecord", maintenanceRecord);
 		mmap.put("stationList",stationInfoList);
+		mmap.put("stationInfo",stationInfo);
 		mmap.put("user",user);
 	    return prefix + "/edit";
 	}
@@ -132,7 +142,7 @@ public class MaintenanceRecordController extends BaseController
 	public String detail(@PathVariable("id") Integer id, ModelMap mmap) {
 		MaintenanceRecord maintenanceRecord = maintenanceRecordService.selectMaintenanceRecordById(id);
 		Integer stationId = maintenanceRecordService.getStationIdByRecordId(id);
-		StationInfo stationInfo = stationInfoMapper.selectStationInfoById(stationId);
+		StationInfo stationInfo = stationInfoMapper.selectStationInfoByIdNoLane(stationId);
 		mmap.put("record", maintenanceRecord);
 		mmap.put("station",stationInfo);
 		return prefix + "/detail";

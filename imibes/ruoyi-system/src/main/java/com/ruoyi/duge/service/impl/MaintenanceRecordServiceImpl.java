@@ -91,4 +91,10 @@ public class MaintenanceRecordServiceImpl implements IMaintenanceRecordService
 		return maintenanceRecordMapper.getStationIdByRecordId(id);
 	}
 
+	@Override
+	public int getTodayRecordCount() {
+		return maintenanceRecordMapper.getTodayRecordCount();
+	}
+
+
 }

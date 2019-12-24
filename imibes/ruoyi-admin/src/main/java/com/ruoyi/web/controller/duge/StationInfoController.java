@@ -65,8 +65,8 @@ public class StationInfoController extends BaseController {
     @GetMapping("/stationDashboard/{stationId}")
     public String stationDashboard(@PathVariable("stationId") Integer stationId, ModelMap mmap) {
         List<StationInfo> stationInfoList = stationInfoMapper.selectStationInfoList(null);
-        StationInfo stationInfo = stationInfoMapper.selectStationInfoById(stationId);
-        if(null != stationInfo.getInstallTime()){
+        StationInfo stationInfo = stationInfoMapper.selectStationInfoByIdNoLane(stationId);
+        if(null != stationInfo && null != stationInfo.getInstallTime()){
             stationInfo.setInstallTime(stationInfo.getInstallTime().substring(0,stationInfo.getInstallTime().length()-2));
         }
         mmap.put("stationId",stationId);
@@ -138,7 +138,7 @@ public class StationInfoController extends BaseController {
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
-        StationInfo stationInfo = stationInfoService.selectStationInfoById(id,"1");
+        StationInfo stationInfo = stationInfoService.selectStationInfoByIdNoLane(id);
         mmap.put("stationInfo", stationInfo);
         return prefix + "/edit";
     }

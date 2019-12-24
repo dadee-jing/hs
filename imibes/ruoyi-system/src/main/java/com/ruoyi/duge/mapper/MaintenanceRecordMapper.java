@@ -65,4 +65,7 @@ public interface MaintenanceRecordMapper
     List<MaintenanceRecord> selectMaintenanceRecordListByStationId(@Param("stationId") Integer stationId);
 
     Integer getStationIdByRecordId(@Param("id") Integer id);
+
+    Integer getTodayRecordCount();
+
 }

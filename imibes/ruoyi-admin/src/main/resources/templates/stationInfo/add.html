@@ -123,7 +123,7 @@
 			var treeId = $("#treeId").val();
 			var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
 			var options = {
-				title: '选择部门',
+				title: '选择分类',
 				width: "380",
 				url: ctx + "module/stationType/selectStationTypeTree/" + deptId,
 				callBack: doSubmit

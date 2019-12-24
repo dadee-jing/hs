@@ -56,4 +56,7 @@ public interface IMaintenanceRecordService
 	public int deleteMaintenanceRecordByIds(String ids);
 
     Integer getStationIdByRecordId(Integer id);
+
+	int getTodayRecordCount();
+
 }

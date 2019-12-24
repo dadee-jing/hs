@@ -35,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="typeId"    column="type_id"    />
         <result property="recentTime"    column="recent_time"    />
         <result property="installTime"    column="install_time"    />
+        <result property="speedLimit"    column="speed_limit"    />
         <association property="stationType"    column="type_id" javaType="com.ruoyi.duge.domain.StationType" resultMap="typeResult" />
     </resultMap>
 
@@ -81,9 +82,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </where>
     </select>
     
-    <select id="selectStationInfoById" parameterType="Integer" resultMap="StationInfoResult">
-        <include refid="selectStationInfoVo"/>
-        where dsi.id = #{id}
+    <select id="selectStationInfoById"  resultMap="StationInfoResult">
+        select dsi.id, dsi.name, dsi.abbreviation, dsi.latitude, dsi.longitude, dsi.user_id, dsi.bureau, dsi.province,
+        dsi.city, dsi.county, dsi.address, dsi.create_by,dsi.create_time, dsi.update_by, dsi.update_time, dsi.remark,
+        dsi.longitude_WGS84,dsi.latitude_WGS84,dsi.longitude_GCJ02,dsi.latitude_GCJ02,dsi.longitude_BD09,dsi.latitude_BD09,
+        dsi.ip ,dsi.port ,dsi.state,dsi.remark_info,dsi.kako_code ,dsi.type_id, dsi.recent_time, st.type_name,sli.speed_limit,
+        dsi.install_time
+        from duge_station_info dsi
+        left join station_type st on dsi.type_id = st.type_id
+        JOIN station_lane_info sli on dsi.id=sli.station_id
+        where dsi.id =  #{id}
+        <if test="laneMid != null ">
+        AND lane_no=#{laneMid}
+        </if>
+    </select>
+
+    <select id="selectStationInfoByIdNoLane"  resultMap="StationInfoResult">
+        select dsi.id, dsi.name, dsi.abbreviation, dsi.latitude, dsi.longitude, dsi.user_id, dsi.bureau, dsi.province,
+        dsi.city, dsi.county, dsi.address, dsi.create_by,dsi.create_time, dsi.update_by, dsi.update_time, dsi.remark,
+        dsi.longitude_WGS84,dsi.latitude_WGS84,dsi.longitude_GCJ02,dsi.latitude_GCJ02,dsi.longitude_BD09,dsi.latitude_BD09,
+        dsi.ip ,dsi.port ,dsi.state,dsi.remark_info,dsi.kako_code ,dsi.type_id, dsi.recent_time, st.type_name,
+        dsi.install_time
+        from duge_station_info dsi
+        left join station_type st on dsi.type_id = st.type_id
+        where dsi.id =  #{id}
     </select>
         
     <insert id="insertStationInfo" parameterType="com.ruoyi.duge.domain.StationInfo">

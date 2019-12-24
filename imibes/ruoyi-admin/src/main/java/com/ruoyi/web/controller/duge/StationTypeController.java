@@ -148,6 +148,15 @@ public class StationTypeController extends BaseController {
     }
 
     /**
+     * 选择树
+     */
+    @GetMapping("/selectStationTree/{typeId}")
+    public String selectStationTree(@PathVariable("typeId") Long typeId, ModelMap mmap) {
+        mmap.put("stationType", stationTypeMapper.selectStationTypeById(typeId));
+        return prefix + "/stationTree";
+    }
+
+    /**
      * 加载列表树
      */
     @GetMapping("/stationTypeTreeData")
@@ -168,6 +177,29 @@ public class StationTypeController extends BaseController {
     public List<Map<String, Object>> treeDataNoRoot() {
         List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
         List<StationType> stationTypeList = stationTypeMapper.selectStationTypeListNoRoot();
+        trees = getTrees(stationTypeList, false, null);
+        return trees;
+    }
+    /**
+     * 站点树
+     */
+    @GetMapping("/stationTreeData")
+    @ResponseBody
+    public List<Map<String, Object>> stationTreeDataNoRoot() {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        List<StationType> stationTypeList = stationTypeMapper.selectStationTreeDataNoRoot();
+        trees = getTrees(stationTypeList, false, null);
+        return trees;
+    }
+
+    /**
+     * 站点树
+     */
+    @GetMapping("/stationTreeDataRoot")
+    @ResponseBody
+    public List<Map<String, Object>> stationTreeDataRoot() {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        List<StationType> stationTypeList = stationTypeMapper.selectStationTreeDataRoot();
         trees = getTrees(stationTypeList, false, null);
         return trees;
     }

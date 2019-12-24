@@ -30,4 +30,6 @@ public interface StationDeviceInfoMapper {
 	int updateStationDeviceInfo(StationDeviceInfo stationDeviceInfo);
 
 	int deleteStationDeviceInfoById(@Param("id") Integer id);
+
+    int selectStationIdByDeviceId(@Param("id") Integer id);
 }

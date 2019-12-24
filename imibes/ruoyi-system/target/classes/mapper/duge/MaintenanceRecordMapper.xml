@@ -64,6 +64,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getStationIdByRecordId" resultType="java.lang.Integer">
         select station_id from station_maintenance_record where id = #{id}
     </select>
+    <select id="getTodayRecordCount" resultType="int">
+        select count(*) from station_maintenance_record where TO_DAYS(create_time) = TO_DAYS(NOW())
+    </select>
 
     <insert id="insertMaintenanceRecord" parameterType="com.ruoyi.duge.domain.MaintenanceRecord">
         insert into station_maintenance_record

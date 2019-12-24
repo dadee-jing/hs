@@ -78,6 +78,9 @@ public class StationDeviceInfoController extends BaseController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
         setDataList(mmap);
+        int stationId = stationDeviceInfoMapper.selectStationIdByDeviceId(id);
+        StationInfo stationInfo = stationInfoMapper.selectStationInfoByIdNoLane(stationId);
+        mmap.put("stationInfo", stationInfo);
         mmap.put("stationDeviceInfo", stationDeviceInfoMapper.selectDeviceById(id));
         return prefix + "/edit";
     }

@@ -394,7 +394,7 @@
         station_id
     </select>
 
-    <select id="selectCarOutNumber" parameterType="CarOut" resultType="hashMap">
+    <select id="selectCarOutNumber" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
     	SELECT carOutNum.* FROM
 		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number
 		FROM weight_data
@@ -405,7 +405,7 @@
 
     </select>
 
-    <select id="selectCarOverWeight" parameterType="CarOut" resultType="hashMap">
+    <select id="selectCarOverWeight" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
     	SELECT carOutNum.* FROM
 		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number
 		FROM weight_data

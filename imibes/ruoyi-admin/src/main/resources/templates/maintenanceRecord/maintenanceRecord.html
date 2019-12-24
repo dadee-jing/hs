@@ -48,6 +48,7 @@
 				detailUrl: prefix + "/detail/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "站点维护记录",
+				pageSize: 10,
 				search: false,
 				showExport: false,
 				showToggle:false,
@@ -141,12 +142,12 @@
             };
             $.table.init(options);
 
-			$('#bootstrap-table').on('click-cell.bs.table', function (e,field, value,  row, $element) {
+/*			$('#bootstrap-table').on('click-cell.bs.table', function (e,field, value,  row, $element) {
 				//console.log(value + "," + field)
 				if(!!value && field != 18){
 					$.operate.detail( row.id);
 				}
-			})
+			})*/
         });
     </script>
 </body>

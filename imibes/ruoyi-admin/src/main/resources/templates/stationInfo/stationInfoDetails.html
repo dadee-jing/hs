@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: header"></head>
-
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
 <style type="text/css">
     /*===============================公共样式===========================================*/
     body{
@@ -43,13 +44,32 @@
     }
 </style>
 
-<body class="gray-bg-bg">
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 站点
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
     <!--父级DIV-->
-    <div id="parent">
+    <div id="parent" class="container-div ui-layout-center">
         <div id="div_information">
             <input id="isStationId" name="isStationId" th:value="*{stationId}"  type="hidden">
             <!--站点标题-->
-            <div id="div_title"  class="details table_style">
+<!--            <div id="div_title"  class="details table_style">
                 <ul>
                     <li>
                         <select name="stationId" th:field="*{stationId}" id="selectStation">
@@ -58,7 +78,7 @@
                         </select>
                     </li>
                 </ul>
-            </div>
+            </div>-->
             <!--站点信息-->
             <div class="details table_style">
                 <h3 class="table_title">站点信息</h3>
@@ -86,16 +106,16 @@
             </div>
         </div>
     </div>
-</body>
 <div th:include="include::footer"></div>
-
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
 <script th:src="@{/ajax/libs/echart/echarts.min.js}"></script>
 <script th:inline="javascript">
 
-    $("#selectStation").bind("change", function () {
+/*    $("#selectStation").bind("change", function () {
         var id = $("#selectStation option:selected").val();
         window.location = id;
-    });
+    });*/
     function formatTableUnit(value, row, index) {
         return {
             css: {
@@ -104,6 +124,8 @@
         }
     }
     $(function (){
+        $('body').layout({ west__size: 250 });
+        queryStationTree();
         var stationId = $("#isStationId").val();
         $("#selectStation").find('option[value='+stationId+']').prop("selected", 'selected');
         // 设备状态信息表格
@@ -135,6 +157,10 @@
                 {
                     field: 'ipAddress',
                     title: 'ip'
+                },
+                {
+                    field: 'port',
+                    title: '端口'
                 },
                 {
                     field: 'snCode',
@@ -245,8 +271,6 @@
                 }],                                         // 显示列信息
 
         });
-
-
         $('#device_maintain_table').on('click-cell.bs.table', function (e,field, value,  row, $element) {
             //console.log(value + "," + field);
             if(!!value && field != 18){
@@ -255,5 +279,39 @@
         })
 
     });
+    function queryStationTree() {
+        var url = ctx + "module/stationType/stationTreeData";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+        function zOnClick(event, treeId, treeNode) {
+            var typeId = treeNode.id;
+            var pid = treeNode.pId;
+            var stationId = typeId - 1000;
+            if(stationId > 0)
+                window.location = stationId;
+        }
+    }
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function() {
+        queryStationTree();
+    });
+
 </script>
+</body>
 </html>
