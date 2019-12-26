@@ -37,6 +37,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     VALUES (#{stationId},#{deviceTypeId},#{deviceNameId},#{ipAddress},#{port},#{state},#{remark},#{snCode})
     </insert>
 
+    <insert id="insertStationDeviceInfoVo" parameterType="com.ruoyi.duge.domain.StationDeviceInfoVo">
+    INSERT INTO station_device_info (station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark,sn_code)
+    VALUES (#{stationId},#{deviceTypeId},#{deviceNameId},#{ipAddress},#{port},#{state},#{remark},#{snCode})
+    </insert>
+
+    <insert id="insertDeviceEnum"  parameterType="com.ruoyi.duge.domain.DeviceEnum" useGeneratedKeys="true" keyProperty="id">
+    insert into device_enum (value,type) values (#{value},#{type})
+    </insert>
+
     <update id="updateStationDeviceInfo">
         update station_device_info
         <trim prefix="SET" suffixOverrides=",">
@@ -89,5 +98,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectStationIdByDeviceId" resultType="java.lang.Integer">
         select station_id from station_device_info where id = #{id}
+    </select>
+    <select id="getDeviceEnumIdByName" resultType="integer">
+        select id from device_enum where value = #{value} and type = #{type}
     </select>
 </mapper>

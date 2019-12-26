@@ -12,20 +12,9 @@ import java.sql.Timestamp;
  * @date 2018-11-22
  */
 @Data
-public class StationDeviceInfoVo {
-
-	private Integer id;
-	private Integer stationId;
-	private Integer deviceTypeId;
-	private Integer deviceNameId;
-	private String ipAddress;
-	private String port;
-	private Integer state;
-	private Timestamp createTime;
+public class StationDeviceInfoVo extends StationDeviceInfo{
 
 	private String stationName;
 	private String deviceTypeName;
 	private String deviceName;
-	private String snCode;
-
 }

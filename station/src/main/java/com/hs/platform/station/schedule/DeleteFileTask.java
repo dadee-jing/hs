@@ -18,7 +18,7 @@ public class DeleteFileTask {
     public static String timeOutHour = getConfigValue("file_time_out_hour");
 
 
-    @Scheduled(cron = "0 0 0/2 * * ?")
+    @Scheduled(cron = "0 0 0/1 * * ?")
     private void deleteTimeOutFile(){
         //每x小时删除一次创建时间大于y小时的文件
         //D:/Camera/Picture/20191107/20191107_1410/1405123_1_side.jpg

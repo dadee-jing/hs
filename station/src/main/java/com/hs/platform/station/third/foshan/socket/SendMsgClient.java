@@ -86,7 +86,7 @@ public class SendMsgClient {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e1) {
-                        log.error("连接佛山服务端" + host + ":" + port + "失败,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e1.getMessage());
+                        log.error("连接佛山服务端" + host + ":" + port + "失败2,时间:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ",异常内容:" + e1.getMessage());
                     }
                 }
             }
@@ -100,12 +100,11 @@ public class SendMsgClient {
                 synchronized (lockObject){
                     // 同步发送， 10s超时
                     session.write(foshanMessage).awaitUninterruptibly(10000);
-                    if(foshanMessage.getMessageType() == BODY_MSG){
-                        FoshanApiService.sendCount.increment();
-                        log.info("write "+ foshanMessage.getPlate());
-                    }
+                    //session.write(foshanMessage);
                 }
-                //session.write(foshanMessage);
+                if(foshanMessage.getMessageType() == BODY_MSG){
+                    FoshanApiService.sendCount.increment();
+                }
                 return true;
             }catch (Exception e){
                 log.info("sendMessage error",e);

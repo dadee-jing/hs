@@ -27,19 +27,12 @@
 		</div>
     </div>
     <div th:include="include :: footer"></div>
+	<script th:src="@{/js/mobile.js}"></script>
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('station:maintenanceRecord:edit')}]];
         var removeFlag = [[${@permission.hasPermi('station:maintenanceRecord:remove')}]];
         var prefix = ctx + "station/maintenanceRecord";
 
-		var innerWidth = $(window).width();
-		if(innerWidth <= 750) {
-			$("#mobile_add").show();
-		}
-		else{
-			$("#mobile_add").hide();
-		}
-		$("body",window.parent.document).addClass("mini-navbar");
 		$(function() {
             var options = {
                 url: prefix + "/list",
@@ -58,7 +51,8 @@
                 columns: [
 				{
 					field : 'id', 
-					title : 'id' 
+					title : 'id' ,
+					sortable: true
 				},
 				{
 					field : 'stationId', 
@@ -71,7 +65,8 @@
 				},
 				{
 					field : 'maintenanceDate', 
-					title : '维护日期'
+					title : '维护日期',
+					sortable: true
 				},
 				{
 					field : 'siteCondition', 
@@ -111,7 +106,8 @@
 				},
 				{
 					field : 'createTime', 
-					title : '创建日期' 
+					title : '创建日期' ,
+					visible:false
 				},
 				{
 					field : 'createBy', 

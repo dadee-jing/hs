@@ -32,7 +32,7 @@ public class MaintenanceRecord extends BaseEntity
 	private String siteCondition;
 	/** 操作记录 */
 	private String operationLog;
-	/** 操作人 */
+	/** 操作人 --对应user_name*/
 	private String operator;
 	/** 操作人手机号 */
 	private String operatorPhone;

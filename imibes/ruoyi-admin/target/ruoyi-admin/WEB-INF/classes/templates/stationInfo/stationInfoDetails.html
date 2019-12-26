@@ -126,6 +126,7 @@
     $(function (){
         $('body').layout({ west__size: 250 });
         queryStationTree();
+        innerWidth < 750 ? $(".ui-layout-toggler-west-open")[0].click() : 0;
         var stationId = $("#isStationId").val();
         $("#selectStation").find('option[value='+stationId+']').prop("selected", 'selected');
         // 设备状态信息表格
@@ -144,7 +145,8 @@
             columns: [
                 {
                     field: 'id',
-                    title: '设备编号'
+                    title: '设备编号',
+                    sortable: true
                 },
                 {
                     field: 'deviceTypeName',
@@ -217,11 +219,13 @@
                 {
                     field : 'id',
                     title : '记录编号',
-                    cellStyle:formatTableUnit
+                    cellStyle:formatTableUnit,
+                    sortable: true
                 },
                 {
                     field : 'maintenanceDate',
-                    title : '维护日期'
+                    title : '维护日期',
+                    sortable: true
                 },
                 {
                     field : 'siteCondition',
@@ -253,7 +257,8 @@
                 },
                 {
                     field : 'createTime',
-                    title : '创建日期'
+                    title : '创建日期',
+                    visible:false
                 },
                 {
                     field : 'createBy',

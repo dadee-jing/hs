@@ -6,7 +6,11 @@
 <link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
 <link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
 <body class="gray-bg">
-
+<div style="position: absolute;z-index: 1000;top: 10px; left: 10px;" id="mobile_add">
+	<a class="btn btn-success" onclick="$.operate.add()">
+		<i class="fa fa-plus"></i> 添加
+	</a>
+</div>
 <div class="ui-layout-west">
 	<div class="main-content">
 		<div class="box box-main">
@@ -74,13 +78,14 @@
 	<div th:include="include :: footer"></div>
 <script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
 <script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:src="@{/js/mobile.js}"></script>
 	<script th:inline="javascript">
 		var prefix = ctx + "module/stationDeviceInfo";
-		
 		$(function() {
 			$('body').layout({ west__size: 250 });
 			queryStationTree();
-		    var options = {
+			innerWidth < 750 ? $(".ui-layout-toggler-west-open")[0].click() : 0;
+			var options = {
 		        url: prefix + "/list",
 		        createUrl: prefix + "/add",
 		        updateUrl: prefix + "/edit/{id}",
@@ -88,11 +93,16 @@
 		        exportUrl: prefix + "/export",
 				modalName: "设备",
 				search: false,
-		        showExport: false,
+				showExport: false,
+				showToggle:false,
+				showSearch: false,
+				showRefresh:false,
+				showColumns:false,
 		        columns: [
 		        {
 		            field: 'id',
-		            title: '设备编号'
+		            title: '设备编号',
+					sortable: true
 		        },
 		        {
 		            field: 'stationName',
@@ -131,7 +141,8 @@
 						else if (value ==2 ){
 							return "<span> -- </span>";
 						}
-					}
+					},
+					sortable: true
 				},
 		        {
 		            title: '操作',

@@ -9,16 +9,22 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
 import static com.hs.platform.station.Constants.led_overWeight_percentage;
+import static com.hs.platform.station.third.foshan.socket.StructUtil.getPicByStream;
 import static com.hs.platform.station.util.DbUtil.*;
 import static com.hs.platform.station.util.ImageDownloadUtil.station_id;
 
@@ -281,9 +287,30 @@ public class WeightAndLWHContainer {
         if(StringUtils.isNotBlank(previousEntity.getRemarkInfo())){
             previousEntity.setRemarkInfo(previousEntity.getRemarkInfo().replaceAll("null",""));
         }
+        setLwhScenePic(previousEntity);
         DbUtil.insertWeightAndLWH(previousEntity);
         LOGGER.info("insertDB : " + previousEntity.getPlate() + "-" + previousEntity.getLength() + "-" +
                 previousEntity.getWeight() + "-" + previousEntity.getHeight() + ",mapContainer:" + mapContainer.size());
+    }
+
+    private static void setLwhScenePic(WeightAndLwhEntity previousEntity) {
+        try {
+            String nowDate = DateFormatUtils.format(previousEntity.getLwhDate(), "yyyyMMddHH");
+            String date = nowDate.substring(0, nowDate.length() - 2);
+            String hour = nowDate.substring(nowDate.length() - 2);
+            String path = "D:\\CameraPic\\" + date + "\\" + hour;
+            List<File> files = FileUtil.searchFiles(new File(path), previousEntity.getPlate().toLowerCase());
+            LOGGER.info("共找到:" + files.size() + "个文件");
+            for (File file : files) {
+                if (file.getAbsolutePath().contains("scene")) {
+                    LOGGER.info("setLwhScenePic filePath:" + file.getAbsolutePath() + "," + previousEntity.getPlate());
+                    previousEntity.setLwhScenePath(file.getAbsolutePath());
+                    break;
+                }
+            }
+        }catch (Exception e){
+            LOGGER.info("setLwhScenePic error", e);
+        }
     }
 
     private static void changeLocalFile(WeightAndLwhEntity previousEntity) {

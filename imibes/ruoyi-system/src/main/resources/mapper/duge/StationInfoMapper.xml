@@ -108,7 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where dsi.id =  #{id}
     </select>
         
-    <insert id="insertStationInfo" parameterType="com.ruoyi.duge.domain.StationInfo">
+    <insert id="insertStationInfo" parameterType="com.ruoyi.duge.domain.StationInfo"  useGeneratedKeys="true" keyProperty="id">
         insert into duge_station_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null  ">id,</if>

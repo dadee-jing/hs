@@ -15,7 +15,7 @@ public class WeightService {
     private static Logger LOGGER = LoggerFactory.getLogger(WeightService.class);
 
     public static void insert(String json, String sequenceTag) {
-        //LOGGER.info("[newlx_weight_message]: " + json);
+        LOGGER.info("[weight_msg]: " + json);
         Gson gson = new Gson();
         WeightEntity weightBean = gson.fromJson(json, WeightEntity.class);
         // 转化成组合entity

@@ -1,6 +1,7 @@
 package com.hs.platform.station.schedule;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hs.platform.station.persistence.local.dao.ConfigDataRepository;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Component
@@ -104,7 +106,7 @@ public class UploadData {
         Iterator<Map.Entry<String, String>> entries = fileInfo.entrySet().iterator();
         while(entries.hasNext()){
             Map.Entry<String, String> entry = entries.next();
-            logger.info("updateRemoteWeightData key = " + entry.getKey() + ", value = " + entry.getValue());
+            //logger.info("updateRemoteWeightData key = " + entry.getKey() + ", value = " + entry.getValue());
             if(entry.getKey().contains("scene") && "0".equals(entry.getValue())){
                 remoteWeightDataData.setFtpPriorHead("");
             }
@@ -122,6 +124,9 @@ public class UploadData {
             }
             else if(entry.getKey().contains("video") && "0".equals(entry.getValue())){
                 remoteWeightDataData.setFtpFullView("");
+            }
+            else if("lwhScenePath".equals(entry.getKey())){
+                remoteWeightDataData.setLwhScenePath(entry.getValue());
             }
         }
     }
@@ -168,4 +173,5 @@ public class UploadData {
             return null;
         }
     }
+
 }

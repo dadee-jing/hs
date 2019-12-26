@@ -140,15 +140,11 @@ public class FTPClientUtil {
                 ReUploadFailedData.ftpReUploadQueue.poll();
             }
             return fileInfo;
-        } finally {
-            try {
-                //outputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
-        try (InputStream inputStream = parse(outputStream)) {
-            InputStream sizeInputStream = parse(outputStream);
+        try (InputStream inputStream = parse(outputStream);
+             InputStream sizeInputStream = parse(outputStream);
+             ) {
+            InputStream shiJuInputStream = parse(outputStream);
             if(sizeInputStream.available() < 100){
                 LOGGER.info("sourceFile empty:" + sourcePath);
                 fileInfo.put("fileState","0");
@@ -158,7 +154,6 @@ public class FTPClientUtil {
             //前抓拍加水印
             OutputStream waterOutputStream = null;
             InputStream uploadInputStream = null;
-            InputStream shiJuInputStream = parse(outputStream);
 
 /*            if(sourcePath.contains("scene") && stationList.contains(station_id)){
                 waterOutputStream = setWaterMark(weightingDate,laneMid,speed,plate,inputStream);
@@ -172,22 +167,22 @@ public class FTPClientUtil {
             //targetState false 没有上传到服务器
             LOGGER.info("ok:targetState:" + targetState + ",cost:" +(endTime2 - startTime2)+"," + targetPath);
             //将流转化成byte返回
-            try{
-                if(!sourcePath.contains("mp4")){
-/*                    if(!sourcePath.contains("plate")){
-                        //压缩除车牌外的图片
+            try {
+                if (!sourcePath.contains("mp4")) {
+                    if (sourcePath.contains("scene")) {
+                        //压缩前抓拍图片
                         long startTime3 = System.currentTimeMillis();
                         ByteArrayOutputStream reSizeOutputStream = resizePicToOutputStream(shiJuInputStream);
-                        if(null != reSizeOutputStream){
+                        if (null != reSizeOutputStream) {
                             shiJuInputStream = parse(reSizeOutputStream);
                             long endTime3 = System.currentTimeMillis();
-                            LOGGER.info("resize,before:" + outputStream.size() + ",after:" + reSizeOutputStream.size() +
-                                    ",cost:" + (endTime3 - startTime3));
+                            LOGGER.info("resize,before:" + outputStream.size() + ",after,picSize:" + reSizeOutputStream.size() +
+                                   "," + plate + ",cost:" + (endTime3 - startTime3));
                         }
-                    }*/
+                    }
                     byte[] pic = getPicByStream(weightingDate, shiJuInputStream);
-                    fileInfo.put("pic",pic);
-                    return fileInfo;
+                        fileInfo.put("pic", pic);
+                        return fileInfo;
                 }
             }
             catch (Exception e){
@@ -403,11 +398,12 @@ public class FTPClientUtil {
         }
     }
 
-    private static ByteArrayOutputStream resizePicToOutputStream(InputStream shiJuInputStream) {
+    public static ByteArrayOutputStream resizePicToOutputStream(InputStream shiJuInputStream) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             Thumbnails.of(shiJuInputStream)
-                    .scale(0.4f)
+                    //.scale(0.4f)
+                    .size(1500,900)
                     .outputQuality(0.5f)
                     .toOutputStream(outputStream);
             return outputStream;

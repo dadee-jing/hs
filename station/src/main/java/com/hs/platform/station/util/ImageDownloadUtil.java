@@ -15,9 +15,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 import static com.hs.platform.station.Constants.*;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.getCarData2Info;
+import static com.hs.platform.station.third.foshan.socket.StructUtil.getPicByStream;
+import static com.hs.platform.station.util.FTPClientUtil.resizePicToOutputStream;
 
 @Component
 public class ImageDownloadUtil {
@@ -77,6 +83,7 @@ public class ImageDownloadUtil {
                 String FtpAxle = entity.getFtpAxle();//右侧 right
                 String FtpPlate = entity.getFtpPlate();//车牌 plate
                 String FtpFullView = entity.getFtpFullView();//视频 video
+                String lwhScenePath = entity.getLwhScenePath();//外廓前抓
 
                 FoshanMessage foshanMessage = new FoshanMessage();
                 //上传图片，组装对象。上传前重置图片为0
@@ -87,17 +94,55 @@ public class ImageDownloadUtil {
                 if("1".equals(WeightAndLWHContainer.lwhUploadFileTag) && entity.getPathTag() != 0){
                     //上传本地侧拍
                     uploadLocalFile(entity,targetParentPath,foshanMessage,pathList,fileInfoState);
-                    uploadNewlxFile(foshanMessage,pathList,targetParentPath,entity,fileInfoState);
                 }
-                else{
-                    uploadNewlxFile(foshanMessage,pathList,targetParentPath,entity,fileInfoState);
-                }
+                //上传新流向文件
+                uploadNewlxFile(foshanMessage,pathList,targetParentPath,entity,fileInfoState);
+                //上传外廓前抓拍
+                uploadLwhScenePic(foshanMessage,entity.getPlate(),entity.getLwhDate(),lwhScenePath,targetParentPath,fileInfoState);
+                //组装市局发送对象
+                combineFoshanMessage(foshanMessage,entity);
                 FoshanApiService.addEntity(foshanMessage);
             }
         } catch (Exception e) {
             LOGGER.error("FILE TRANSFORM ERROR ",e);
         }
         return fileInfoState;
+    }
+
+    private void uploadLwhScenePic(FoshanMessage foshanMessage, String plate, Date lwhDate,String lwhScenePath,
+                                   String targetParentPath,HashMap<String, String> fileInfo) {
+        //lwhScenePath D:\CameraPic\20191220\16\粤A7BB15_2_scene_7974.jpg
+        //PicPlate/20191226_1021/102156_2_scene_1540.jpg
+        try{
+            long startTime = System.currentTimeMillis();
+            String min = DateFormatUtils.format(lwhDate, "yyyyMMdd_HHmm");
+            String senond = DateFormatUtils.format(lwhDate, "HHmmss");
+            String targetPath;
+            if(lwhScenePath.contains("_")){
+                targetPath ="PicPlate/" + min + "/" + senond + lwhScenePath.substring(lwhScenePath.indexOf("_"));
+            }
+            else{
+                targetPath ="PicPlate/" + min + "/" + senond + "_" + lwhScenePath;
+            }
+            int picSize = 0;
+            InputStream input =  new FileInputStream(lwhScenePath);
+            ByteArrayOutputStream reSizeOutputStream = FTPClientUtil.resizePicToOutputStream(input);
+            if (null != reSizeOutputStream) {
+                input = FTPClientUtil.parse(reSizeOutputStream);
+                InputStream yhlInput = FTPClientUtil.parse(reSizeOutputStream);
+                byte[] pic = getPicByStream(lwhDate, input);
+                foshanMessage.setPic2(pic);
+                picCount++;
+                picSize = reSizeOutputStream.size();
+                fileSystemService.uploadFile(targetParentPath + "/" + targetPath, yhlInput);
+                fileInfo.put("lwhScenePath",targetPath);
+            }
+            long endTime = System.currentTimeMillis();
+            LOGGER.info("uploadLwhScenePic end,picSize:" + picSize + "," + plate + ",cost:" + (endTime - startTime));
+        }catch (Exception e){
+            LOGGER.info("uploadLwhScenePic error," + plate, e);
+        }
+
     }
 
     private void uploadLocalFile(WeightData entity, String targetParentPath, FoshanMessage foshanMessage,
@@ -115,8 +160,8 @@ public class ImageDownloadUtil {
                  fileInfoState.put("left","0");
              }
              else{
-/*                 byte[] picLeftSide = (byte[]) fileInfo.get("pic");
-                 if(picLeftSide != null && picLeftSide.length != 0){
+                 byte[] picLeftSide = (byte[]) fileInfo.get("pic");
+/*                 if(picLeftSide != null && picLeftSide.length != 0){
                      foshanMessage.setPic3(picLeftSide);
                      picCount++;
                  }*/
@@ -130,8 +175,8 @@ public class ImageDownloadUtil {
                 fileInfoState.put("right","0");
             }
             else{
-/*                byte[] picRightSide = (byte[]) fileInfo.get("pic");
-                if(picRightSide != null && picRightSide.length != 0){
+                byte[] picRightSide = (byte[]) fileInfo.get("pic");
+/*                if(picRightSide != null && picRightSide.length != 0){
                     foshanMessage.setPic4(picRightSide);
                     picCount++;
                 }*/
@@ -172,16 +217,15 @@ public class ImageDownloadUtil {
                             foshanMessage.setPic4(pic);
                             picCount++;
                         }*/
-                        else if(filePath.contains("plate")){
+/*                        else if(filePath.contains("plate")){
                             foshanMessage.setPic5(pic);
                             picCount++;
-                        }
+                        }*/
                     }
                 }
 
             }
         }
-        combineFoshanMessage(foshanMessage,weightData);
     }
 
     private void combineFoshanMessage(FoshanMessage foshanMessage,WeightData weightData) {
@@ -205,6 +249,7 @@ public class ImageDownloadUtil {
                         5,
                         0, 0, 0, 0, picCount));
     }
+
 
     /**
      * 检查两个ftp连接

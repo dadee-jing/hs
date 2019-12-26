@@ -57,8 +57,9 @@ public class MaintenanceRecordController extends BaseController
 	@ResponseBody
 	public TableDataInfo stationRecordList(@PathVariable("stationId") Integer stationId, ModelMap mmap) {
 		startPage();
-        List<MaintenanceRecord> list = maintenanceRecordService.selectMaintenanceRecordListByStationId(stationId);
-		return getDataTable(list);
+        List<MaintenanceRecord> maintenanceRecordList = maintenanceRecordService.selectMaintenanceRecordListByStationId(stationId);
+		mmap.put("maintenanceRecordList",maintenanceRecordList);
+		return getDataTable(maintenanceRecordList);
 	}
 	
 	/**
@@ -88,9 +89,9 @@ public class MaintenanceRecordController extends BaseController
 	@ResponseBody
 	public AjaxResult addSave(MaintenanceRecord maintenanceRecord) {
 		maintenanceRecord.setCreateTime(new Date());
-		maintenanceRecord.setCreateBy(getLoginName());
+		maintenanceRecord.setCreateBy(getUser().getUserName());
 		maintenanceRecord.setUpdateTime(new Date());
-		maintenanceRecord.setUpdateBy(getLoginName());
+		maintenanceRecord.setUpdateBy(getUser().getUserName());
 		return toAjax(maintenanceRecordService.insertMaintenanceRecord(maintenanceRecord));
 	}
 
@@ -119,7 +120,7 @@ public class MaintenanceRecordController extends BaseController
 	@ResponseBody
 	public AjaxResult editSave(MaintenanceRecord maintenanceRecord) {
 		maintenanceRecord.setUpdateTime(new Date());
-		maintenanceRecord.setUpdateBy(getLoginName());
+		maintenanceRecord.setUpdateBy(getUser().getUserName());
 		return toAjax(maintenanceRecordService.updateMaintenanceRecord(maintenanceRecord));
 	}
 	

@@ -25,6 +25,8 @@ public interface StationDeviceInfoMapper {
 
 	int insertStationDeviceInfo(StationDeviceInfo stationDeviceInfo);
 
+	int insertStationDeviceInfoVo(StationDeviceInfoVo stationDeviceInfoVo);
+
 	StationDeviceInfo selectDeviceById(@Param("id") Integer id);
 
 	int updateStationDeviceInfo(StationDeviceInfo stationDeviceInfo);
@@ -32,4 +34,8 @@ public interface StationDeviceInfoMapper {
 	int deleteStationDeviceInfoById(@Param("id") Integer id);
 
     int selectStationIdByDeviceId(@Param("id") Integer id);
+
+	Integer getDeviceEnumIdByName(@Param("value") String value,@Param("type")  int type);
+
+	void insertDeviceEnum(DeviceEnum deviceEnum);
 }

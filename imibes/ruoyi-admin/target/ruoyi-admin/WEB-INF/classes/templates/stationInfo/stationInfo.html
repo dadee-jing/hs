@@ -7,6 +7,11 @@
 <link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
 
 <body class="gray-bg">
+<div style="position: absolute;z-index: 1000;top: 10px; left: 10px;" id="mobile_add">
+	<a class="btn btn-success" onclick="$.operate.add()">
+		<i class="fa fa-plus"></i> 添加
+	</a>
+</div>
 <div class="ui-layout-west">
 	<div class="main-content">
 		<div class="box box-main">
@@ -56,6 +61,7 @@
 <div th:include="include :: footer"></div>
 <script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
 <script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:src="@{/js/mobile.js}"></script>
 <script th:inline="javascript">
 	var resetPwdFlag = [[${@permission.hasPermi('system:user:resetPwd')}]];
 	var datas = [[${@dict.getType('sys_normal_disable')}]];
@@ -67,6 +73,7 @@
 		$('body').layout({ west__size: 185 });
 		queryUserList();
 		queryDeptTree();
+		innerWidth < 750 ? $(".ui-layout-toggler-west-open")[0].click() : 0;
 		//点击表格行事件
 /*		$('#bootstrap-table').on('click-row.bs.table', function (e,row,$element) {
 			stationDetail(row.id)
@@ -109,19 +116,21 @@
 			updateUrl: prefix + "/edit/{id}",
 			removeUrl: prefix + "/remove",
 			modalName: "站点",
-			pageSize:50,
-			pagination:false,
+			pageSize:10,
 			search: false,
 			showExport: false,
 			showToggle:false,
 			showSearch: false,
+			showRefresh:false,
+			showColumns:false,
 			onClickRow: function (row, $element, field) {
 				alert("ss")
 			},
 			columns: [
 				{
 					field : 'id',
-					title : '主键'
+					title : '主键',
+					sortable: true
 				},
 				{
 					field : 'name',
@@ -172,7 +181,8 @@
 				},
 				{
 					field : 'installTime',
-					title : '安装时间'
+					title : '安装时间',
+					sortable: true
 				},
 				{
 					field : 'createBy',
@@ -200,7 +210,8 @@
 				},
 				{
 					field : 'recentTime',
-					title : '最近过车记录时间'
+					title : '最近过车记录时间',
+					sortable: true
 				},
 				{
 					field : 'state',
@@ -215,7 +226,8 @@
 						else if (value ==2 ){
 							return "<span> -- </span>";
 						}
-					}
+					},
+					sortable: true
 				},
 				{
 					title: '操作',

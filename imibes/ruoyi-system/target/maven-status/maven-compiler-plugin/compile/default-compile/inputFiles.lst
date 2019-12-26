@@ -126,6 +126,7 @@ D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\duge\servi
 D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\system\service\ISysDictTypeService.java
 D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\system\mapper\SysDictDataMapper.java
 D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\system\mapper\SysUserRoleMapper.java
+D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\duge\domain\StationInfoWithDeviceInfoList.java
 D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\system\mapper\SysDeptMapper.java
 D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\yaogan\service\IDeviceStaticCheckService.java
 D:\shunde\project\project\imibes\ruoyi-system\src\main\java\com\ruoyi\duge\domain\FtpServer.java

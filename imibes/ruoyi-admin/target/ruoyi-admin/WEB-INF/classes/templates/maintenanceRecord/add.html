@@ -77,7 +77,8 @@
 		</form>
 	</div>
     <div th:include="include::footer"></div>
-    <script type="text/javascript">
+	<script th:src="@{/js/mobile.js}"></script>
+	<script type="text/javascript">
 		$(function () {
 			$.datetimepicker.setLocale('zh');
 			$('#maintenanceDate').datetimepicker({
@@ -87,9 +88,6 @@
 			$('#maintenanceDate').val(dateFtt("yyyy-MM-dd hh:mm", new Date()));
 			var orderNumber = dateFtt("yyyyMMdd", new Date()) + $("#count").val();
 			$("#orderNumber").val(orderNumber);
-			if(innerWidth <= 750) {
-				$(".layui-layer-max", window.parent.document)[0].click();
-			}
 		});
 
 
@@ -105,7 +103,8 @@
 
 		function selectStationTree() {
 			var treeId = $("#treeId").val();
-			var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+			//var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+			var deptId = 100;
 			var options = {
 				title: '选择站点',
 				width: "380",

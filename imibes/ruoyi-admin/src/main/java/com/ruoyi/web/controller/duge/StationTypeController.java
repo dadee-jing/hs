@@ -139,7 +139,7 @@ public class StationTypeController extends BaseController {
     }
 
     /**
-     * 选择树
+     * 选择站点类型树
      */
     @GetMapping("/selectStationTypeTree/{typeId}")
     public String selectTypeTree(@PathVariable("typeId") Long typeId, ModelMap mmap) {
@@ -148,7 +148,7 @@ public class StationTypeController extends BaseController {
     }
 
     /**
-     * 选择树
+     * 选择站点树
      */
     @GetMapping("/selectStationTree/{typeId}")
     public String selectStationTree(@PathVariable("typeId") Long typeId, ModelMap mmap) {

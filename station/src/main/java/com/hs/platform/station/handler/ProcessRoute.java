@@ -9,6 +9,7 @@ public class ProcessRoute {
     private static Logger LOGGER = LoggerFactory.getLogger(ProcessRoute.class);
 
     public static ProcessResult processRequest(int action, String requestJson, String sequenceTag) {
+        //LOGGER.info("weight processRequest-action:" + action + ",requestJson:" + requestJson + ",sequenceTag:" + sequenceTag);
         ProcessResult result = new ProcessResult();
         int replyAction = 0;
         String applySuccessJson = "{\"Result\":0}";

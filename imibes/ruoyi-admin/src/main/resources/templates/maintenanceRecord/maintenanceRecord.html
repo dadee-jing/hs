@@ -10,6 +10,32 @@
 	</a>
 </div>
     <div class="container-div">
+		<div class="col-sm-12 search-collapse">
+			<input type="hidden" name="treeId" id="treeId" >
+			<input type="hidden" name="treeId2" id="treeId2" >
+			<form id="role-form">
+				<input type="hidden" name="stationId" id="stationId" >
+				<input type="hidden" name="operator" id="operator" >
+				<div class="select-list">
+					<ul>
+						<li>
+							站点名称：
+							<input type="text" name="typeName" onclick="selectStationTree()" readonly="true"
+								   id="treeName" >
+						</li>
+						<li>
+							用户名：
+							<input type="text" name="typeName2" onclick="selectUserTree()" readonly="true"
+								   id="treeName2" >
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
 		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
 			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="station:maintenanceRecord:add">
 				<i class="fa fa-plus"></i> 添加
@@ -27,19 +53,12 @@
 		</div>
     </div>
     <div th:include="include :: footer"></div>
+	<script th:src="@{/js/mobile.js}"></script>
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('station:maintenanceRecord:edit')}]];
         var removeFlag = [[${@permission.hasPermi('station:maintenanceRecord:remove')}]];
         var prefix = ctx + "station/maintenanceRecord";
 
-		var innerWidth = $(window).width();
-		if(innerWidth <= 750) {
-			$("#mobile_add").show();
-		}
-		else{
-			$("#mobile_add").hide();
-		}
-		$("body",window.parent.document).addClass("mini-navbar");
 		$(function() {
             var options = {
                 url: prefix + "/list",
@@ -58,7 +77,8 @@
                 columns: [
 				{
 					field : 'id', 
-					title : 'id' 
+					title : 'id' ,
+					sortable: true
 				},
 				{
 					field : 'stationId', 
@@ -71,7 +91,8 @@
 				},
 				{
 					field : 'maintenanceDate', 
-					title : '维护日期'
+					title : '维护日期',
+					sortable: true
 				},
 				{
 					field : 'siteCondition', 
@@ -111,11 +132,13 @@
 				},
 				{
 					field : 'createTime', 
-					title : '创建日期' 
+					title : '创建日期' ,
+					visible:false
 				},
 				{
 					field : 'createBy', 
-					title : '创建人' 
+					title : '创建人'  ,
+					visible:false
 				},
 				{
 					field : 'updateTime', 
@@ -149,6 +172,51 @@
 				}
 			})*/
         });
+
+		function selectStationTree() {
+			var treeId = $("#treeId").val();
+			//var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+			var deptId = 100;
+			var options = {
+				title: '选择站点',
+				width: "380",
+				url: ctx + "module/stationType/selectStationTree/" + deptId,
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		function doSubmit(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#treeId").val(body.find('#treeId').val());
+				$("#treeName").val(body.find('#treeName').val());
+				$("#stationId").val($("#treeId").val() - 1000);
+				layer.close(index);
+			}
+		}
+		function selectUserTree() {
+			var treeId = $("#treeId").val();
+			//var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+			var deptId = 100;
+			var options = {
+				title: '选择站点',
+				width: "380",
+				url: ctx + "system/dept/selectDeptUserTree/" + deptId,
+				callBack: doSubmitUserTree
+			};
+			$.modal.openOptions(options);
+		}
+		function doSubmitUserTree(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#treeId2").val(body.find('#treeId2').val());
+				$("#treeName2").val(body.find('#treeName2').val());
+				$("#operator").val($("#treeName2").val());
+				layer.close(index);
+			}
+		}
     </script>
 </body>
 </html>
