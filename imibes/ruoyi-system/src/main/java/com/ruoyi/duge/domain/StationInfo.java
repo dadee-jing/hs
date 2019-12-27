@@ -116,6 +116,12 @@ public class StationInfo extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("ip", getIp())
+            .append("port", getPort())
+            .append("typeId", getTypeId())
+            .append("remarkInfo", getRemarkInfo())
+            .append("recentTime", getRecentTime())
+            .append("installTime", getInstallTime())
             .toString();
     }
 }

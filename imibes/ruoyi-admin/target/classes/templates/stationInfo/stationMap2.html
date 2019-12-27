@@ -1,0 +1,405 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+
+<style type="text/css">
+    #parent {
+        height: 100%;
+        width: 100%;
+    }
+
+    .div_table, .div_information, .div_map {
+        float: left;
+        position: relative;
+        min-height: 1px;
+    }
+
+    /*===========================表格模块样式===========================================*/
+    .div_table {
+        padding-top: 10px;
+        width: 15%;
+        height: 100%;
+        background-color: black;
+    }
+
+    .div_table_title {
+        text-align: center;
+        height: 40px;
+    }
+
+    .div_table_title img {
+        width: 110px;
+        height: 40px;
+    }
+
+    .div_table_title span {
+        vertical-align: middle;
+        font-weight: bolder;
+        font-size: 22px;
+        color: #FFFF66;
+    }
+
+    .div_table #bootstrap-table {
+        table-layout: fixed;
+    }
+
+    .div_table #bootstrap-table tbody, .div_table #bootstrap-table thead {
+        font-size: 11px;
+    }
+
+    .div_table #bootstrap-table tr {
+        height: 40px;
+        max-height: 40px;
+    }
+
+    .table thead tr th div {
+        color: #FFFFFF;
+        background: #0C0C10;
+    }
+
+    .fixed-table-container thead th .th-inner {
+        line-height: 12px;
+    }
+
+    /*==================================================================================*/
+
+    /*=========================站点信息模块样式=========================================*/
+    .div_information {
+        width: 85%;
+        height: 100%;
+        background-color: #191921;
+        text-align: center;
+    }
+
+    .div_information #time {
+        height: 10%;
+        color: white;
+        font-size: 21px;
+        font-weight: 500;
+        line-height: 4;
+    }
+
+    .div_information #station_name {
+        height: 10%;
+        font-size: 24px;
+        color: #32AE3D;
+        line-height: 2.5;
+        font-weight: bold;
+    }
+
+    .div_information #station_information {
+        height: 32%;
+        background-color: #0C0C10;
+        margin: 0 auto;
+        width: 90%;
+        font-size: 22px;
+        font-weight: bold;
+        padding: 15px 0px 0px 15px;
+        line-height: 2.5;
+        text-align: left;
+    }
+
+    .div_information #station_information #ranking {
+        color: #D6A73B;
+    }
+
+    .div_information #station_information #avg_speed {
+        color: #B1AC47;
+    }
+
+    .div_information #station_information #trafficFlow {
+        color: #B1AC47;
+    }
+
+    .div_information #station_information #overCount {
+        color: #B1AC47;
+    }
+
+    .div_information #station_sort_chart {
+        height: 55%;
+        width: 100%;
+    }
+
+    /*==================================================================================*/
+
+    /*=========================地图模块样式=============================================*/
+    .div_map {
+        height: 100%;
+        width: 100%;
+    }
+
+    .div_map #map_container {
+        height: 100%;
+        width: 100%;
+    }
+
+    .div_map #chart_container {
+        height: 25%;
+        width: 100%;
+        background-color: black;
+    }
+
+    #chart_container .chart_parentContainer {
+        height: 100%;
+        float: left;
+        width: 50%;
+    }
+
+    #chart_container .chart_head {
+        height: 20%;
+        width: 100%;
+    }
+
+    #chart_container .chart_head .title {
+        font-weight: bold;
+        line-height: 3;
+        padding-left: 25px;
+        font-size: 16px;
+        float: left;
+        height: 100%;
+        color: #939393;
+    }
+
+    #chart_container .chart_head .avgStyle {
+        font-weight: bold;
+        line-height: 3;
+        font-size: 16px;
+        color: #00BAFF;
+        float: right;
+        height: 100%;
+        padding-right: 25px;
+    }
+
+    #chart_container .chart_container {
+        height: 80%;
+        width: 100%;
+    }
+
+    #count_chart, #speed_chart, #sort_chart {
+        width: 100%;
+        height: 100%;
+    }
+
+    .input-card {
+        top: 10px;
+        left: 20px;
+        bottom: auto;
+        position: absolute;
+    }
+
+    /*==================================================================================*/
+
+    /*========================消除原框架工具捆绑的CSS样式===============================*/
+    /*消除原框架工具捆绑的CSS样式*/
+    .table-striped .table, .fixed-table-container, table, .table-striped .table, .table > thead > tr > th, .table > tbody > tr > th,
+    .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+        border-bottom: 0 solid rgb(231, 234, 236) !important;
+    }
+
+    .amap-logo, .amap-copyright {
+        display: none !important;
+    }
+
+    /*==================================================================================*/
+</style>
+
+<body class="gray-bg-bg">
+<!--父级DIV-->
+<div id="parent">
+    <!--表格父级元素-->
+    <div class="div_table">
+        <!--表格头部-->
+        <div class="div_table_title">
+            <!--<img th:src="@{/logo-little.png} " onerror="this.src='img/profile.jpg'"/>-->
+            <span>顺德一体化治超平台</span>
+        </div>
+        <!--表格-->
+        <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+    <!--详细信息父级元素-->
+    <div class="div_information">
+    <!--地图信息父级元素-->
+        <div class="div_map">
+            <!--地图容器-->
+            <div id="map_container"></div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+
+<script th:src="@{/ajax/libs/tic/amap-flashMarker.js}"></script>
+<script th:src="@{/ajax/libs/echart/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/layer/layer.js}"></script>
+<script type="text/javascript"
+        src="https://webapi.amap.com/maps?v=1.4.15&key=729fd69834287f5ca6660beee14b6a49"></script>
+<script th:inline="javascript">
+
+    var dataSetList = [];
+    var dataSetSum;
+    var flashMarkerLayer;
+    var textMarker;
+    var textDataSetList = [];
+
+    var map = new AMap.Map('map_container');
+    map.setMapStyle('amap://styles/light');
+    map.on('complete', function () {
+        $("#map_container").append('<i class="input-card fa fa-refresh fa-2x" onclick="resetMap()"></i>');
+    })
+
+    $(function () {
+        // 表格数据处理
+        var prefix = "/module/stationInfo";
+        // 使用原生bootstrap-table插件
+        $('#bootstrap-table').bootstrapTable({
+            url: prefix + "/listWithData",                                   // 请求后台的URL
+            contentType: "application/x-www-form-urlencoded",        // 编码类型
+            method: 'post',                                          // 请求方式
+            cache: false,                                           // 是否使用缓存
+            sidePagination: "server",                                // 启用服务端分页
+            columns: [
+                {
+                    field: 'index',
+                    title: '超限排名',
+                    align: 'center',
+                    halign: 'center',
+                    width: '20%',
+                    cellStyle: {
+                        css: {
+                            "color": "white",
+                            "font-weight": "bold"
+                        }
+                    }
+                },
+                {
+                    field: 'name',
+                    title: '站点名称',
+                    align: 'center',
+                    halign: 'center',
+                    width: '50%',
+                    cellStyle: {
+                        css: {
+                            "color": "#32AE3D",
+                            "font-weight": "bold",
+                            "overflow": "hidden",
+                            "text-overflow": "ellipsis",
+                            "white-space": "nowrap"
+                        }
+                    },
+                    formatter: function (value, row, index) {
+                        configureDataSet(row.longitude, row.latitude,row.name,row.id);
+                        if ((index + 1) == dataSetSum) {
+                            flashMarkerLayer = new FlashMarker(map, dataSetList);
+                            resetMap()
+                        }
+                        if(index == 0){
+                            clickRow(row)
+                        }
+                        return ['<span title="' + value + '" >' + value + '</span>'].join('');
+                    }
+                },
+                {
+                    field: 'congestionNum',
+                    title: '超限数',
+                    align: 'center',
+                    halign: 'center',
+                    width: '30%',
+                    cellStyle: {
+                        css: {
+                            "color": "#A5AD2A",
+                            "font-weight": "bold",
+                            "font-size": "13px"
+                        }
+                    },
+                    formatter: function (value, row, index) {
+                        return row.hourOverCount;
+                    }
+                },
+            ],                                         // 显示列信息
+            responseHandler: function (res) {
+                if (res.code == 0) {
+                    dataSetSum = res.total;
+                    return {rows: res.rows, total: res.total};
+                } else {
+                    $.modal.alertWarning(res.msg);
+                    return {rows: [], total: 0};
+                }
+            },                  // 回调函数
+            onClickRow: clickRow
+        });
+
+    });
+
+    function clickRow(row) {
+        map.setZoomAndCenter(12, [row.longitude, row.latitude]);
+        $.ajax({
+            type: "POST",
+            url: "/duge/weightData/stationData/" + row.id,
+            param: {"stationId": row.id},
+            success: function (data) {
+                // 处理站点详细信息想数据
+                //showInformation(row.name, row.index, data.speedAvg, data.dataList[0].trafficFlow, data.dataList[0].overCount);
+                //showChartInfo(data.dataList);
+            }
+        });
+    }
+
+    // 配置地图信息
+    function configureDataSet(longitude, latitude,name,id) {
+        var dataSet = {
+            lnglat: [longitude, latitude],
+            color: '#f8983a',
+            type: 'circle',
+            speed: 0.2,
+            clickable: true
+        }
+        dataSetList.push(dataSet);
+
+        // 创建纯文本标记
+       if (textDataSetList.indexOf(name) != -1){
+            return;
+        }
+        textDataSetList.push(name);
+        var text = new AMap.Text({
+            text:name,
+            anchor:'center', // 设置文本标记锚点
+            draggable:true,
+            cursor:'pointer',
+            offset:new AMap.Pixel(100,10),
+            position: [longitude,latitude],
+            clickable: true
+        });
+        var circleMarker = new AMap.CircleMarker({
+            center:[longitude,latitude],
+            radius:10+Math.random()*10,//3D视图下，CircleMarker半径不要超过64px
+            strokeColor:'white',
+            strokeWeight:2,
+            strokeOpacity:0.5,
+            fillColor:'rgba(255,255,255,0)',
+            fillOpacity:0.5,
+            zIndex:10,
+            bubble:true,
+            cursor:'pointer',
+            clickable: true,
+            extData: id
+        })
+
+        circleMarker.setMap(map);
+        //text.setMap(map);
+        AMap.event.addListener(circleMarker, 'click', function(e) {
+            console.log(JSON.parse(JSON.stringify(e.target.getExtData())));
+            infoWindow.open(map, [longitude,latitude]);
+        });
+        AMap.event.addListener(text, 'click', function(e) {
+            console.log(e);
+        });
+    }
+
+    function resetMap() {
+        map.setZoomAndCenter(12, [113.218667, 22.848183]);
+    }
+
+
+</script>
+</body>
+</html>

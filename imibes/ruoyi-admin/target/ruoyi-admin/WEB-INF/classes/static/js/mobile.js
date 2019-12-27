@@ -5,7 +5,6 @@ if(innerWidth <= 750) {
     $(".layui-layer-max", window.parent.document)[0].click();
     $("body",window.parent.document).addClass("mini-navbar");
     $("#mobile_add").show();
-
 }
 
 else{

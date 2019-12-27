@@ -42,8 +42,11 @@ public class PublicController extends BaseController {
     @PostMapping("/addStationAndDeviceInfo")
     @ResponseBody
     public AjaxResult addStationAndDeviceInfo(@RequestBody StationInfoWithDeviceInfoList stationInfoWithDeviceInfoList) {
+        LOGGER.info("addStationAndDeviceInfo:" + stationInfoWithDeviceInfoList.toString());
+        System.out.println(stationInfoWithDeviceInfoList.toString());
         int stationId;
         int result = 0;
+        //id为0代表新增站点，不为0更新站点信息
         if(null != stationInfoWithDeviceInfoList.getId() && 0 != stationInfoWithDeviceInfoList.getId()){
             stationInfoService.updateStationInfo(stationInfoWithDeviceInfoList);
             stationId = stationInfoWithDeviceInfoList.getId();
@@ -52,6 +55,7 @@ public class PublicController extends BaseController {
             stationInfoService.insertStationInfo(stationInfoWithDeviceInfoList);
             stationId = stationInfoWithDeviceInfoList.getId();
         }
+        //传入设备名称，类型名称。查找是否存在，不存在新增
         List<StationDeviceInfoVo> stationDeviceInfoVoList = stationInfoWithDeviceInfoList.getDeviceList();
         for(StationDeviceInfoVo stationDeviceInfoVo : stationDeviceInfoVoList){
             stationDeviceInfoVo.setStationId(stationId);
@@ -201,6 +205,7 @@ public class PublicController extends BaseController {
     @PostMapping("/updateStationState")
     @ResponseBody
     public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo stationInfo) {
+        LOGGER.info("updateStationState:" + stationInfo.toString());
         int result;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String now = simpleDateFormat.format(new Date());

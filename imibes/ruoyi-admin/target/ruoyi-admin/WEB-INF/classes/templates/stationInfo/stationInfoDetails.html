@@ -210,11 +210,13 @@
             url: "/station/maintenanceRecord/stationRecordList/" + stationId,                 // 请求后台的URL
             contentType: "application/x-www-form-urlencoded",        // 编码类型
             cache: false,                                           // 是否使用缓存
+            sortName: "id",                                  // 排序列名称
+            sortOrder: "desc",                                       // 排序方式  asc 或者 desc
             pagination: true,                                       // 显示分页
-            pageNumber: 1,                                          // 首页页码
-            pageSize: 10,                                            // 每页数据数
+            pageNumber: 1,                                          // 初始化加载第一页，默认第一页
+            pageSize: 10,                                           // 每页的记录行数
             pageList: [],                                           // 可供选择的每页的行数
-            sidePagination: "server",                                // 启用服务端分页
+            sidePagination: "server",                               // 启用服务端分页
             columns: [
                 {
                     field : 'id',
@@ -262,7 +264,8 @@
                 },
                 {
                     field : 'createBy',
-                    title : '创建人'
+                    title : '创建人' ,
+                    visible:false
                 },
                 {
                     field : 'updateTime',

@@ -107,6 +107,17 @@
             <Pattern>${log.pattern}</Pattern>
         </encoder>
     </appender>
+    <appender name="PublicControllerAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/public/PublicController.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+            <maxFileSize>20MB</maxFileSize>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{30} - %msg%n</pattern>
+        </encoder>
+    </appender>
     <appender name="backupsAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}/sys-backups.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -117,6 +128,9 @@
             <Pattern>${log.pattern}</Pattern>
         </encoder>
     </appender>
+    <logger name="com.ruoyi.web.controller.duge.PublicController" level="info" additivity="false">
+        <appender-ref ref="PublicControllerAppender" />
+    </logger>
     <logger name="com.ruoyi.duge.third.foshan" level="info" additivity="false">
         <appender-ref ref="FoshanApiServiceAppender" />
     </logger>

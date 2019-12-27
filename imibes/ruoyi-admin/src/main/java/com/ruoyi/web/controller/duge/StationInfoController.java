@@ -46,6 +46,15 @@ public class StationInfoController extends BaseController {
 
 
     /**
+     * 站点地图界面
+     */
+    @GetMapping("/map")
+    public String stationMapInfo() {
+        return prefix + "/stationMap";
+    }
+
+
+    /**
      * 站点增删改管理
      *
      * @return

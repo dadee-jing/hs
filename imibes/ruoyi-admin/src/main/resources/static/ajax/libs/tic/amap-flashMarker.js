@@ -182,10 +182,11 @@
 
         //鼠标事件
         var mouseInteract = function mouseInteract() {
+            //拖动地图
             map.on('movestart', function () {
                 animationFlag = false;
             });
-
+            //拖动结束
             map.on('moveend', function () {
                 animationFlag = true;
                 markers = []; //解决拖动后多余的小圆点bug，没想明白，暂时这样
@@ -193,8 +194,9 @@
 
             map.on('zoomstart', function () {
                 animationFlag = false;
-            });
 
+            });
+            //加载结束
             map.on('zoomend', function () {
                 animationFlag = true;
                 markers = [];
@@ -246,7 +248,6 @@
 
             adaptiveView(map, dataset);
         };
-
         init(map, dataset);
     }
 
