@@ -71,6 +71,9 @@ public class StationDeviceInfoController extends BaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(StationDeviceInfo stationDeviceInfo) {
+        if(stationDeviceInfo.getStationId() == null || stationDeviceInfo.getStationId() < 1){
+            stationDeviceInfo.setStationId(51);
+        }
         return toAjax(stationDeviceInfoMapper.insertStationDeviceInfo(stationDeviceInfo));
     }
 
@@ -89,6 +92,9 @@ public class StationDeviceInfoController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(StationDeviceInfo stationDeviceInfo) {
+        if(stationDeviceInfo.getStationId() == null || stationDeviceInfo.getStationId() < 1){
+            stationDeviceInfo.setStationId(51);
+        }
         return toAjax(stationDeviceInfoMapper.updateStationDeviceInfo(stationDeviceInfo));
     }
 

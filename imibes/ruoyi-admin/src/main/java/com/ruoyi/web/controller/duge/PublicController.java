@@ -82,59 +82,6 @@ public class PublicController extends BaseController {
         return toAjax(result);
     }
 
-/*
-    *//**
-     * 从站点新增设备信息
-     * @param stationDeviceInfoVoList
-     * @return
-     *//*
-    @PostMapping("/addStationDeviceInfo")
-    @ResponseBody
-    public int addStationDeviceInfo(@RequestBody List<StationDeviceInfoVo> stationDeviceInfoVoList) {
-        //传入设备名称，类型名称。查找是否存在，不存在新增
-        int result = 0;
-        for(StationDeviceInfoVo stationDeviceInfoVo : stationDeviceInfoVoList){
-            Integer deviceTypeId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceTypeName(),1);
-            Integer deviceNameId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceName(),2);
-            if(null == deviceTypeId || deviceTypeId == 0){
-                DeviceEnum deviceEnum = new DeviceEnum();
-                deviceEnum.setValue(stationDeviceInfoVo.getDeviceTypeName());
-                deviceEnum.setType(1);
-                stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
-                deviceTypeId = deviceEnum.getId();
-            }
-            if(null == deviceNameId || deviceNameId == 0){
-                DeviceEnum deviceEnum = new DeviceEnum();
-                deviceEnum.setValue(stationDeviceInfoVo.getDeviceName());
-                deviceEnum.setType(2);
-                stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
-                deviceNameId = deviceEnum.getId();
-            }
-            stationDeviceInfoVo.setDeviceNameId(deviceNameId);
-            stationDeviceInfoVo.setDeviceTypeId(deviceTypeId);
-            result += stationDeviceInfoMapper.insertStationDeviceInfoVo(stationDeviceInfoVo);
-        }
-        return result;
-    }
-
-    *//**
-     * 新增站点信息
-     * @param stationInfo
-     * @return
-     *//*
-    @PostMapping("/addStationInfo")
-    @ResponseBody
-    public int addStationInfo(@RequestBody StationInfo stationInfo) {
-        int result;
-        if(null != stationInfo.getId() && 0 != stationInfo.getId()){
-            result = stationInfoService.updateStationInfo(stationInfo);
-            return result;
-        }
-        stationInfoService.insertStationInfo(stationInfo);
-        result = stationInfo.getId();
-        return result;
-    }*/
-
 
     @PostMapping("/weightData/add")
     @ResponseBody

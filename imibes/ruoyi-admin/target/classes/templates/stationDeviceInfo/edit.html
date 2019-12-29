@@ -6,13 +6,13 @@
 <body class="white-bg">
 	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
 		<form class="form-horizontal m" id="form-role-edit" th:object="${stationDeviceInfo}">
-			<input name="typeId"  type="hidden" id="treeId"  th:value="${stationInfo.id + 1000}"/>
+			<input name="typeId"  type="hidden" id="treeId"  th:value="${stationInfo==null?51:stationInfo.id + 1000}"/>
 			<input id="id" name="id" type="hidden" th:field="*{id}"/>
 			<div class="form-group">
 				<label class="col-sm-3 control-label ">站点名称：</label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="typeName" onclick="selectStationTree()" readonly="true"
-						   id="treeName"  th:value="${stationInfo.name}">
+						   id="treeName"  th:value="${stationInfo==null?'':stationInfo.name}">
 				</div>
 			</div>
 			<div class="form-group">
@@ -117,6 +117,12 @@
 		}
 
 		function submitHandler() {
+			var stationId = $("input[name='typeId']").val() - 1000;
+			if(stationId < 1){
+				$.modal.alertError("<p>站点名称 请勿选择站点分类。</p>" +
+						"<p>没有站点请先到站点管理页面新增站点</p>");
+				return;
+			}
 	        if ($.validate.form()) {
 	        	edit();
 	        }

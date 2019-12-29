@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deviceTypeName"    column="device_type_name"    />
         <result property="deviceName"    column="device_name"    />
         <result property="snCode"    column="sn_code"    />
+        <result property="remark"    column="remark"    />
     </resultMap>
 
     <resultMap type="com.ruoyi.duge.domain.StationDeviceInfo" id="StationDeviceInfoResult">
@@ -29,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="state"    column="state"    />
         <result property="createTime"    column="create_time"    />
         <result property="snCode"    column="sn_code"    />
+        <result property="remark"    column="remark"    />
     </resultMap>
 
 
@@ -66,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectStationDeviceInfoList" resultMap="StationDeviceInfoVoResult">
         SELECT sdi.id,sdi.station_id,dsi.name station_name,sdi.state,sdi.create_time,sdi.sn_code,sdi.ipAddress,
-        sdi.port,de.value device_name,de2.value device_type_name
+        sdi.port,sdi.remark,de.value device_name,de2.value device_type_name
         FROM station_device_info sdi
         LEFT JOIN duge_station_info dsi ON sdi.station_id = dsi.id
         LEFT JOIN device_enum de ON sdi.deviceName_id = de.id
@@ -83,13 +85,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectDeviceById"  resultMap="StationDeviceInfoResult" parameterType="integer">
-        select id,station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark,create_time,sn_code
+        select id,station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark,create_time,sn_code,remark
         from station_device_info where id = #{id}
     </select>
 
     <select id="selectStationDeviceListByStationId" resultMap="StationDeviceInfoVoResult">
         SELECT sdi.id,sdi.station_id,dsi.name station_name,sdi.state,sdi.create_time,sdi.sn_code,
-        sdi.ipAddress,sdi.port,de.value device_name,de2.value device_type_name
+        sdi.ipAddress,sdi.port,sdi.remark,de.value device_name,de2.value device_type_name
         FROM station_device_info sdi
         LEFT JOIN duge_station_info dsi ON sdi.station_id = dsi.id
         LEFT JOIN device_enum de ON sdi.deviceName_id = de.id
