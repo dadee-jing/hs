@@ -188,7 +188,7 @@ public class StationTypeController extends BaseController {
     public List<Map<String, Object>> stationTreeDataNoRoot() {
         List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
         List<StationType> stationTypeList = stationTypeMapper.selectStationTreeDataNoRoot();
-        trees = getTrees(stationTypeList, false, null);
+        trees = getStationTrees(stationTypeList, false, null);
         return trees;
     }
 
@@ -206,6 +206,28 @@ public class StationTypeController extends BaseController {
 
 
     public List<Map<String, Object>> getTrees(List<StationType> deptList, boolean isCheck, List<String> roleDeptList) {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        for (StationType dept : deptList)
+        {
+                Map<String, Object> deptMap = new HashMap<String, Object>();
+                deptMap.put("id", dept.getTypeId());
+                deptMap.put("pId", dept.getParentId());
+                deptMap.put("name", dept.getTypeName());
+                deptMap.put("title", dept.getTypeName());
+                if (isCheck)
+                {
+                    deptMap.put("checked", roleDeptList.contains(dept.getTypeId() + dept.getTypeName()));
+                }
+                else
+                {
+                    deptMap.put("checked", false);
+                }
+                trees.add(deptMap);
+            }
+        return trees;
+    }
+
+    public List<Map<String, Object>> getStationTrees(List<StationType> deptList, boolean isCheck, List<String> roleDeptList) {
         List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
         for (StationType dept : deptList)
         {

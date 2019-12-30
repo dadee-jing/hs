@@ -7,11 +7,11 @@ spring:
             # 主库数据源
             master:
                 #url: jdbc:mysql://19.202.173.154:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true
-                #url: jdbc:mysql://127.0.0.1:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true
-                url: jdbc:mysql://39.100.228.188:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+                url: jdbc:mysql://127.0.0.1:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true
+                #url: jdbc:mysql://39.100.228.188:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
                 username: root
-                #password: 123456
-                password: duge8888
+                password: 123456
+                #password: duge8888
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭

@@ -93,14 +93,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectStationTreeDataNoRoot" resultMap="StationTypeResult">
-        select dsi.id + 1000 type_id,CONCAT('*',dsi.name) type_name,dsi.type_id parent_id,a.ancestors
+        select dsi.id + 1000 type_id,CONCAT('*',dsi.name) type_name,dsi.type_id parent_id,
+        a.ancestors,dsi.longitude,dsi.latitude
         from duge_station_info dsi
-        left join (select dsi.id,dsi.name,CONCAT(st.ancestors,',',dsi.type_id) ancestors from duge_station_info dsi
+        left join (select dsi.id,dsi.name,CONCAT(st.ancestors,',',dsi.type_id) ancestors
+        from duge_station_info dsi
         left join station_type st
         on st.type_id = dsi.type_id) a
         on a.id = dsi.id
         UNION
-        select st.type_id,st.type_name,st.parent_id,st.ancestors from station_type st where st.type_id &lt;&gt; 100
+        select st.type_id,st.type_name,st.parent_id,st.ancestors,st.type_id longitude,st.type_id latitude
+        from station_type st where st.type_id &lt;&gt; 100
     </select>
     <select id="selectStationTreeDataRoot" resultMap="StationTypeResult">
         select dsi.id + 1000 type_id,CONCAT('*',dsi.name) type_name,dsi.type_id parent_id,a.ancestors

@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import static com.hs.platform.station.Constants.*;
 import static com.hs.platform.station.third.foshan.socket.StructUtil.getCarData2Info;
@@ -111,26 +112,32 @@ public class ImageDownloadUtil {
 
     private void uploadLwhScenePic(FoshanMessage foshanMessage, String plate, Date lwhDate,String lwhScenePath,
                                    String targetParentPath,HashMap<String, String> fileInfo) {
-        //lwhScenePath D:\CameraPic\20191220\16\粤A7BB15_2_scene_7974.jpg
+        //lwhScenePath D:\CameraPic\20191220\16\粤A7BB15_2_scene_7974_5515123.jpg
         //PicPlate/20191226_1021/102156_2_scene_1540.jpg
         try{
             long startTime = System.currentTimeMillis();
             String min = DateFormatUtils.format(lwhDate, "yyyyMMdd_HHmm");
-            String senond = DateFormatUtils.format(lwhDate, "HHmmss");
+            String hour = DateFormatUtils.format(lwhDate, "yyyyMMddHH");
             String targetPath;
             if(lwhScenePath.contains("_")){
-                targetPath ="PicPlate/" + min + "/" + senond + lwhScenePath.substring(lwhScenePath.indexOf("_"));
+                targetPath ="PicPlate/" + min + "/" + lwhScenePath.substring(lwhScenePath.indexOf("_"));
             }
             else{
-                targetPath ="PicPlate/" + min + "/" + senond + "_" + lwhScenePath;
+                targetPath ="PicPlate/" + min + "/" + lwhScenePath;
             }
+            //根据文件名生成图片抓拍时间
+            String sss = lwhScenePath.substring(lwhScenePath.length() - 11,lwhScenePath.length() - 4);
+            sss = sss.replaceAll("_","");
+            SimpleDateFormat stringToDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            Date picDate = stringToDateFormat.parse(hour + sss);
+
             int picSize = 0;
             InputStream input =  new FileInputStream(lwhScenePath);
             ByteArrayOutputStream reSizeOutputStream = FTPClientUtil.resizePicToOutputStream(input);
             if (null != reSizeOutputStream) {
                 input = FTPClientUtil.parse(reSizeOutputStream);
                 InputStream yhlInput = FTPClientUtil.parse(reSizeOutputStream);
-                byte[] pic = getPicByStream(lwhDate, input);
+                byte[] pic = getPicByStream(picDate, input);
                 foshanMessage.setPic2(pic);
                 picCount++;
                 picSize = reSizeOutputStream.size();
@@ -138,9 +145,10 @@ public class ImageDownloadUtil {
                 fileInfo.put("lwhScenePath",targetPath);
             }
             long endTime = System.currentTimeMillis();
-            LOGGER.info("uploadLwhScenePic end,picSize:" + picSize + "," + plate + ",cost:" + (endTime - startTime));
+            LOGGER.info("uploadLwhScenePic end,picSize:" + picSize + "," + plate + ",cost:" + (endTime - startTime)
+            + ",picDate:" + picDate + "," + hour + sss);
         }catch (Exception e){
-            LOGGER.info("uploadLwhScenePic error," + plate, e);
+            LOGGER.info("uploadLwhScenePic error," + plate + "," + lwhScenePath, e);
         }
 
     }

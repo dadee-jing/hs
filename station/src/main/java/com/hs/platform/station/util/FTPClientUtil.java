@@ -4,6 +4,7 @@ import com.hs.platform.station.entity.FTPReUploadInfo;
 import com.hs.platform.station.schedule.ReUploadFailedData;
 import com.hs.platform.station.util.SFTP.FileSystemServiceImpl;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
@@ -168,6 +169,13 @@ public class FTPClientUtil {
             LOGGER.info("ok:targetState:" + targetState + ",cost:" +(endTime2 - startTime2)+"," + targetPath);
             //将流转化成byte返回
             try {
+                //生成图片抓拍时间
+                String day = DateFormatUtils.format(weightingDate, "yyyyMMdd");
+                String sss = sourcePath.substring(sourcePath.indexOf("/") + 20,sourcePath.indexOf("/") + 29);
+                SimpleDateFormat stringToDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                Date picDate = stringToDateFormat.parse(day + sss);
+                //-3s
+                picDate.setTime(picDate.getTime() - 3000);
                 if (!sourcePath.contains("mp4")) {
                     if (sourcePath.contains("scene")) {
                         //压缩前抓拍图片
@@ -177,16 +185,16 @@ public class FTPClientUtil {
                             shiJuInputStream = parse(reSizeOutputStream);
                             long endTime3 = System.currentTimeMillis();
                             LOGGER.info("resize,before:" + outputStream.size() + ",after,picSize:" + reSizeOutputStream.size() +
-                                   "," + plate + ",cost:" + (endTime3 - startTime3));
+                                   "," + plate + ",cost:" + (endTime3 - startTime3) +",picDate:" + picDate + "," + day + sss);
                         }
                     }
-                    byte[] pic = getPicByStream(weightingDate, shiJuInputStream);
+                    byte[] pic = getPicByStream(picDate, shiJuInputStream);
                         fileInfo.put("pic", pic);
                         return fileInfo;
                 }
             }
             catch (Exception e){
-                LOGGER.error("getPicByStream error");
+                LOGGER.error("getPicByStream error," + sourcePath ,e);
             }
         } catch (Exception e) {
             //重新连接顺德ftp，将失败的加入列表
