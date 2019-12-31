@@ -22,11 +22,26 @@ public interface ISysDeptService
     public List<SysDept> selectDeptList(SysDept dept);
 
     /**
+     * 查询部门管理数据
+     *
+     * @param dept 部门信息
+     * @return 部门信息集合
+     */
+    public List<SysDept> selectDeptUserList(SysDept dept);
+
+    /**
      * 查询部门管理树
      * 
      * @return 所有部门信息
      */
     public List<Map<String, Object>> selectDeptTree();
+
+    /**
+     * 查询部门管理树
+     *
+     * @return 所有部门信息
+     */
+    public List<Map<String, Object>> selectDeptUserTree();
 
     /**
      * 根据角色ID查询菜单

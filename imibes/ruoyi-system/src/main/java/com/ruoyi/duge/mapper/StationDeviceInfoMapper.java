@@ -19,13 +19,23 @@ public interface StationDeviceInfoMapper {
 
 	List<StationDeviceInfoVo> selectStationDeviceInfoList(StationDeviceInfo stationDeviceInfo);
 
+	List<StationDeviceInfoVo> selectStationDeviceListByStationId(@Param("stationId") Integer stationId);
+
 	List<DeviceEnum> selectDeviceEnumList(@Param("type") Integer type);
 
 	int insertStationDeviceInfo(StationDeviceInfo stationDeviceInfo);
+
+	int insertStationDeviceInfoVo(StationDeviceInfoVo stationDeviceInfoVo);
 
 	StationDeviceInfo selectDeviceById(@Param("id") Integer id);
 
 	int updateStationDeviceInfo(StationDeviceInfo stationDeviceInfo);
 
 	int deleteStationDeviceInfoById(@Param("id") Integer id);
+
+    int selectStationIdByDeviceId(@Param("id") Integer id);
+
+	Integer getDeviceEnumIdByName(@Param("value") String value,@Param("type")  int type);
+
+	void insertDeviceEnum(DeviceEnum deviceEnum);
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 站点 信息操作处理
+ * 站点设备
  *
  * @author ruoyi
  * @date 2018-11-22
@@ -52,6 +52,16 @@ public class StationDeviceInfoController extends BaseController {
         return getDataTable(stationDeviceInfoList);
     }
 
+    @PostMapping("/stationDeviceList/{stationId}")
+    @ResponseBody
+    public TableDataInfo stationDeviceInfoList(@PathVariable("stationId") Integer stationId, ModelMap mmap) {
+        startPage();
+        List<StationDeviceInfoVo> stationDeviceInfoList
+                = stationDeviceInfoMapper.selectStationDeviceListByStationId(stationId);
+        mmap.put("stationDeviceInfoList",stationDeviceInfoList);
+        return getDataTable(stationDeviceInfoList);
+    }
+
     @GetMapping("/add")
     public String add(ModelMap mmap) {
         setDataList(mmap);
@@ -61,6 +71,9 @@ public class StationDeviceInfoController extends BaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(StationDeviceInfo stationDeviceInfo) {
+        if(stationDeviceInfo.getStationId() == null || stationDeviceInfo.getStationId() < 1){
+            stationDeviceInfo.setStationId(51);
+        }
         return toAjax(stationDeviceInfoMapper.insertStationDeviceInfo(stationDeviceInfo));
     }
 
@@ -68,6 +81,9 @@ public class StationDeviceInfoController extends BaseController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, ModelMap mmap) {
         setDataList(mmap);
+        int stationId = stationDeviceInfoMapper.selectStationIdByDeviceId(id);
+        StationInfo stationInfo = stationInfoMapper.selectStationInfoByIdNoLane(stationId);
+        mmap.put("stationInfo", stationInfo);
         mmap.put("stationDeviceInfo", stationDeviceInfoMapper.selectDeviceById(id));
         return prefix + "/edit";
     }
@@ -76,6 +92,9 @@ public class StationDeviceInfoController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(StationDeviceInfo stationDeviceInfo) {
+        if(stationDeviceInfo.getStationId() == null || stationDeviceInfo.getStationId() < 1){
+            stationDeviceInfo.setStationId(51);
+        }
         return toAjax(stationDeviceInfoMapper.updateStationDeviceInfo(stationDeviceInfo));
     }
 

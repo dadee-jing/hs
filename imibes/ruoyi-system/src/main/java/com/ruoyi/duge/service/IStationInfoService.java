@@ -61,4 +61,5 @@ public interface IStationInfoService
 
 	String getRecentTime(Integer stationId);
 
+    StationInfo selectStationInfoByIdNoLane(Integer id);
 }

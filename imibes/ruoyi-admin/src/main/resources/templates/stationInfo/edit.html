@@ -86,9 +86,17 @@
                     <input id="port" name="port" th:field="*{port}" class="form-control" type="text">
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">安装时间：</label>
+                <div class="col-sm-8">
+                    <input type="text" class="time-input form-control"  th:field="*{installTime}"
+                           id="installTime" name="installTime"/>
+                </div>
+            </div>
 		</form>
     </div>
     <div th:include="include::footer"></div>
+    <script th:src="@{/js/mobile.js}"></script>
     <script type="text/javascript">
 		var prefix = ctx + "module/stationInfo"
 		$("#form-stationInfo-edit").validate({
@@ -98,7 +106,14 @@
 				},
 			}
 		});
-		
+        $.datetimepicker.setLocale('zh');
+        $('#installTime').datetimepicker({
+            format: 'Y-m-d H:i',
+            formatDate: 'Y-m-d H:i',
+        });
+        //$('#installTime').val(dateFtt("yyyy-MM-dd hh:mm", new Date()));
+
+
 		function submitHandler() {
 	        if ($.validate.form()) {
 	            $.operate.save(prefix + "/edit", $('#form-stationInfo-edit').serialize());

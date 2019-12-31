@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -28,7 +26,7 @@ public class FoshanApiService {
     public static LongAdder totalCount = new LongAdder();//总记录数
     public static LongAdder queueCount = new LongAdder();//发送队列总数
     public static LongAdder sendCount = new LongAdder();//执行发送的次数
-    //public static LongAdder sendFailCount = new LongAdder();
+    public static LongAdder currentCount = new LongAdder();//当前发送的第几条
     public static LongAdder sendSuccessCount = new LongAdder();//发送成功的次数
     public static LongAdder successCount = new LongAdder();//发送时间内收到成功回调的次数
     public static LongAdder failCount = new LongAdder();//没收到回调次数
@@ -48,6 +46,9 @@ public class FoshanApiService {
     }
 
     public static void addEntity(FoshanMessage entity) {
+        if(entity.getPic1() == null || entity.getPic2() == null){
+            return;
+        }
         totalCount.increment();
         queueCount.increment();
         if (!shiJuQueue.offer(entity)) {
@@ -66,16 +67,19 @@ public class FoshanApiService {
             uploadShiJu = true;
             FoshanMessage foshanMessage = shiJuQueue.poll();
             while (null != foshanMessage) {
+                currentCount.increment();
                 LOGGER.info("send "+ foshanMessage.getPlate());
                 sendMsgClient.sendMessage(foshanMessage);
+                //失败重发
                 reSendFail(foshanMessage);
                 //异步重发和回调
-                //foshanAsyncService.reSendASync(sendMsgClient,foshanMessage);
+                //foshanAsyncService.reSendAsync(sendMsgClient,foshanMessage);
                 foshanMessage = shiJuQueue.poll();
                 LOGGER.info("queueSize:" + queueCount.longValue() + ",sendCount:" + sendCount.longValue()
                         + ",sendSuccessCount:" + sendSuccessCount.longValue() + ",receiveCount:"
                         + receiveCount.longValue() + ",successCount:" + successCount.longValue()
-                        + ",failCount:" + failCount.longValue()+ ",totalCount:" + totalCount.longValue());
+                        + ",failCount:" + failCount.longValue()+ ",totalCount:" + totalCount.longValue() +
+                        ",currentCount:" + currentCount);
             }
         } else {
             uploadShiJu = false;

@@ -26,7 +26,7 @@ public class ReStartProgram {
     /**
      * 重启p7000
      */
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void restartP7000() {
         if ("1".equals(restart_p7000)) {
             //超过5分钟没外廓请求重启外廓程序

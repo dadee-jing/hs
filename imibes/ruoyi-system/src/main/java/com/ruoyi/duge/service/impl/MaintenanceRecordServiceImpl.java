@@ -44,7 +44,12 @@ public class MaintenanceRecordServiceImpl implements IMaintenanceRecordService
 	{
 	    return maintenanceRecordMapper.selectMaintenanceRecordList(maintenanceRecord);
 	}
-	
+
+	@Override
+	public List<MaintenanceRecord> selectMaintenanceRecordListByStationId(Integer stationId) {
+	    return maintenanceRecordMapper.selectMaintenanceRecordListByStationId(stationId);
+	}
+
     /**
      * 新增站点维护记录
      * 
@@ -80,5 +85,16 @@ public class MaintenanceRecordServiceImpl implements IMaintenanceRecordService
 	{
 		return maintenanceRecordMapper.deleteMaintenanceRecordByIds(Convert.toStrArray(ids));
 	}
-	
+
+	@Override
+	public Integer getStationIdByRecordId(Integer id) {
+		return maintenanceRecordMapper.getStationIdByRecordId(id);
+	}
+
+	@Override
+	public int getTodayRecordCount() {
+		return maintenanceRecordMapper.getTodayRecordCount();
+	}
+
+
 }

@@ -2,8 +2,8 @@ package com.ruoyi.web.controller.duge;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.base.AjaxResult;
-import com.ruoyi.duge.domain.StationInfo;
-import com.ruoyi.duge.domain.WeightData;
+import com.ruoyi.duge.domain.*;
+import com.ruoyi.duge.mapper.StationDeviceInfoMapper;
 import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.duge.third.foshan.service.FoshanApiService;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/public")
@@ -27,12 +28,60 @@ public class PublicController extends BaseController {
     private static Logger LOGGER = LoggerFactory.getLogger(PublicController.class);
     @Autowired
     private com.ruoyi.duge.service.IWeightDataMapperService dataService;
-
     @Autowired
     private ShundeApiService shundeApiService;
-
     @Autowired
     private IStationInfoService stationInfoService;
+    @Autowired
+    private StationDeviceInfoMapper stationDeviceInfoMapper;
+
+
+    /**
+     * 新增站点信息与设备信息
+     */
+    @PostMapping("/addStationAndDeviceInfo")
+    @ResponseBody
+    public AjaxResult addStationAndDeviceInfo(@RequestBody StationInfoWithDeviceInfoList stationInfoWithDeviceInfoList) {
+        LOGGER.info("addStationAndDeviceInfo:" + stationInfoWithDeviceInfoList.toString());
+        System.out.println(stationInfoWithDeviceInfoList.toString());
+        int stationId;
+        int result = 0;
+        //id为0代表新增站点，不为0更新站点信息
+        if(null != stationInfoWithDeviceInfoList.getId() && 0 != stationInfoWithDeviceInfoList.getId()){
+            stationInfoService.updateStationInfo(stationInfoWithDeviceInfoList);
+            stationId = stationInfoWithDeviceInfoList.getId();
+        }
+        else{
+            stationInfoService.insertStationInfo(stationInfoWithDeviceInfoList);
+            stationId = stationInfoWithDeviceInfoList.getId();
+        }
+        //传入设备名称，类型名称。查找是否存在，不存在新增
+        List<StationDeviceInfoVo> stationDeviceInfoVoList = stationInfoWithDeviceInfoList.getDeviceList();
+        for(StationDeviceInfoVo stationDeviceInfoVo : stationDeviceInfoVoList){
+            stationDeviceInfoVo.setStationId(stationId);
+            Integer deviceTypeId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceTypeName(),1);
+            Integer deviceNameId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceName(),2);
+            if(null == deviceTypeId || deviceTypeId == 0){
+                DeviceEnum deviceEnum = new DeviceEnum();
+                deviceEnum.setValue(stationDeviceInfoVo.getDeviceTypeName());
+                deviceEnum.setType(1);
+                stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
+                deviceTypeId = deviceEnum.getId();
+            }
+            if(null == deviceNameId || deviceNameId == 0){
+                DeviceEnum deviceEnum = new DeviceEnum();
+                deviceEnum.setValue(stationDeviceInfoVo.getDeviceName());
+                deviceEnum.setType(2);
+                stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
+                deviceNameId = deviceEnum.getId();
+            }
+            stationDeviceInfoVo.setDeviceNameId(deviceNameId);
+            stationDeviceInfoVo.setDeviceTypeId(deviceTypeId);
+            result = stationDeviceInfoMapper.insertStationDeviceInfoVo(stationDeviceInfoVo);
+        }
+        return toAjax(result);
+    }
+
 
     @PostMapping("/weightData/add")
     @ResponseBody
@@ -103,6 +152,7 @@ public class PublicController extends BaseController {
     @PostMapping("/updateStationState")
     @ResponseBody
     public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo stationInfo) {
+        LOGGER.info("updateStationState:" + stationInfo.toString());
         int result;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String now = simpleDateFormat.format(new Date());
@@ -117,5 +167,6 @@ public class PublicController extends BaseController {
         }
         return toAjax(result);
     }
+
 
 }

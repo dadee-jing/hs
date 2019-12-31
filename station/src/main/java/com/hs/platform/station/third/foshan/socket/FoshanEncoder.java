@@ -33,11 +33,12 @@ public class FoshanEncoder extends ProtocolEncoderAdapter {
                 if (null != serialStr && null != foshanMessage.getPlate()) {
                     waitingResponseMap.put(serialStr, foshanMessage.getPlate());
                     LOGGER.info("input " + serialStr + " " + foshanMessage.getPlate());
+                    LOGGER.info("msgSize:" + result.length + ",plate:" + foshanMessage.getPlate());
                 }
+
             } else {
                 result = Byte2IntUtil.hexStringToByte(foshanMessage.getMessageBody());
             }
-            LOGGER.info("msgSize:" + result.length + ",plate:" + foshanMessage.getPlate());
             //log.info("FoshanEncoder:" + bytesToHexString(result));
 
             buffer = IoBuffer.allocate(result.length, true);

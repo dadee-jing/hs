@@ -140,6 +140,16 @@ public class SysDeptController extends BaseController
     }
 
     /**
+     * 选择部门用户树
+     */
+    @GetMapping("/selectDeptUserTree/{deptId}")
+    public String selectDeptUserTree(@PathVariable("deptId") Long deptId, ModelMap mmap)
+    {
+        mmap.put("dept", deptService.selectDeptById(deptId));
+        return prefix + "/userTree";
+    }
+
+    /**
      * 加载部门列表树
      */
     @GetMapping("/treeData")
@@ -147,6 +157,17 @@ public class SysDeptController extends BaseController
     public List<Map<String, Object>> treeData()
     {
         List<Map<String, Object>> tree = deptService.selectDeptTree();
+        return tree;
+    }
+
+    /**
+     * 加载部门用户列表树
+     */
+    @GetMapping("/userTreeData")
+    @ResponseBody
+    public List<Map<String, Object>> userTreeData()
+    {
+        List<Map<String, Object>> tree = deptService.selectDeptUserTree();
         return tree;
     }
 

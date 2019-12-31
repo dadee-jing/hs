@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.duge.mapper.MaintenanceRecordMapper">
     
-    <resultMap type="MaintenanceRecord" id="MaintenanceRecordResult">
+    <resultMap type="com.ruoyi.duge.domain.MaintenanceRecord" id="MaintenanceRecordResult">
         <result property="id"    column="id"    />
         <result property="stationName" column="station_name"/>
         <result property="stationId"    column="station_id"    />
@@ -18,14 +18,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createBy"    column="create_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="updateBy"    column="update_by"    />
+        <result property="coordinator"    column="coordinator"    />
+        <result property="coordinatorPhone"    column="coordinator_phone"    />
+        <result property="problem"    column="problem"    />
+        <result property="orderNumber"    column="order_number"    />
     </resultMap>
 	
 	<sql id="selectMaintenanceRecordVo">
-        select smd.id, station_id,dsi.name as station_name, maintenance_date, site_condition, operation_log, operator, operator_phone, smd.remark, smd.create_time, smd.create_by, smd.update_time, smd.update_by from station_maintenance_record smd
+        select smd.id, station_id,dsi.name as station_name, maintenance_date, site_condition,
+        operation_log, operator, operator_phone, smd.remark, smd.create_time, smd.create_by,
+        smd.update_time, smd.update_by,smd.coordinator,smd.coordinator_phone, smd.problem, smd.order_number
+        from station_maintenance_record smd
         left join duge_station_info dsi on dsi.id = station_id
     </sql>
 	
-    <select id="selectMaintenanceRecordList" parameterType="MaintenanceRecord" resultMap="MaintenanceRecordResult">
+    <select id="selectMaintenanceRecordList" parameterType="com.ruoyi.duge.domain.MaintenanceRecord" resultMap="MaintenanceRecordResult">
         <include refid="selectMaintenanceRecordVo"/>
         <where>  
             <if test="id != null "> and id = #{id}</if>
@@ -41,14 +48,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
          </where>
+         order by smd.id desc
     </select>
     
     <select id="selectMaintenanceRecordById" parameterType="Integer" resultMap="MaintenanceRecordResult">
         <include refid="selectMaintenanceRecordVo"/>
-        where id = #{id}
+        where smd.id = #{id}
     </select>
-        
-    <insert id="insertMaintenanceRecord" parameterType="MaintenanceRecord">
+
+    <select id="selectMaintenanceRecordListByStationId" resultMap="MaintenanceRecordResult">
+        <include refid="selectMaintenanceRecordVo"/>
+        where station_id = #{stationId}
+        order by smd.id desc
+    </select>
+    <select id="getStationIdByRecordId" resultType="java.lang.Integer">
+        select station_id from station_maintenance_record where id = #{id}
+    </select>
+    <select id="getTodayRecordCount" resultType="int">
+        select count(*) from station_maintenance_record where TO_DAYS(create_time) = TO_DAYS(NOW())
+    </select>
+
+    <insert id="insertMaintenanceRecord" parameterType="com.ruoyi.duge.domain.MaintenanceRecord">
         insert into station_maintenance_record
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null  ">id,</if>
@@ -63,6 +83,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createBy != null  and createBy != ''  ">create_by,</if>
 			<if test="updateTime != null  ">update_time,</if>
 			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="coordinator != null  and coordinator != ''  ">coordinator,</if>
+			<if test="coordinatorPhone != null  and coordinatorPhone != ''  ">coordinator_phone,</if>
+			<if test="problem != null  and problem != ''  ">problem,</if>
+			<if test="orderNumber != null  and orderNumber != ''  ">order_number,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null  ">#{id},</if>
@@ -77,10 +101,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
 			<if test="updateTime != null  ">#{updateTime},</if>
 			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+            <if test="coordinator != null  and coordinator != ''  ">#{coordinator},</if>
+            <if test="coordinatorPhone != null  and coordinatorPhone != ''  ">#{coordinatorPhone},</if>
+            <if test="problem != null  and problem != ''  ">#{problem},</if>
+            <if test="orderNumber != null  and orderNumber != ''  ">#{orderNumber},</if>
          </trim>
     </insert>
 	 
-    <update id="updateMaintenanceRecord" parameterType="MaintenanceRecord">
+    <update id="updateMaintenanceRecord" parameterType="com.ruoyi.duge.domain.MaintenanceRecord">
         update station_maintenance_record
         <trim prefix="SET" suffixOverrides=",">
             <if test="stationId != null  ">station_id = #{stationId},</if>
@@ -94,6 +122,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="coordinator != null  and coordinator != ''  ">coordinator = #{coordinator},</if>
+            <if test="coordinatorPhone != null  and coordinatorPhone != ''  ">coordinator_phone = #{coordinatorPhone},</if>
+            <if test="problem != null  and problem != ''  ">problem = #{problem},</if>
+            <if test="orderNumber != null  and orderNumber != ''  ">order_number = #{orderNumber},</if>
         </trim>
         where id = #{id}
     </update>

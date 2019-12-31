@@ -2,6 +2,7 @@ package com.ruoyi.duge.mapper;
 
 
 import com.ruoyi.duge.domain.MaintenanceRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -60,5 +61,11 @@ public interface MaintenanceRecordMapper
      * @return 结果
      */
 	public int deleteMaintenanceRecordByIds(String[] ids);
-	
+
+    List<MaintenanceRecord> selectMaintenanceRecordListByStationId(@Param("stationId") Integer stationId);
+
+    Integer getStationIdByRecordId(@Param("id") Integer id);
+
+    Integer getTodayRecordCount();
+
 }

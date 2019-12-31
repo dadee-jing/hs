@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.hs.platform.station.io.LWHClient.CONNECT_TIMEOUT;
+
 public class LWHClientHandler extends IoHandlerAdapter {
 
     private static Logger LOGGER = LoggerFactory.getLogger(LWHClientHandler.class);
@@ -27,34 +29,52 @@ public class LWHClientHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionOpened(IoSession session) throws Exception {
+        LOGGER.info("lwh sessionOpened");
         session.setAttribute(INDEX_KEY, 0);
+        super.sessionOpened(session);
     }
 
     @Override
-    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-        // LOGGER.warn(cause.getMessage(), cause);
-        System.out.println(cause.getMessage());
+    public void exceptionCaught(IoSession session, Throwable cause){
+        LOGGER.info("lwh exceptionCaught");
+        LOGGER.warn(cause.getMessage(), cause);
+        session.closeNow().awaitUninterruptibly(CONNECT_TIMEOUT);
     }
 
     @Override
     public void messageSent(IoSession session, Object message)  {
+        LOGGER.info("lwh messageSent");
         try {
             super.messageSent(session, message);
-            LOGGER.info("lwh heartbeat send");
         } catch (Exception e) {
-            LOGGER.info("lwh heartbeat send fail",e);
+            LOGGER.info("lwh messageSent send fail",e);
         }
 
     }
 
     @Override
     public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
-
-        LOGGER.info("-客户端与服务端连接[空闲] - " + status.toString());
+        LOGGER.info("lwh sessionIdle," + status.toString());
+/*        LOGGER.info("-客户端与服务端连接[空闲] - " + status.toString());
         if (session != null) {
             session.close(true);
-        }
+        }*/
+        super.sessionIdle(session, status);
     }
+
+    @Override
+    public void sessionClosed(IoSession session) throws Exception {
+        LOGGER.info("lwh sessionClosed");
+        super.sessionClosed(session);
+    }
+
+    @Override
+    public void sessionCreated(IoSession session) throws Exception {
+        LOGGER.info("lwh sessionCreated");
+        super.sessionCreated(session);
+    }
+
+
 
     /**
      * 读取外廓报文，并写入队列

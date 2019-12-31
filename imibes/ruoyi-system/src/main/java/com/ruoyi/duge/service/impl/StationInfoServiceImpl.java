@@ -95,4 +95,8 @@ public class StationInfoServiceImpl implements IStationInfoService
 	public String getRecentTime(Integer stationId){
 		return stationInfoMapper.getRecentTime(stationId);
 	}
+	@Override
+	public StationInfo selectStationInfoByIdNoLane(Integer stationId){
+		return stationInfoMapper.selectStationInfoByIdNoLane(stationId);
+	}
 }

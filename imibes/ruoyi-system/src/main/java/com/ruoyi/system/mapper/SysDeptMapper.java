@@ -92,4 +92,6 @@ public interface SysDeptMapper
      * @return 部门列表
      */
     public List<String> selectRoleDeptTree(Long roleId);
+
+    List<SysDept> selectDeptUserList(SysDept dept);
 }

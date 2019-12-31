@@ -17,7 +17,7 @@ public class FoshanAsyncService {
     private static Logger log = LoggerFactory.getLogger(FoshanAsyncService.class);
 
     @Async
-    public void reSendASync(SendMsgClient sendMsgClient, FoshanMessage foshanMessage) {
+    public void reSendAsync(SendMsgClient sendMsgClient, FoshanMessage foshanMessage) {
         boolean ok;
         if (!(ok = getResponse(foshanMessage.getPlate(), 1000 * 10))) {
             sendMsgClient.sendMessage(foshanMessage);

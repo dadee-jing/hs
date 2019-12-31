@@ -26,10 +26,6 @@ public class NoMatchDataUpload {
         doUploadNoMatchData();
     }
 
-    /**
-     * 从队列中删除元素的同时可能有新的数据插入
-     * 使用非线程安全队列会造成CurrentModificationException
-     */
     private void doUploadNoMatchData() {
         if (weightDataQueue != null && weightDataQueue.size() > 0) {
             LOGGER.info("to uploadNoMatchData size " + weightDataQueue.size());

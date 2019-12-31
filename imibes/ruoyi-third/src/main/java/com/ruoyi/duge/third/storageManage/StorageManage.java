@@ -29,7 +29,6 @@ public class StorageManage {
     /**过车数据删除*/
     @Scheduled(cron = "${storagemanage.scheduled40DayAgo}")
     public void delete40DayAgo() {
-        System.out.println("定时任务执行");
         if ("1".equals(configDataService.getConfigValue("do_storage_manage"))) {
             List<WeightData> list = weightDataMapperService.selectTruckNumberByTime();
             LongAdder successCount = new LongAdder();

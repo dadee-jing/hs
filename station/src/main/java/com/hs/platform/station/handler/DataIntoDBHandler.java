@@ -15,18 +15,21 @@ public class DataIntoDBHandler extends IoHandlerAdapter {
     public static final String INDEX_KEY = DataIntoDBHandler.class.getName() + ".INDEX";
 
     @Override
-    public void sessionOpened(IoSession session) throws Exception {
+    public void sessionOpened(IoSession session){
         session.setAttribute(INDEX_KEY, 0);
+        LOGGER.info("weight sessionOpened");
     }
 
     @Override
-    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+    public void exceptionCaught(IoSession session, Throwable cause){
+        LOGGER.info("weight exceptionCaught");
         LOGGER.warn(cause.getMessage(), cause);
     }
 
     @Override
-    public void messageReceived(IoSession session, Object message) throws Exception {
+    public void messageReceived(IoSession session, Object message){
         try {
+            //LOGGER.info("weight messageReceived");
             XxxRequest request = (XxxRequest) message;
             int action = request.getAction();
             String requestJson = request.getJsonContent();
@@ -37,6 +40,7 @@ public class DataIntoDBHandler extends IoHandlerAdapter {
                     result.getResultJson());
             session.write(response);
         } catch (Exception e) {
+            LOGGER.info("weight messageReceived error");
             LOGGER.error(e.getMessage(), e);
             throw e;
         }

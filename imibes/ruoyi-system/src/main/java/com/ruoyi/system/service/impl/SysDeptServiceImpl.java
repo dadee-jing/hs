@@ -37,6 +37,17 @@ public class SysDeptServiceImpl implements ISysDeptService
     {
         return deptMapper.selectDeptList(dept);
     }
+    /**
+     * 查询部门管理数据
+     *
+     * @return 部门信息集合
+     */
+    @Override
+    @DataScope(tableAlias = "d")
+    public List<SysDept> selectDeptUserList(SysDept dept)
+    {
+        return deptMapper.selectDeptUserList(dept);
+    }
 
     /**
      * 查询部门管理树
@@ -48,6 +59,20 @@ public class SysDeptServiceImpl implements ISysDeptService
     {
         List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
         List<SysDept> deptList = selectDeptList(new SysDept());
+        trees = getTrees(deptList, false, null);
+        return trees;
+    }
+
+    /**
+     * 查询部门用户管理树
+     *
+     * @return 所有部门信息
+     */
+    @Override
+    public List<Map<String, Object>> selectDeptUserTree()
+    {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        List<SysDept> deptList = selectDeptUserList(new SysDept());
         trees = getTrees(deptList, false, null);
         return trees;
     }

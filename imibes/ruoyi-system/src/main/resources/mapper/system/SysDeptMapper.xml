@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysDeptMapper">
 
-	<resultMap type="SysDept" id="SysDeptResult">
+	<resultMap type="com.ruoyi.system.domain.SysDept" id="SysDeptResult">
 		<id     property="deptId"     column="dept_id"     />
 		<result property="parentId"   column="parent_id"   />
 		<result property="ancestors"  column="ancestors"   />
@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		order by d.parent_id, d.order_num
 	</select>
 	
-	<select id="selectDeptList" parameterType="SysDept" resultMap="SysDeptResult">
+	<select id="selectDeptList" parameterType="com.ruoyi.system.domain.SysDept" resultMap="SysDeptResult">
         <include refid="selectDeptVo"/>
         where d.del_flag = '0'
         <if test="parentId != null and parentId != 0">
@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(1) from sys_user where dept_id = #{deptId} and del_flag = '0'
 	</select>
 	
-	<select id="selectDeptCount" parameterType="SysDept" resultType="int">
+	<select id="selectDeptCount" parameterType="com.ruoyi.system.domain.SysDept" resultType="int">
 		select count(1) from sys_dept
 		where del_flag = '0'
 		<if test="deptId != null and deptId != 0"> and dept_id = #{deptId} </if>
@@ -73,8 +73,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from sys_dept d
 		where d.dept_id = #{deptId}
 	</select>
-	
-	<insert id="insertDept" parameterType="SysDept">
+    <select id="selectDeptUserList" resultMap="SysDeptResult">
+		select su.user_id + 1000 dept_id,su.user_name dept_name,su.dept_id parent_id,a.ancestors,a.status
+		from sys_user su
+		left join (select su2.user_id,su2.user_name,CONCAT(sp2.ancestors,',',su2.dept_id) ancestors,sp2.status from sys_user su2
+		left join sys_dept sp2
+		on sp2.dept_id = su2.dept_id) a
+		on a.user_id = su.user_id where su.del_flag = '0'
+		UNION
+		select sp.dept_id,sp.dept_name,sp.parent_id,sp.ancestors,sp.status from sys_dept sp where sp.del_flag = '0';
+	</select>
+
+    <insert id="insertDept" parameterType="com.ruoyi.system.domain.SysDept">
  		insert into sys_dept(
  			<if test="deptId != null and deptId != 0">dept_id,</if>
  			<if test="parentId != null and parentId != 0">parent_id,</if>
@@ -102,7 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)
 	</insert>
 	
-	<update id="updateDept" parameterType="SysDept">
+	<update id="updateDept" parameterType="com.ruoyi.system.domain.SysDept">
  		update sys_dept
  		<set>
  			<if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>

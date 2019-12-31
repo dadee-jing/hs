@@ -2,6 +2,8 @@ package com.ruoyi.duge.domain;
 
 import com.ruoyi.common.base.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
@@ -12,19 +14,11 @@ import java.sql.Timestamp;
  * @date 2018-11-22
  */
 @Data
-public class StationDeviceInfoVo {
-
-	private Integer id;
-	private Integer stationId;
-	private Integer deviceTypeId;
-	private Integer deviceNameId;
-	private String ipAddress;
-	private String port;
-	private Integer state;
-	private Timestamp createTime;
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class StationDeviceInfoVo extends StationDeviceInfo{
 
 	private String stationName;
 	private String deviceTypeName;
 	private String deviceName;
-
 }

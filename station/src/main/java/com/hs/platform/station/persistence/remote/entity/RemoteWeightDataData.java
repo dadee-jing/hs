@@ -212,6 +212,8 @@ public class RemoteWeightDataData extends BaseEntity {
      */
     private String lbh;
 
+    private String lwhScenePath;//外廓前抓
+
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", getId())

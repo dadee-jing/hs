@@ -34,5 +34,5 @@ HKEY_LOCAL_MACHINE\SYSTEM\CurrentContro1Set\Control\Tenninal Server\WinStations\
 
 确认无问题后，右键station_application.bat新建快捷
 方式，并拷贝到开始 启动目录，确保上送程序设置为开机启动
-
+开启远程桌面
 重启工控机，确认自启动程序生效

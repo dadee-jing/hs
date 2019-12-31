@@ -139,12 +139,21 @@ public class StationTypeController extends BaseController {
     }
 
     /**
-     * 选择树
+     * 选择站点类型树
      */
     @GetMapping("/selectStationTypeTree/{typeId}")
     public String selectTypeTree(@PathVariable("typeId") Long typeId, ModelMap mmap) {
         mmap.put("stationType", stationTypeMapper.selectStationTypeById(typeId));
         return prefix + "/tree";
+    }
+
+    /**
+     * 选择站点树
+     */
+    @GetMapping("/selectStationTree/{typeId}")
+    public String selectStationTree(@PathVariable("typeId") Long typeId, ModelMap mmap) {
+        mmap.put("stationType", stationTypeMapper.selectStationTypeById(typeId));
+        return prefix + "/stationTree";
     }
 
     /**
@@ -171,9 +180,54 @@ public class StationTypeController extends BaseController {
         trees = getTrees(stationTypeList, false, null);
         return trees;
     }
+    /**
+     * 站点树
+     */
+    @GetMapping("/stationTreeData")
+    @ResponseBody
+    public List<Map<String, Object>> stationTreeDataNoRoot() {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        List<StationType> stationTypeList = stationTypeMapper.selectStationTreeDataNoRoot();
+        trees = getStationTrees(stationTypeList, false, null);
+        return trees;
+    }
+
+    /**
+     * 站点树
+     */
+    @GetMapping("/stationTreeDataRoot")
+    @ResponseBody
+    public List<Map<String, Object>> stationTreeDataRoot() {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        List<StationType> stationTypeList = stationTypeMapper.selectStationTreeDataRoot();
+        trees = getTrees(stationTypeList, false, null);
+        return trees;
+    }
 
 
     public List<Map<String, Object>> getTrees(List<StationType> deptList, boolean isCheck, List<String> roleDeptList) {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        for (StationType dept : deptList)
+        {
+                Map<String, Object> deptMap = new HashMap<String, Object>();
+                deptMap.put("id", dept.getTypeId());
+                deptMap.put("pId", dept.getParentId());
+                deptMap.put("name", dept.getTypeName());
+                deptMap.put("title", dept.getTypeName());
+                if (isCheck)
+                {
+                    deptMap.put("checked", roleDeptList.contains(dept.getTypeId() + dept.getTypeName()));
+                }
+                else
+                {
+                    deptMap.put("checked", false);
+                }
+                trees.add(deptMap);
+            }
+        return trees;
+    }
+
+    public List<Map<String, Object>> getStationTrees(List<StationType> deptList, boolean isCheck, List<String> roleDeptList) {
         List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
         for (StationType dept : deptList)
         {

@@ -1,6 +1,7 @@
 package com.ruoyi.duge.service;
 
 import com.ruoyi.duge.domain.MaintenanceRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,7 +28,9 @@ public interface IMaintenanceRecordService
      * @return 站点维护记录集合
      */
 	public List<MaintenanceRecord> selectMaintenanceRecordList(MaintenanceRecord maintenanceRecord);
-	
+
+	public List<MaintenanceRecord> selectMaintenanceRecordListByStationId(Integer stationId);
+
 	/**
      * 新增站点维护记录
      * 
@@ -51,5 +54,9 @@ public interface IMaintenanceRecordService
      * @return 结果
      */
 	public int deleteMaintenanceRecordByIds(String ids);
-	
+
+    Integer getStationIdByRecordId(Integer id);
+
+	int getTodayRecordCount();
+
 }

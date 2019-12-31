@@ -17,7 +17,7 @@ public interface StationTypeMapper {
 
     List<StationType> selectStationTypeListNoRoot();
 
-    StationType selectStationTypeById(Long typeId);
+    StationType selectStationTypeById(@Param("typeId")Long typeId);
 
     StationType checkTypeNameUnique(@Param("typeName") String typeName, @Param("parentId") Long parentId);
 
@@ -28,4 +28,8 @@ public interface StationTypeMapper {
     int selectTypeCount(Long typeId);
 
     int deleteStationTypeById(Long typeId);
+
+    List<StationType> selectStationTreeDataNoRoot();
+
+    List<StationType> selectStationTreeDataRoot();
 }

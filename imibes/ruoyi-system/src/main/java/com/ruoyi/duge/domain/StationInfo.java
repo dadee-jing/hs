@@ -85,14 +85,16 @@ public class StationInfo extends BaseEntity
 	private String remarkInfo;
 	/** 卡口编号 */
 	private String kakoCode;
-
+	/** 类型编号 */
 	private Integer typeId;
 
 	private Long parentId;
-
+	/** 站点类型 */
 	private StationType stationType;
-
+	/** 最近过车时间 */
 	private String recentTime;
+	/** 安装时间 */
+	private String installTime;
 
 	@Override
 	public String toString() {
@@ -114,6 +116,12 @@ public class StationInfo extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("ip", getIp())
+            .append("port", getPort())
+            .append("typeId", getTypeId())
+            .append("remarkInfo", getRemarkInfo())
+            .append("recentTime", getRecentTime())
+            .append("installTime", getInstallTime())
             .toString();
     }
 }
