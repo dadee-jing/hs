@@ -419,7 +419,7 @@
     <select id="selectIllegalAnd2YearAgo" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
-            wd.create_time &gt; date_add(now(), interval - 2*356*24*60 minute)
+            wd.create_time &lt; date_add(now(), interval - 2*356*24*60 minute)
             and wd.over_weight  > 0
         </where>
         limit 100
@@ -444,7 +444,7 @@
         select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
         AND create_time > date_add(now(), interval - 91*24*60 minute)
         and over_weight=0
-        and mark_del= 0
+        and mark_del= 2
         ORDER BY id DESC
         LIMIT 100
     </select>

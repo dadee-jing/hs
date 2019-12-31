@@ -210,7 +210,7 @@ public class WeightData extends BaseEntity {
     private Integer siteId;
 
     /**
-     * 标记图片、视频数据是否删除 0：未删  1：已删
+     * 标记图片、视频数据是否删除 0：未删  1：已删  2: 一天内又有过车又有超重的数据
      * @return
      */
     private Integer markDel;

@@ -92,7 +92,7 @@ public class FoshanApiService implements ThirdApiService {
                     picCount++;
                 }
             }
-/*            if (StringUtils.isNoneBlank(weightData.getFtpTail())) {
+        /*if (StringUtils.isNoneBlank(weightData.getFtpTail())) {
                 File file = new File(baseDir + weightData.getFtpTail());
                 if (file.exists() && file.length() > 0) {
                     foshanMessage.setPic2(getPic(weightData.getWeightingDate(), file));
@@ -159,7 +159,6 @@ public class FoshanApiService implements ThirdApiService {
         FoshanMessage foshanMessage = FoshanMessage.builder().messageBody(sendva).build();
         sendMsgClient.sendMessage(foshanMessage);
     }
-
     static int mappingPlateColor(String colorChs) {
         switch (colorChs) {
             case "蓝":
@@ -176,7 +175,6 @@ public class FoshanApiService implements ThirdApiService {
                 return 9;
         }
     }
-
     @Override
     public BaseThirdApiResponse submitEquipmentStatus(BaseEquipmentStatusRequest request) {
         return null;

@@ -141,9 +141,9 @@ foshan.baseDir: XXX/XXX
 #上传佛山定时任务执行
 foshan.scheduled: 0/5 * * * * ?
 #定时清理过期文件任务执行
-storagemanage.scheduled40DayAgo: 0/5 * * * * ?
-storagemanage.scheduled90day: 0 0 1 * * ?
-storagemanage.scheduled2year: 0 1 * * * ?
+storagemanage.scheduled40DayAgo: 0/59 * * * * ?
+storagemanage.scheduled90DayAgo: 0 0 1 * * ?
+storagemanage.scheduled2YearAgo: 0 1 * * * ?
 #上传交警定时任务执行
 trafficpolice.scheduled: 0/5 * * * * ?
 #数据备份
