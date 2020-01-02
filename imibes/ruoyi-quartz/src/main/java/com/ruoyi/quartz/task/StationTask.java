@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 @Component("stationTask")
 public class StationTask {
-
     @Autowired
     private IStationInfoService stationInfoService;
 

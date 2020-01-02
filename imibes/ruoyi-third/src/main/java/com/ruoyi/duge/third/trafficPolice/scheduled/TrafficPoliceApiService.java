@@ -58,9 +58,4 @@ public class TrafficPoliceApiService {
         }
     }
 
-    public static void main(String[] args) {
-        double overRate=-1;
-        int overLevel = overRate > 0 ? overRate >= 0.3 ? 2 : 1 : 0;
-        System.out.println(overLevel);
-    }
 }

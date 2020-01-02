@@ -117,6 +117,12 @@
 		}
 
 		function submitHandler() {
+			var stationId = $("input[name='typeId']").val() - 1000;
+			if(stationId < 1){
+				$.modal.alertError("<p>站点名称 请勿选择站点分类。</p>" +
+						"<p>没有站点请先到站点管理页面新增站点</p>");
+				return;
+			}
 	        if ($.validate.form()) {
 	        	edit();
 	        }
