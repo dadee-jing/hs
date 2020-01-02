@@ -236,6 +236,8 @@ public class StationTypeController extends BaseController {
                 deptMap.put("pId", dept.getParentId());
                 deptMap.put("name", dept.getTypeName());
                 deptMap.put("title", dept.getTypeName());
+                deptMap.put("longitude", dept.getLongitude());
+                deptMap.put("latitude", dept.getLatitude());
                 if (isCheck)
                 {
                     deptMap.put("checked", roleDeptList.contains(dept.getTypeId() + dept.getTypeName()));

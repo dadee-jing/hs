@@ -108,4 +108,6 @@ public interface WeightDataMapper {
     List<WeightData> selectWeightDataBefore40DaysById(Long id);
 
     Integer selectLaneId(@Param("stationId")Integer stationId, @Param("lane")Integer lane);
+
+    List<WeightData> selectByStationIdAndLane(@Param("stationId")int stationId, @Param("laneMid")int laneMid);
 }

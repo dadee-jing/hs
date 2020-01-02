@@ -42,7 +42,8 @@ public class SysIndexController extends BaseController
     public String main(ModelMap mmap)
     {
         mmap.put("version", Global.getVersion());
-        return "main";
+        //return "main";
+        return "stationInfo/stationMap";
     }
 
     // 仪表盘

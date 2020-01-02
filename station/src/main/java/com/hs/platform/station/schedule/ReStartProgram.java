@@ -47,7 +47,7 @@ public class ReStartProgram {
         }
     }
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    //@Scheduled(cron = "0 0/5 * * * ?")
     public void restartStation() {
         if ("1".equals(restart_p7000)) {
             try {

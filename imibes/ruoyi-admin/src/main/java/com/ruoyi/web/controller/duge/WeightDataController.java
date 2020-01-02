@@ -325,4 +325,22 @@ public class WeightDataController extends BaseController {
 		return list;
 	}
 
+
+	@GetMapping("/carMonitor/{stationId}")
+	public String carMonitor(@PathVariable("stationId") int stationId,ModelMap mmap) {
+		List<WeightData> weightDataList1 = weightDataMapper.selectByStationIdAndLane(stationId,1);
+		List<WeightData> weightDataList2 = weightDataMapper.selectByStationIdAndLane(stationId,2);
+		List<WeightData> weightDataList3 = weightDataMapper.selectByStationIdAndLane(stationId,3);
+		List<WeightData> weightDataList4 = weightDataMapper.selectByStationIdAndLane(stationId,4);
+		List<WeightData> weightDataList5 = weightDataMapper.selectByStationIdAndLane(stationId,5);
+		mmap.put("ctxPath", configDataService.getConfigValue("nginx_url") + stationId + "/"
+				+ DateFormatUtils.format(weightDataList1.get(0).getCreateTime(), "yyyyMMdd") + "/");
+		mmap.put("weightDataList1",weightDataList1);
+		mmap.put("weightDataList2",weightDataList2);
+		mmap.put("weightDataList3",weightDataList3);
+		mmap.put("weightDataList4",weightDataList4);
+		mmap.put("weightDataList5",weightDataList5);
+		return "/weightData/car_monitor";
+	}
+
 }
