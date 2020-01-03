@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/blueimp/css/blueimp-gallery.min.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/blueimp/css/blueimp-gallery-video.css}" rel="stylesheet"/>
+<style>
+    .carousel-inner .item img{
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+    .carousel-inner .item h4{
+        margin-bottom: 0px;
+    }
+    .form-group-new {
+        margin-bottom: 1px;
+        margin-right: -1px;
+        margin-left: -1px;
+    }
+    .form-horizontal .control-label-new {
+        padding-top: 1px;
+        margin-bottom: 0;
+        text-align: right;
+    }
+    .form-control-static-new {
+        min-height: 28px;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        margin-bottom: 0;
+    }
+    .over-filed{
+        background-color: red;
+        color: white
+    }
+</style>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal" id="signupForm">
+        <div class="row">
+            <div class="col-sm-6">
+                <div id="divPlugin" class="plugin">
+                </div>
+            </div>
+            <h4 class="col-md-6">行车信息：</h4>
+            <div class="col-sm-3">
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">治超站点：</label>
+                    <div class="form-control-static-new" th:text="${data.stationName}" id="stationDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车辆方向：</label>
+                    <div class="form-control-static-new" th:text="${data.direction}" id="directionDiv">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车牌信息：</label>
+                    <div class="form-control-static-new" th:text="${data.truckNumber}" id="truckNumberDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">行驶车道：</label>
+                    <div class="form-control-static-new" th:text="${data.lane}" id="laneDiv">
+                    </div>
+                </div>
+                <!--<div class="form-group-new">-->
+                    <!--<label class="col-sm-7 control-label-new">超限：</label>-->
+                    <!--<div class="form-control-static-new">-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+            <div class="col-md-6">
+                <div class="form-group-new">
+                    <label class="col-sm-3 control-label-new">采集时间：</label>
+                    <div class="form-control-static-new" th:text="${#dates.format(data.weightingDate,'yyyy-MM-dd HH:mm:ss')}" id="weightDateDiv">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">总重(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.weight}"  id="weightDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">轴数：</label>
+                    <div class="form-control-static-new" th:text="${data.axleCount}" id="axleCountDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">超重(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.overWeight}" id="overWeightDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">轴一重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight1}" id="axleWeight1Div">
+                    </div>
+                </div>
+                <div class="form-group-new" th:if="${data.axleWeight3 != null && data.axleWeight3 >0 }">
+                    <label class="col-sm-7 control-label-new">轴三重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight3}" id="axleWeight3Div">
+                    </div>
+                </div>
+                <div class="form-group-new" th:if="${data.axleWeight5 != null && data.axleWeight5 >0 }">
+                    <label class="col-sm-7 control-label-new">轴五重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight5}" id="axleWeight5Div">
+                    </div>
+                </div>
+                <div class="form-group-new" th:if="${data.axleWeight7 != null && data.axleWeight7 >0 }">
+                    <label class="col-sm-7 control-label-new">轴七重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight7}" id="axleWeight7Div">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车长(m)：</label>
+                    <div class="form-control-static-new" th:text="${data.length}/1000" id="lengthDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车宽(m)：</label>
+                    <div class="form-control-static-new" th:text="${data.width}/1000"  id="widthDiv">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">超重率：</label>
+                    <div class="form-control-static-new" th:text="${overRate}" id="overRateDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">限重：</label>
+                    <div class="form-control-static-new" th:text="${data.limitWeight}" id="limitWeightDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车速(km/h)：</label>
+                    <div class="form-control-static-new" th:text="${data.speed}" id="speedDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">轴二重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight2}" id="axleWeight2Div">
+                    </div>
+                </div>
+                <div class="form-group-new" th:if="${data.axleWeight4 != null && data.axleWeight4 >0 }">
+                    <label class="col-sm-7 control-label-new">轴四重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight4}" id="axleWeight4Div">
+                    </div>
+                </div>
+                <div class="form-group-new" th:if="${data.axleWeight6 != null && data.axleWeight6 >0 }">
+                    <label class="col-sm-7 control-label-new">轴六重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight6}" id="axleWeight6Div">
+                    </div>
+                </div>
+                <div class="form-group-new" th:if="${data.axleWeight8 != null && data.axleWeight8 >0 }">
+                    <label class="col-sm-7 control-label-new">轴八重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight8}" id="axleWeight8Div">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车高(m)：</label>
+                    <div class="form-control-static-new" th:text="${data.height}/1000" id="heightDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">通过时间(ms)：</label>
+                    <div class="form-control-static-new" th:text="${data.passTime}" id="passTimeDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3" th:if="${data.ftpPriorHead != null && data.ftpPriorHead ne ''}">
+                <h4>前车头图片</h4>
+                <a th:href="${ctxPath +data.ftpPriorHead}" title="前车头图片" data-gallery="">
+                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpPriorHead}" id="img1">
+                </a>
+            </div>
+            <div class="col-sm-3" th:if="${data.ftpTail != null && data.ftpTail ne ''}">
+                <h4>车尾图片（秤上）</h4>
+                <a th:href="${ctxPath +data.ftpTail}" title="车尾图片（秤上）" data-gallery="">
+                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpTail}" id="img2">
+                </a>
+            </div>
+            <div class="col-sm-3" th:if="${data.ftpPlate != null && data.ftpPlate ne ''}">
+                <h4>车牌信息</h4>
+                <a th:href="${ctxPath + data.ftpPlate}" title="车牌" data-gallery="">
+                    <img alt="image" class="img-responsive" height="280" th:src="${ctxPath + data.ftpPlate}" id="img3">
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/blueimp/js/jquery.blueimp-gallery.min.js}"></script>
+<script th:src="@{/dahua/foundation.js}"></script>
+<script th:src="@{/dahua/WebVideoCtrl.js}"></script>
+<script th:src="@{/dahua/modifyUI.js}"></script>
+<script th:src="@{/dahua/demo.js}"></script>
+<script>
+    $("#links").children("li").onclick = function (event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement,
+            link = target.src ? target.parentNode : target,
+            options = {index: link, event: event},
+            links = this.getElementsByTagName('a');
+            blueimp.Gallery(links, options);
+    };
+    
+    function checkOver() {
+        if(parseInt($("#overWeightDiv").html())>0){
+            $("#overWeightDiv").addClass("over-filed")
+        }else {
+            $("#overWeightDiv").removeClass("over-filed")
+        }
+        if(parseFloat($("#lengthDiv").html())>18.1){
+            $("#lengthDiv").addClass("over-filed")
+        }else {
+            $("#lengthDiv").removeClass("over-filed")
+        }
+        if(parseFloat($("#widthDiv").html())>2.55){
+            $("#widthDiv").addClass("over-filed")
+        }else {
+            $("#widthDiv").removeClass("over-filed")
+        }
+        if(parseFloat($("#heightDiv").html())>4){
+            $("#heightDiv").addClass("over-filed")
+        }else {
+            $("#heightDiv").removeClass("over-filed")
+        }
+    }
+
+    function relast() {
+        $.ajax({
+            cache: true,
+            type: "GET",
+            url: "/duge/weightData/last?key="+new Date().getTime(),
+            async: false,
+            error: function (request) {
+
+            },
+            success: function (data) {
+                $("#stationDiv").html(data.stationName);
+                $("#directionDiv").html(data.direction);
+                $("#truckNumberDiv").html(data.truckNumber);
+                $("#laneDiv").html(data.lane);
+                $("#weightDateDiv").html(data.params.weightDate);
+                $("#weightDiv").html(data.weight);
+                $("#axleCountDiv").html(data.axleCount);
+                $("#overWeightDiv").html(data.overWeight);
+                $("#axleWeight1Div").html(data.axleWeight1);
+                $("#axleWeight3Div").html(data.axleWeight3);
+                $("#axleWeight5Div").html(data.axleWeight5);
+                $("#axleWeight7Div").html(data.axleWeight7);
+                $("#lengthDiv").html(data.length /1000);
+                $("#widthDiv").html(data.width /1000);
+                $("#overRateDiv").html(data.params.overRate);
+                $("#limitWeightDiv").html(data.limitWeight);
+                $("#speedDiv").html(data.speed);
+                $("#axleWeight2Div").html(data.axleWeight2);
+                $("#axleWeight4Div").html(data.axleWeight4);
+                $("#axleWeight6Div").html(data.axleWeight6);
+                $("#axleWeight8Div").html(data.axleWeight8);
+                $("#heightDiv").html(data.height /1000);
+                $("#passTimeDiv").html(data.passTime);
+                $("#img1").attr("src",data.params.ctxPath+data.ftpPriorHead);
+                $("#img2").attr("src",data.params.ctxPath+data.ftpTail);
+                $("#img3").attr("src",data.params.ctxPath+data.ftpPlate);
+                checkOver();
+            }
+        });
+    }
+
+    $(function () {
+        checkOver();
+        window.timer = setInterval(relast, 2000);
+
+        WebVideoCtrl.insertPluginObject("divPlugin",500,300);
+        //初始化插件
+        WebVideoCtrl.initPlugin("Dahua2",function () {
+                //创建视频窗口
+                WebVideoCtrl.createMultiNodeDisplay(16);
+                //设置窗口分割数
+                WebVideoCtrl.setSplitNum(1);
+            }
+        );
+
+        WebVideoCtrl.login("19.201.27.226",37777,"admin","admin1234",37777,0,
+            function(sIp,iDeviceID){
+                //获得通道号
+                console.info("start succeed");
+                var channelNum = WebVideoCtrl.getChannelNumber(iDeviceID);
+                WebVideoCtrl.connectRealVideo(sIp,channelNum,1,function(iPlayerID){
+                        console.info("start succeed");
+                    },
+                    function(status,error){
+                        console.info(status + " " + error);
+                    }
+                )
+            },
+            function(iErrorCode,sError){
+                console.info(iErrorCode + " " + sError);
+            }
+        );
+
+    });
+
+</script>
+</body>
+</html>

@@ -23,7 +23,7 @@ public class ReportServiceImpl implements IReportService {
      */
     public List<LinkedHashMap<String, Object>> selectVehicleFlow(int year, int month){
         List<LinkedHashMap<String, Object>> vehicleFlow = reportMapper.selectVehicleFlow(year,month);
-        System.out.println(vehicleFlow);
+        //System.out.println(vehicleFlow);
         return vehicleFlow;
     }
 }

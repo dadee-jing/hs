@@ -58,8 +58,9 @@ public class WeightDataController extends BaseController {
 
 	// @RequiresPermissions("duge:weightData:view")
 	@GetMapping()
-	public String data(ModelMap mmap) {
+	public String data(@RequestParam(value="id",required=false) Integer id, ModelMap mmap) {
 		mmap.put("overWeightMin", -1);
+		mmap.put("stationId", id == null ? 0:id);
 		return "/weightData/weight_data";
 	}
 

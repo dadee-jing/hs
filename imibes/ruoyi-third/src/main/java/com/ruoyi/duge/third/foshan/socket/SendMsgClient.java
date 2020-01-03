@@ -30,11 +30,13 @@ public class SendMsgClient {
     private String host;
     private int port;
     private final Object lockObject;
+    private final IConfigDataService configDataService;
 
     @Autowired
     public SendMsgClient(IConfigDataService configDataService,
                          SendMsgClientHandler sendMsgClientHandler) {
         this.sendMsgClientHandler = sendMsgClientHandler;
+        this.configDataService = configDataService;
         host = configDataService.getConfigValue("foshan.tcp.host");
         port = Integer.parseInt(configDataService.getConfigValue("foshan.tcp.port"));
         this.lockObject = new Object();
@@ -62,7 +64,9 @@ public class SendMsgClient {
 
     @Scheduled(fixedDelay = 1000 * 30, initialDelay = 10000)
     public void heartbeat() {
-        sendMessage(FoshanMessage.builder().messageType(FoshanMessage.HEART_BEAT_MSG).build());
+        if("1".equals(configDataService.getConfigValue("do_foshan_scheduled"))){
+            sendMessage(FoshanMessage.builder().messageType(FoshanMessage.HEART_BEAT_MSG).build());
+        }
     }
 
     public boolean connect() {

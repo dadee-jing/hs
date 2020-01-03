@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div style="position: absolute;z-index: 1000;top: 10px; left: 10px;" id="mobile_add">
+	<a class="btn btn-success" onclick="$.operate.add()">
+		<i class="fa fa-plus"></i> 添加
+	</a>
+</div>
+    <div class="container-div">
+		<div class="col-sm-12 search-collapse">
+			<input type="hidden" name="treeId" id="treeId" >
+			<input type="hidden" name="treeId2" id="treeId2" >
+			<form id="role-form">
+				<input type="hidden" name="stationId" id="stationId" >
+				<input type="hidden" name="operator" id="operator" >
+				<div class="select-list">
+					<ul>
+						<li>
+							站点名称：
+							<input type="text" name="typeName" onclick="selectStationTree()" readonly="true"
+								   id="treeName" >
+						</li>
+						<li>
+							用户名：
+							<input type="text" name="typeName2" onclick="selectUserTree()" readonly="true"
+								   id="treeName2" >
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="station:maintenanceRecord:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+<!--			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="station:maintenanceRecord:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="station:maintenanceRecord:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>-->
+		</div>
+
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+	<script th:src="@{/js/mobile.js}"></script>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('station:maintenanceRecord:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('station:maintenanceRecord:remove')}]];
+        var prefix = ctx + "station/maintenanceRecord";
+
+		$(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+				detailUrl: prefix + "/detail/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "站点维护记录",
+				pageSize: 10,
+				search: false,
+				showExport: false,
+				showToggle:false,
+				showSearch: false,
+				showRefresh:false,
+				showColumns:false,
+                columns: [
+				{
+					field : 'id', 
+					title : 'id' ,
+					sortable: true
+				},
+				{
+					field : 'stationId', 
+					title : '站点ID',
+					visible:false
+				},
+				{
+					field : 'stationName',
+					title : '站点'
+				},
+				{
+					field : 'maintenanceDate', 
+					title : '维护日期',
+					sortable: true
+				},
+				{
+					field : 'siteCondition', 
+					title : '现场状况描述' 
+				},
+				{
+					field : 'operationLog', 
+					title : '操作记录' 
+				},
+				{
+					field : 'operator', 
+					title : '操作人' 
+				},
+				{
+					field : 'operatorPhone', 
+					title : '操作人手机号' 
+				},
+				{
+					field : 'coordinator',
+					title : '协同人'
+				},
+				{
+					field : 'coordinatorPhone',
+					title : '协同人人手机号'
+				},
+				{
+					field : 'problem',
+					title : '遗留问题'
+				},
+				{
+					field : 'orderNumber',
+					title : '工单号'
+				},
+				{
+					field : 'remark',
+					title : '备注'
+				},
+				{
+					field : 'createTime', 
+					title : '创建日期' ,
+					visible:false
+				},
+				{
+					field : 'createBy', 
+					title : '创建人'  ,
+					visible:false
+				},
+				{
+					field : 'updateTime', 
+					title : '更新日期' ,
+					visible:false
+				},
+				{
+					field : 'updateBy', 
+					title : '更新人' ,
+					visible:false
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+						actions.push('<a class="btn btn-warning btn-xs " href="#" onclick="$.operate.detail(\'' + row.id + '\')"><i class="fa fa-search"></i>详细</a>');
+
+						/*actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');*/
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+
+/*			$('#bootstrap-table').on('click-cell.bs.table', function (e,field, value,  row, $element) {
+				//console.log(value + "," + field)
+				if(!!value && field != 18){
+					$.operate.detail( row.id);
+				}
+			})*/
+        });
+
+		function selectStationTree() {
+			var treeId = $("#treeId").val();
+			//var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+			var deptId = 100;
+			var options = {
+				title: '选择站点',
+				width: "380",
+				url: ctx + "module/stationType/selectStationTree/" + deptId,
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		function doSubmit(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#treeId").val(body.find('#treeId').val());
+				$("#treeName").val(body.find('#treeName').val());
+				$("#stationId").val($("#treeId").val() - 1000);
+				layer.close(index);
+			}
+		}
+		function selectUserTree() {
+			var treeId = $("#treeId").val();
+			//var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+			var deptId = 100;
+			var options = {
+				title: '选择站点',
+				width: "380",
+				url: ctx + "system/dept/selectDeptUserTree/" + deptId,
+				callBack: doSubmitUserTree
+			};
+			$.modal.openOptions(options);
+		}
+		function doSubmitUserTree(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#treeId2").val(body.find('#treeId2').val());
+				$("#treeName2").val(body.find('#treeName2').val());
+				$("#operator").val($("#treeName2").val());
+				layer.close(index);
+			}
+		}
+    </script>
+</body>
+</html>

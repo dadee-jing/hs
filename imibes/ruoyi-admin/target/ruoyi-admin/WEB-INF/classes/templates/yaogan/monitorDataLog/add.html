@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-monitorDataLog-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">点位编号：</label>
+				<div class="col-sm-8">
+					<input id="dWBH" name="dWBH" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">遥测线编号：</label>
+				<div class="col-sm-8">
+					<input id="yCXBH" name="yCXBH" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">监测点位日志号：</label>
+				<div class="col-sm-8">
+					<input id="jCDWRZH" name="jCDWRZH" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车道序号：</label>
+				<div class="col-sm-8">
+					<input id="cDXH" name="cDXH" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">监测时间：</label>
+				<div class="col-sm-8">
+					<input id="jCRQ" name="jCRQ" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地点经度：</label>
+				<div class="col-sm-8">
+					<input id="dDJD" name="dDJD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地点维度：</label>
+				<div class="col-sm-8">
+					<input id="dDWD" name="dDWD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车道坡度：</label>
+				<div class="col-sm-8">
+					<input id="cDPD" name="cDPD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">判定结果：</label>
+				<div class="col-sm-8">
+					<input id="pDJG" name="pDJG" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">号牌号码：</label>
+				<div class="col-sm-8">
+					<input id="hPHM" name="hPHM" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="cPYS" name="cPYS" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">号牌种类：</label>
+				<div class="col-sm-8">
+					<input id="hPZL" name="hPZL" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">燃料种类：</label>
+				<div class="col-sm-8">
+					<input id="rLZL" name="rLZL" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">CO2结果：</label>
+				<div class="col-sm-8">
+					<input id="cO2JG" name="cO2JG" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">CO/CO2比率：</label>
+				<div class="col-sm-8">
+					<input id="cOCO2" name="cOCO2" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">HC/CO2比率：</label>
+				<div class="col-sm-8">
+					<input id="hCCO2" name="hCCO2" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">NO/CO2比率：</label>
+				<div class="col-sm-8">
+					<input id="nOCO2" name="nOCO2" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">CO结果：</label>
+				<div class="col-sm-8">
+					<input id="cOJG" name="cOJG" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">HC结果：</label>
+				<div class="col-sm-8">
+					<input id="hCJG" name="hCJG" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">NO结果：</label>
+				<div class="col-sm-8">
+					<input id="nOJG" name="nOJG" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">不透光度结果：</label>
+				<div class="col-sm-8">
+					<input id="bTGDJG" name="bTGDJG" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">林格曼黑度：</label>
+				<div class="col-sm-8">
+					<input id="lGMHD" name="lGMHD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="cOXZ" name="cOXZ" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">NO限值：</label>
+				<div class="col-sm-8">
+					<input id="nOXZ" name="nOXZ" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">不透光度限值：</label>
+				<div class="col-sm-8">
+					<input id="bTGDXZ" name="bTGDXZ" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">黑度限值：</label>
+				<div class="col-sm-8">
+					<input id="hDXZ" name="hDXZ" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车辆速度：</label>
+				<div class="col-sm-8">
+					<input id="cLSD" name="cLSD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车辆加速度：</label>
+				<div class="col-sm-8">
+					<input id="cLJSD" name="cLJSD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">VSP：</label>
+				<div class="col-sm-8">
+					<input id="vSP" name="vSP" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">风速：</label>
+				<div class="col-sm-8">
+					<input id="fS" name="fS" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="fX" name="fX" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="hJWD" name="hJWD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="sD" name="sD" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">大气压：</label>
+				<div class="col-sm-8">
+					<input id="dQY" name="dQY" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">轨迹信息编号：</label>
+				<div class="col-sm-8">
+					<input id="gJXXBH" name="gJXXBH" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">图像1文件名：</label>
+				<div class="col-sm-8">
+					<input id="tP1" name="tP1" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">图像2文件名：</label>
+				<div class="col-sm-8">
+					<input id="tP2" name="tP2" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">视频1文件名：</label>
+				<div class="col-sm-8">
+					<input id="sP1" name="sP1" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "yaogan/monitorDataLog"
+		$("#form-monitorDataLog-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-monitorDataLog-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

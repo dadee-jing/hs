@@ -5,6 +5,7 @@
 <body class="gray-bg">
 
 <div class="ibox float-e-margins">
+    <input id='stationId-path' type="hidden" th:value="${stationId}"/>
     <div class="ibox-content">
         <div class="row">
             <div class="col-sm-8 search-collapse" style="padding:0;margin: 0">
@@ -359,9 +360,12 @@
                 }]
         };
         $.table.init(options);
-
         setInterval('$.table.search()', 1000 * 120);
         $(".fixed-table-toolbar").hide()
+        if($("#stationId-path").val()!=0){
+            $("#station-hide").val($("#stationId-path").val());
+            $.table.search()
+        }
     });
 
     function weightDetail(id) {
