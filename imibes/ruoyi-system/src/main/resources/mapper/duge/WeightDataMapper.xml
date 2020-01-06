@@ -645,4 +645,12 @@
         where station_id = #{stationId} and lane_mid = #{laneMid}
         order by id desc limit 10
     </select>
+
+    <select id="stationDaily" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
+    	SELECT carOutNum.* FROM
+		(SELECT station_id as stationId, COUNT(id) AS number
+		FROM weight_data
+		WHERE weighting_date BETWEEN  #{startDate} AND  #{endDate}
+		GROUP BY station_id) carOutNum order by stationId;
+    </select>
 </mapper>

@@ -171,4 +171,8 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
         return dataMapper.selectCarOverWeight(stationId,startDate,endDate);
     }
 
+    @Override
+    public List<CarOut> stationDaily(Date startDate, Date endDate) {
+        return dataMapper.stationDaily(startDate, endDate);
+    }
 }
