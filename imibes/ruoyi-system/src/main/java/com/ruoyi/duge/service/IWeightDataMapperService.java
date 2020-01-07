@@ -97,4 +97,6 @@ public interface IWeightDataMapperService
 	 * 查询是否存在
 	 */
     boolean checkIsExist(Long id);
+
+    List<CarOut> stationDaily(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

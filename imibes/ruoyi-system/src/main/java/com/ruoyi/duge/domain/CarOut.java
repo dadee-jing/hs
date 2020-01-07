@@ -17,6 +17,8 @@ public class CarOut extends BaseEntity{
 	
 	private int number;
 
+	private Integer stationId;
+
 	public Date getTime() {
 		return time;
 	}
@@ -31,6 +33,14 @@ public class CarOut extends BaseEntity{
 
 	public void setNumber(int number) {
 		this.number = number;
+	}
+
+	public Integer getStationId() {
+		return stationId;
+	}
+
+	public void setStationId(Integer stationId) {
+		this.stationId = stationId;
 	}
 
 	@Override

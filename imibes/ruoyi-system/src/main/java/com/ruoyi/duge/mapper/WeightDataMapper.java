@@ -2,12 +2,11 @@ package com.ruoyi.duge.mapper;
 
 import com.ruoyi.duge.domain.CarOut;
 import com.ruoyi.duge.domain.WeightData;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 重量数据 数据层
@@ -110,4 +109,6 @@ public interface WeightDataMapper {
     Integer selectLaneId(@Param("stationId")Integer stationId, @Param("lane")Integer lane);
 
     List<WeightData> selectByStationIdAndLane(@Param("stationId")int stationId, @Param("laneMid")int laneMid);
+
+    List<CarOut> stationDaily(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

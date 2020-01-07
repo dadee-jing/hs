@@ -82,6 +82,11 @@ public class WeightDataController extends BaseController {
 		return "/weightData/weight_data_carout";
 	}
 
+	@GetMapping("/daily")
+	public String daily(ModelMap mmap) {
+		return "/weightData/weight_data_daily";
+	}
+
 	/**
 	 * 查询重量数据列表
 	 */
@@ -344,4 +349,23 @@ public class WeightDataController extends BaseController {
 		return "/weightData/car_monitor";
 	}
 
+
+	@PostMapping("/stationDaily/{date}")
+	@ResponseBody
+	public List<CarOut> stationDaily(@PathVariable("date") String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		System.out.println(date);
+		Date startTime;
+		Date endTime;
+		List<CarOut> list = null;
+		try {
+			startTime = sdf.parse(date);
+			endTime = DateUtils.addDays(startTime, 1);
+			list = dataService.stationDaily(startTime, endTime);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
 }
