@@ -54,11 +54,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="stationId != null">station_id = #{stationId},</if>
             <if test="deviceTypeId != null">deviceType_id = #{deviceTypeId},</if>
             <if test="deviceNameId != null">deviceName_id = #{deviceNameId},</if>
-            <if test="remark != null  and remark != ''">remark = #{remark},</if>
-            <if test="ipAddress != null  and ipAddress != ''">ipAddress = #{ipAddress},</if>
-            <if test="port != null  and port != ''">port = #{port},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="ipAddress != null">ipAddress = #{ipAddress},</if>
+            <if test="port != null">port = #{port},</if>
             <if test="state != null ">state = #{state},</if>
-            <if test="snCode != null  and snCode != ''">sn_code = #{snCode},</if>
+            <if test="snCode != null">sn_code = #{snCode},</if>
         </trim>
         where id = #{id}
     </update>
