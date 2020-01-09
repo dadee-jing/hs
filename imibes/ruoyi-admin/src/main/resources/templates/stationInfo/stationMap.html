@@ -179,7 +179,6 @@
                     //鼠标点击marker弹出自定义的信息窗体
                     AMap.event.addListener(marker, 'click', function () {
                         openInfoWindow(station.id,station)
-                        map.setZoomAndCenter(12, [station.longitude, station.latitude]);
                         //infoWindow.setContent(setStationInfo(station))
                         //infoWindow.setContent(createInfoWindow(station.name,"<div>" + station.address + "</div>>"))
 /*                        infoWindow.setContent(createInfoWindow(station.name + " ",

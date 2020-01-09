@@ -121,6 +121,9 @@ public class WeightAndLWHContainer {
         if(processStatus == 1){
             lwhLatestTimeSecond = new AtomicLong(System.currentTimeMillis()/1000);
         }
+        else if(processStatus == 0){
+            setWeightInfo(currentEntity,currentEntity);
+        }
         long timeout = System.currentTimeMillis() + 30000;
         // 若30秒后仍然不能补全外廓数据或称重数据，会被定时任务清理，写入异常数据表
         currentEntity.setTimeoutMillseconds(timeout);
@@ -151,26 +154,7 @@ public class WeightAndLWHContainer {
                 String AxleType = currentEntity.getAxleType();
                 BigDecimal Weight = currentEntity.getWeight();
                 // 限重通过数据配置，新流向不直接提供
-                BigDecimal LimitWeight = null;
-                BigDecimal OverWeight = BigDecimal.ZERO;
-                if (AxleCount > 0 && AxleCount <= 6) {
-                    LimitWeight = new BigDecimal(weightLimitMap.get(AxleCount));
-                    OverWeight = Weight.subtract(LimitWeight);
-                    if (OverWeight.compareTo(new BigDecimal(0d)) <= 0) {
-                        OverWeight = new BigDecimal(0d);
-                    }
-                    else {
-                        // 车辆实际重量大于限制重量
-                        // 计算超重百分比
-                        BigDecimal actualOverWeightPercentage = OverWeight.divide(LimitWeight, 4, BigDecimal.ROUND_DOWN)
-                                .multiply(new BigDecimal(100d));
-                        // 筛选超重百分比
-                        if (actualOverWeightPercentage.compareTo(new BigDecimal(overWeightPercentage)) >= 0) {
-                            // 发送到LED屏
-                            LedComponent.showMessageLed(TruckNumber.trim() + "\r\n涉嫌超载");
-                        }
-                    }
-                }
+                setWeightInfo(currentEntity,previousEntity);
                 BigDecimal AxleWeight1 = currentEntity.getAxleWeight1();
                 BigDecimal AxleWeight2 = currentEntity.getAxleWeight2();
                 BigDecimal AxleWeight3 = currentEntity.getAxleWeight3();
@@ -200,8 +184,8 @@ public class WeightAndLWHContainer {
                 previousEntity.setAxleCount(AxleCount);
                 previousEntity.setAxleType(AxleType);
                 previousEntity.setWeight(Weight);
-                previousEntity.setLimitWeight(LimitWeight);
-                previousEntity.setOverWeight(OverWeight);
+                //previousEntity.setLimitWeight(LimitWeight);
+                //previousEntity.setOverWeight(OverWeight);
                 previousEntity.setAxleWeight1(AxleWeight1);
                 previousEntity.setAxleWeight2(AxleWeight2);
                 previousEntity.setAxleWeight3(AxleWeight3);
@@ -268,6 +252,34 @@ public class WeightAndLWHContainer {
                 mapContainer.put(carNumber, previousEntity);
             }
         }
+    }
+
+    private static void setWeightInfo(WeightAndLwhEntity currentEntity,WeightAndLwhEntity previousEntity) {
+        int AxleCount = currentEntity.getAxleCount();
+        String TruckNumber = currentEntity.getTruckNumber();
+        BigDecimal Weight = currentEntity.getWeight();
+        BigDecimal LimitWeight = null;
+        BigDecimal OverWeight = BigDecimal.ZERO;
+        if (AxleCount > 0 && AxleCount <= 6) {
+            LimitWeight = new BigDecimal(weightLimitMap.get(AxleCount));
+            OverWeight = Weight.subtract(LimitWeight);
+            if (OverWeight.compareTo(new BigDecimal(0d)) <= 0) {
+                OverWeight = new BigDecimal(0d);
+            }
+            else {
+                // 车辆实际重量大于限制重量
+                // 计算超重百分比
+                BigDecimal actualOverWeightPercentage = OverWeight.divide(LimitWeight, 4, BigDecimal.ROUND_DOWN)
+                        .multiply(new BigDecimal(100d));
+                // 筛选超重百分比
+                if (actualOverWeightPercentage.compareTo(new BigDecimal(overWeightPercentage)) >= 0) {
+                    // 发送到LED屏
+                    LedComponent.showMessageLed(TruckNumber.trim() + "\r\n涉嫌超载");
+                }
+            }
+        }
+        previousEntity.setLimitWeight(LimitWeight);
+        previousEntity.setOverWeight(OverWeight);
     }
 
     public static void completeEntity(WeightAndLwhEntity previousEntity, String carNumber) {

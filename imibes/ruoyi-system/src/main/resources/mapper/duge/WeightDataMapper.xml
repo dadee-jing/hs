@@ -58,6 +58,8 @@
         <result property="uploadJj" column="upload_jj"/>
         <result property="markDel" column="mark_del"/>
         <result property="lbh" column="lbh"/>
+        <result property="lbw" column="lbw"/>
+        <result property="lbl" column="lbl"/>
         <result property="laneId" column="lane_id"/>
         <result property="lwhScenePath" column="lwh_scene_path"/>
     </resultMap>
@@ -69,7 +71,7 @@
            axle_weight6, axle_weight7, axle_weight8, sequence_tag, ftp_head, ftp_axle, ftp_tail, ftp_prior_head,
             ftp_plate, ftp_full_view, wd.create_by, wd.create_time, wd.update_by, wd.update_time, wd.remark,
              wd.device_code, station_id, lwh_date, plate, width, height, length, lane_mid, lane_min, lane_max,
-              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj, lbh,lwh_scene_path from weight_data wd
+              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj, lbh,lbw,lbl,lwh_scene_path from weight_data wd
         left join duge_station_info dsi on dsi.id = wd.station_id
     </sql>
 
@@ -125,6 +127,8 @@
             <if test="laneMin != null  and laneMin != '' ">and lane_min = #{laneMin}</if>
             <if test="laneMax != null  and laneMax != '' ">and lane_max = #{laneMax}</if>
             <if test="lbh != null  and lbh != '' ">and lbh > 0 </if>
+            <if test="lbw != null  and lbw != '' ">and lbh > 0 </if>
+            <if test="lbl != null  and lbl != '' ">and lbh > 0 </if>
             <if test="passTime != null  and passTime != '' ">and pass_time = #{passTime}</if>
             <if test="uploadTag != null ">and upload_tag = #{uploadTag}</if>
             <if test="uploadYhl != null ">and upload_yhl = #{uploadYhl}</if>
@@ -143,8 +147,11 @@
         order by id desc
     </select>
 
-    <select id="selectLast" parameterType="Long" resultMap="WeightDataResult">
+    <select id="selectLast" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult" >
         <include refid="selectDataVo"/>
+        <where>
+            <if test="stationId != null ">and station_id = #{stationId}</if>
+        </where>
         order by id desc limit 1
     </select>
 
@@ -208,6 +215,8 @@
             <if test="uploadSj != null  ">upload_sj,</if>
             <if test="uploadJj != null  ">upload_jj,</if>
             <if test="lbh != null  and lbh != ''  ">lbh,</if>
+            <if test="lbw != null  and lbw != ''  ">lbw,</if>
+            <if test="lbl != null  and lbl != ''  ">lbl,</if>
             <if test="laneId != null  ">lane_id,</if>
             <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path,</if>
         </trim>
@@ -264,6 +273,8 @@
             <if test="uploadSj != null  ">#{uploadSj},</if>
             <if test="uploadJj != null  ">#{uploadJj},</if>
             <if test="lbh != null  and lbh != ''  ">#{lbh},</if>
+            <if test="lbw != null  and lbw != ''  ">#{lbw},</if>
+            <if test="lbl != null  and lbl != ''  ">#{lbl},</if>
             <if test="laneId != null  ">#{laneId},</if>
             <if test="lwhScenePath != null  and lwhScenePath != ''  ">#{lwhScenePath},</if>
         </trim>
@@ -646,11 +657,39 @@
         order by id desc limit 10
     </select>
 
+    <select id="overLoadCarList" resultType="java.util.HashMap">
+        select plate,count(*) overCount
+        from weight_data
+        where  over_weight > 0
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(weighting_date)
+        <if test="plate != null and plate != '' ">
+            and plate like concat('%', #{plate}, '%')
+        </if>
+        group by plate order by overCount desc
+    </select>
+
+    <select id="selectOverLoadRecordByPlate"  resultMap="WeightDataResult">
+        select wd.id,wd.weighting_date,wd.plate,wd.weight,wd.over_weight,wd.limit_weight,
+        wd.speed,dsi.name station_name
+        from weight_data wd
+        left join duge_station_info dsi
+        on dsi.id = wd.station_id
+        where wd.plate = #{plate} and wd.over_weight > 0
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(wd.weighting_date)
+        order by wd.weighting_date desc
+    </select>
+
     <select id="stationDaily" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
-    	SELECT carOutNum.* FROM
-		(SELECT station_id as stationId, COUNT(id) AS number
+    	SELECT station_id as stationId, COUNT(id) AS number
 		FROM weight_data
 		WHERE weighting_date BETWEEN  #{startDate} AND  #{endDate}
-		GROUP BY station_id) carOutNum order by stationId;
+		GROUP BY station_id;
+    </select>
+
+    <select id="stationDailyOverWeight" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
+    	SELECT station_id as stationId, COUNT(*) AS number
+		FROM weight_data
+		WHERE DATE(weighting_date) = #{date} AND over_weight>0 GROUP BY station_id
+
     </select>
 </mapper>

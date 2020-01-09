@@ -211,6 +211,7 @@
     function doSubmit(index, layero) {
         var body = layer.getChildFrame('body', index);
         $("#station-input").val(body.find('#stationName').val());
+        $("#station-hide").val(body.find('#stationId').val());
         layer.close(index);
     }
 

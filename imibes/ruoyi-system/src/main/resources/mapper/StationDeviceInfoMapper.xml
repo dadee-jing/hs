@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deviceName"    column="device_name"    />
         <result property="snCode"    column="sn_code"    />
         <result property="remark"    column="remark"    />
+        <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <resultMap type="com.ruoyi.duge.domain.StationDeviceInfo" id="StationDeviceInfoResult">
@@ -31,8 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="snCode"    column="sn_code"    />
         <result property="remark"    column="remark"    />
+        <result property="updateTime"    column="update_time"    />
     </resultMap>
-
 
     <insert id="insertStationDeviceInfo" parameterType="com.ruoyi.duge.domain.StationDeviceInfo">
     INSERT INTO station_device_info (station_id,deviceType_id,deviceName_id,ipAddress,port,state,remark,sn_code)
@@ -54,11 +55,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="stationId != null">station_id = #{stationId},</if>
             <if test="deviceTypeId != null">deviceType_id = #{deviceTypeId},</if>
             <if test="deviceNameId != null">deviceName_id = #{deviceNameId},</if>
-            <if test="remark != null">remark = #{remark},</if>
-            <if test="ipAddress != null">ipAddress = #{ipAddress},</if>
-            <if test="port != null">port = #{port},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="ipAddress != null  and ipAddress != ''">ipAddress = #{ipAddress},</if>
+            <if test="port != null  and port != ''">port = #{port},</if>
             <if test="state != null ">state = #{state},</if>
-            <if test="snCode != null">sn_code = #{snCode},</if>
+            <if test="snCode != null  and snCode != ''">sn_code = #{snCode},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
     </update>
@@ -98,10 +100,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN device_enum de2 ON sdi.deviceType_id = de2.id
         where sdi.station_id = #{stationId}
     </select>
+
     <select id="selectStationIdByDeviceId" resultType="java.lang.Integer">
         select station_id from station_device_info where id = #{id}
     </select>
+
     <select id="getDeviceEnumIdByName" resultType="integer">
         select id from device_enum where value = #{value} and type = #{type}
     </select>
+
+    <select id="selectDeviceByStationAndNameId" resultType="com.ruoyi.duge.domain.StationDeviceInfo">
+        select  * from station_device_info where station_id = #{stationId} and deviceName_id = #{deviceNameId}
+    </select>
+
 </mapper>

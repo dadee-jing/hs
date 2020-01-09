@@ -35,8 +35,8 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
         return dataMapper.selectDataById(id);
     }
 
-    public com.ruoyi.duge.domain.WeightData selectLast() {
-        return dataMapper.selectLast();
+    public com.ruoyi.duge.domain.WeightData selectLast(com.ruoyi.duge.domain.WeightData data) {
+        return dataMapper.selectLast(data);
     }
 
     /**
@@ -174,5 +174,10 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     @Override
     public List<CarOut> stationDaily(Date startDate, Date endDate) {
         return dataMapper.stationDaily(startDate, endDate);
+    }
+
+    @Override
+    public List<CarOut> stationDailyOverWeight(Date date) {
+        return dataMapper.stationDailyOverWeight(date);
     }
 }

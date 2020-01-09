@@ -38,4 +38,6 @@ public interface StationDeviceInfoMapper {
 	Integer getDeviceEnumIdByName(@Param("value") String value,@Param("type")  int type);
 
 	void insertDeviceEnum(DeviceEnum deviceEnum);
+
+	StationDeviceInfo selectDeviceByStationAndNameId(@Param("stationId")Integer stationId, @Param("deviceNameId")Integer deviceNameId);
 }

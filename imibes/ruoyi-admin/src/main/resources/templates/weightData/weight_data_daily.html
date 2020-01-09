@@ -23,6 +23,7 @@
 		nav ul li{
 			
 		}
+
 	</style> 
 
 <body>
@@ -58,63 +59,111 @@
 	<div>
 		<hr style="height:1px;border:none;border-top:1px solid #555555;" />
 	</div>
+
+	<div>
+
+		<ul class="nav nav-pills">
+			<li role="button" id="carOutNumber"class="active"><a href="#">过车统计</a></li>
+			<li role="button" id="overWeight" class=""><a href="#">超重统计</a></li>
+		</ul>
+	</div>
     <div id="main"></div>
 	<div th:include="include :: footer"></div>
 </body>
 <script th:src="@{/ajax/libs/echart/echarts.min.js}"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Ia1X0IjEjafqGcgLPSseLLZ4l1FRQsfY"></script>
 <script type="text/javascript">
+	// $(document).ready(function(){
+	//
+	// 	$("#table-carout").hide();
+	// });
+
+	$(function(){
+		$("#overWeight").click(function(){
+			$("#overWeight").addClass('active');
+			$("#carOutNumber").removeClass('active');
+		});
+	}) ;
+
+	$(function(){
+		$("#carOutNumber").click(function(){
+			$("#carOutNumber").addClass('active');
+			$("#overWeight").removeClass('active');
+		});
+	}) ;
 
 	$(function() {
 	    $("#search-operation,#overWeight,#carOutNumber").click(function(){
-	       
-	        	var startDate = $("#startTime").val()+" 00:00:00";
-	        	var url = "/duge/weightData/stationDaily/"+startDate;
-	        	$.ajax({
-	        		"url":url,
-	        		"type":"post",
-	        		"dataType":"json",
-	        		"success":function(obj) {
-	        			if(obj.length==0){
-							$("#main").css("display","none");
-							$("#div-carout").css("display","none");
-	        				alert("没有查到任何数据!!!");
-	        				return;
-	        			}
-	        				
-	        			if (obj.state == 0) {
-	        				alert(obj.message);
-	        			} else {
-							$("#main").css("display","block");
-							$("#div-carout").css("display","block");
-	        				var myChart = echarts.init(document.getElementById('main'));
-							var text = '过车统计';
-							var data = ['过车统计'];
-							var name = '过车统计';
-							var stationName = ['五沙大桥-东侧','五沙大桥-西侧','三善大桥-下桥位','三善大桥-上桥位','德胜大桥-上桥位','德胜大桥-下桥位','乐龙大桥-南侧主道','乐龙大桥-南侧辅道','乐龙大桥-北侧主道','乐龙大桥-北侧辅道','三洪奇大桥-上桥位','三洪奇大桥-下桥位','甘竹滩大桥-南侧主道下桥位','甘竹滩大桥-南侧辅道下桥位']
-	        				option = {
-	        				    title: {
-									text:text
-	        				    },
-	        				    tooltip: {
-	        				        trigger: 'axis'
-	        				    },
-	        				    legend: {
-	        				        data:data
-	        				    },
+
+	    	if($("#startTime").val()) {
+
+				var startDate = $("#startTime").val() + " 00:00:00";
+				var url = "";
+				if ($("#carOutNumber").hasClass('active')) {
+					url = "/duge/weightData/stationDaily/" + startDate;
+				} else {
+					url = "/duge/weightData/stationDailyOverWeight/" + $("#startTime").val();
+				}
+
+				$.ajax({
+					"url": url,
+					"type": "post",
+					"dataType": "json",
+					"success": function (obj) {
+						if (obj.length == 0) {
+							$("#main").css("display", "none");
+							$("#div-carout").css("display", "none");
+							alert("没有查到任何数据!!!");
+							return;
+						}
+
+						if (obj.state == 0) {
+						} else {
+							$("#main").css("display", "block");
+							$("#div-carout").css("display", "block");
+							var myChart = echarts.init(document.getElementById('main'));
+							// var text = '过车统计';
+							// var data = ['过车统计'];
+							// var name = '过车统计';
+							var text = "";
+							var data = "";
+							var name = "";
+							if($("#carOutNumber").hasClass('active'))
+							{
+								text = '过车统计';
+								data = ['过车统计'];
+								name = '过车统计';
+							}
+							else
+							{
+								text = '超载统计';
+								data = ['超载统计'];
+								name = '超载统计';
+							}
+							var stationName = ['五沙大桥-东侧', '五沙大桥-西侧', '三善大桥-下桥位', '三善大桥-上桥位', '德胜大桥-上桥位', '德胜大桥-下桥位', '乐龙大桥-南侧主道', '乐龙大桥-南侧辅道', '乐龙大桥-北侧主道', '乐龙大桥-北侧辅道', '三洪奇大桥-上桥位', '三洪奇大桥-下桥位', '甘竹滩大桥-南侧主道下桥位', '甘竹滩大桥-南侧辅道下桥位']
+							option = {
+								title: {
+									text: text
+								},
+								tooltip: {
+									trigger: 'axis'
+								},
+								legend: {
+									data: data
+								},
 								grid: {
 									left: '3%',
 									right: '4%',
 									bottom: '3%',
 									containLabel: true
 								},
-	        				    toolbox: {
-	        				        feature: {
-	        				            saveAsImage: {}
-	        				        }
-	        				    },
-	        				    xAxis: {
-									axisLabel:{
+								toolbox: {
+									feature: {
+										saveAsImage: {}
+									}
+								},
+								xAxis: {
+									axisLabel: {
 										interval: 0,
 										formatter: function (value) {
 											//x轴的文字改为竖版显示
@@ -122,37 +171,38 @@
 											return str.join("\n");
 										}
 									},
-	        				        data: function() {
-	        				            var list = [];
-	        				            for (var i = 0; i <= obj.length-1; i++) {
-											list.push(stationName[obj[i].stationId-1])
-	        				            }
-	        				            return list;
-	        				        }()
-	        				    },
+									data: function () {
+										var list = [];
+										for (var i = 0; i <= obj.length - 1; i++) {
+											list.push(stationName[obj[i].stationId - 1])
+										}
+										return list;
+									}()
+								},
 								yAxis: {
 									type: 'value'
 								},
-	        				    series: [
-	        				        {
-	        				            name:name,
-	        				            type:'bar',
-	        				            stack: '总量',
-	        				            data: function(){
-	        				                var list = [];
-											for (var i = 0; i <= obj.length-1; i++) {
+								series: [
+									{
+										name: name,
+										type: 'bar',
+										stack: '总量',
+										data: function () {
+											var list = [];
+											for (var i = 0; i <= obj.length - 1; i++) {
 												list.push(obj[i].number)
 											}
-	        				                return list;
-	        				            }()
-	        				        }
-	        				    ]
-	        				};
-	        				myChart.setOption(option);
-	        			}
-	        		}
-	        	});
-	    });
+											return list;
+										}()
+									}
+								]
+							};
+							myChart.setOption(option);
+						}
+					}
+				});
+			}});
+
 	});  
 
 </script>

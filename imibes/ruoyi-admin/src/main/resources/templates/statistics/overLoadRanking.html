@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<style type="text/css">
+    body{
+        background-color: #f3f3f4;
+    }
+    #over_load_car{
+        width: 24%;
+        background: #fff;
+        float: left;
+        margin-top: 20px;
+    }
+    #over_load_record{
+        width: 74%;
+        background: #fff;
+        float: left;
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+    .changeColor{
+        background-color: #F5F5F5 !important;
+    }
+</style>
+
+<body class="gray-bg">
+
+    <div id="parent" class="container-div">
+        <div class="col-sm-12 search-collapse">
+            <form id="role-form">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            车牌：
+                            <input name="plate">
+                            统计时间：
+                            <select name="startDay">
+                                <option th:value="1">近一天</option>
+                                <option th:value="7">近一周</option>
+                                <option th:value="30">近一个月</option>
+<!--
+                                <option th:value="365">近一年</option>
+-->
+                            </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="searchCar()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <!--超限车辆排行-->
+        <div id="over_load_car" class="">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+        <!--超限记录-->
+        <div id="over_load_record" class="">
+            <table id="over_load_record_table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+<div th:include="include::footer"></div>
+<script th:inline="javascript">
+
+    $(function (){
+        initCarTable();
+    });
+
+    function searchCar() {
+        $("#bootstrap-table").bootstrapTable('destroy');
+        initCarTable();
+    }
+
+    function initCarTable() {
+        $('#bootstrap-table').bootstrapTable({
+            method: 'post',
+            url: "/duge/weightData/overLoadCarList",
+            contentType: "application/x-www-form-urlencoded",
+            cache: true,
+            /*pagination: true,*/
+            pageNumber: 1,
+            pageSize: 18,
+            pageList: [],
+            sidePagination: "server",
+            columns: [
+                {
+                    field: 'plate',
+                    title: '车牌',
+                },
+                {
+                    field: 'overCount',
+                    title: '超限次数'
+                }],
+            onClickRow:function (row,$element) {
+                $('.changeColor').removeClass('changeColor');
+                $($element).addClass('changeColor');
+                $("#over_load_record_table").bootstrapTable('destroy');
+                initRecordTable(row.plate);
+                console.log($("select[name='startDay']").val());
+            },
+            queryParams: function(params) {
+                return {
+                    // 传递参数查询参数
+                    pageSize : params.limit,
+                    pageNum : params.offset / params.limit + 1,
+                    isAsc : params.order,
+                    plate:$("input[name='plate']").val(),
+                    startDay:$("select[name='startDay']").val()
+                };
+            },
+            responseHandler: function(res) {
+                if (res.code == 0) {
+                    return { rows: res.rows, total: res.total };
+                } else {
+                    $.modal.alertWarning(res.msg);
+                    return { rows: [], total: 0 };
+                }
+            },
+            onLoadSuccess:function(data){
+                var fp = $('#bootstrap-table tr').find("td:first").html();
+                $("#over_load_record_table").bootstrapTable('destroy');
+                initRecordTable(fp);
+            }
+        });
+    }
+
+    function initRecordTable(plate) {
+        $('#over_load_record_table').bootstrapTable({
+            method: 'post',
+            url: "/duge/weightData/overLoadRecordList",
+            contentType: "application/x-www-form-urlencoded",
+            cache: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [],
+            sidePagination: "server",
+            columns: [
+                {
+                    field: 'stationName',
+                    title: '站点'
+                },
+                {
+                    field: 'weightingDate',
+                    title: '采集时间'
+                },
+                {
+                    field: 'plate',
+                    title: '车牌',
+                },
+                {
+                    field: 'weight',
+                    title: '总重'
+                },
+                {
+                    field: 'limitWeight',
+                    title: '限重',
+                },
+                {
+                    field: 'overWeight',
+                    title: '超重'
+                },
+                {
+                    field: 'limitOverLevel',
+                    title: '超重比率',
+                    formatter: function (value, row, index) {
+                        //超重除以限重
+                        var rate;
+                        if (row.limitWeight != 0) {
+                            rate = (row.overWeight / row.limitWeight);
+                        } else {
+                            rate = 0.00;
+                        }
+                        var rateText = (rate * 100).toFixed(2) + '%';
+                        if (rate > 0.5) {
+                            return '<span class="bg-red" style="color: white">' + rateText + '</span>'
+                        } else if (rate > 0.2) {
+                            return '<span class="bg-yellow" style="color: white">' + rateText + '</span>'
+                        } else if (rate < 0.1) {
+                            return '<span class="bg-green" style="color: white">' + rateText + '</span>'
+                        } else if (rate == 0) {
+                            return '<span>' + rateText + '</span>'
+                        } else if (rate == null) {
+                            return '<span class="bg-primary">计算出错</span>'
+                        } else {
+                            return '<span class="bg-success">' + rateText + '</span>'
+                        }
+                    }
+                },
+                {
+                    field: 'speed',
+                    title: '车速(km/h)'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-warning btn-xs" href="#" ' +
+                            'onclick="weightDetail(' + row.id + ')"><i class="fa fa-search"></i>详细</a>');
+                        return actions.join('');
+                    }
+                }
+            ],                                         // 显示列信息
+            queryParams: function(params) {
+                return {
+                    // 传递参数查询参数
+                    pageSize : params.limit,
+                    pageNum : params.offset / params.limit + 1,
+                    orderByColumn : params.sort,
+                    isAsc : params.order,
+                    plate : plate,
+                    startDay:$("select[name='startDay']").val()
+                };
+            },
+        });
+    }
+
+    function weightDetail(id) {
+        var dataUrl = "/duge/weightData/detail/" + id,
+            menuName = "车辆详情",
+            dataIndex = 100;
+        var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
+        $('.menuTab', parent.document).removeClass('active');
+
+        // 添加选项卡对应的iframe
+        var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+        $('.mainContent', parent.document).find('iframe.RuoYi_iframe', parent.document).hide().parents('.mainContent', parent.document).append(str1);
+
+        //$.modal.loading("数据加载中，请稍后...");
+        $('.mainContent iframe:visible', parent.document).load(function () {
+            $.modal.closeLoading();
+        });
+        // 添加选项卡
+        $('.menuTabs .page-tabs-content', parent.document).append(str);
+        //scrollToTab($('.menuTab.active'));
+    }
+
+</script>
+</body>
+</html>

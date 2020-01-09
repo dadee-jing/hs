@@ -5,6 +5,7 @@ import com.ruoyi.duge.domain.WeightData;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public interface WeightDataMapper {
      */
     public com.ruoyi.duge.domain.WeightData selectDataById(Long id);
 
-    public com.ruoyi.duge.domain.WeightData selectLast();
+    public com.ruoyi.duge.domain.WeightData selectLast(com.ruoyi.duge.domain.WeightData data);
     /**
      * 查询重量数据列表
      *
@@ -110,5 +111,11 @@ public interface WeightDataMapper {
 
     List<WeightData> selectByStationIdAndLane(@Param("stationId")int stationId, @Param("laneMid")int laneMid);
 
+    List<HashMap> overLoadCarList(@Param("plate")String plate,@Param("startDay") String startDay);
+
+    List<WeightData> selectOverLoadRecordByPlate(@Param("plate")String plate,@Param("startDay") String startDay);
+
     List<CarOut> stationDaily(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    List<CarOut> stationDailyOverWeight(@Param("date") Date date);
 }

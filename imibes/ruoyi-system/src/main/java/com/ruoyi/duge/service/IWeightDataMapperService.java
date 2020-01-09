@@ -25,7 +25,7 @@ public interface IWeightDataMapperService
      */
 	public com.ruoyi.duge.domain.WeightData selectDataById(Long id);
 
-	public com.ruoyi.duge.domain.WeightData selectLast();
+	public com.ruoyi.duge.domain.WeightData selectLast(com.ruoyi.duge.domain.WeightData data);
 	
 	/**
      * 查询重量数据列表
@@ -99,4 +99,6 @@ public interface IWeightDataMapperService
     boolean checkIsExist(Long id);
 
     List<CarOut> stationDaily(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+	List<CarOut> stationDailyOverWeight(@Param("date") Date date);
 }
