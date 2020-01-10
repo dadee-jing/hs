@@ -213,6 +213,8 @@ public class WeightAndLWHContainer {
                 String laneMax = currentEntity.getLaneMax();
                 String passTime = currentEntity.getPassTime();
                 String lbh = currentEntity.getLbh();
+                String lbw = currentEntity.getLbw();
+                String lbl = currentEntity.getLbl();
                 previousEntity.setLwhDate(lwhDate);
                 previousEntity.setPlate(plate);
                 previousEntity.setWidth(width);
@@ -224,6 +226,8 @@ public class WeightAndLWHContainer {
                 previousEntity.setPassTime(passTime);
                 previousEntity.setSizeTag(currentEntity.isSizeTag());
                 previousEntity.setLbh(lbh);
+                previousEntity.setLbw(lbw);
+                previousEntity.setLbl(lbl);
             } else if (2 == processStatus) {
                 //补充测速雷达数据
                 String plate = currentEntity.getPlate();

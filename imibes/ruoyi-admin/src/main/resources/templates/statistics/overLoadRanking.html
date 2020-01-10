@@ -146,9 +146,18 @@
                     field: 'weightingDate',
                     title: '采集时间'
                 },
-                {
+/*                {
                     field: 'plate',
                     title: '车牌',
+                },*/
+                {
+                    field : 'ftpPlate',
+                    title : '车牌',
+                    align : 'center',
+                    formatter:function (value,row,index)
+                    {
+                        return '<img  src='+value+' width="100" height="30" class="img-rounded" >';
+                    }
                 },
                 {
                     field: 'weight',

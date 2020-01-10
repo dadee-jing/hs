@@ -111,8 +111,8 @@ public class DbUtil {
                 + "axle_weight2, axle_weight3, axle_weight4, axle_weight5, axle_weight6, axle_weight7, axle_weight8,sequence_tag," +
                 "ftp_head,ftp_axle,ftp_tail,ftp_prior_head,ftp_plate,ftp_full_view,device_code,lwh_date,plate,width,height,length," +
                 "lane_mid,lane_min,lane_max,pass_time,station_id,upload_tag,path_tag,left_side_path,right_side_path,create_time," +
-                "remark,lbh,lwh_scene_path) " +
-                "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "remark,lbh,lwh_scene_path,lbw,lbl) " +
+                "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -169,7 +169,8 @@ public class DbUtil {
             statement.setString(46, weight.getRemarkInfo());
             statement.setString(47, weight.getLbh());
             statement.setString(48, weight.getLwhScenePath());
-
+            statement.setString(49, weight.getLbw());
+            statement.setString(50, weight.getLbl());
             statement.execute();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);

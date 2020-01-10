@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         basePackages = {"com.ruoyi"},
         excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.ruoyi\\.duge\\.third\\.guangdong\\..*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com\\.ruoyi\\.duge\\.third\\.trafficPolice\\..*")})
-//@EnableScheduling
+@EnableScheduling
 public class RuoYiApplication {
     public static void main(String[] args) {
         // System.setProperty("spring.devtools.restart.enabled", "false");

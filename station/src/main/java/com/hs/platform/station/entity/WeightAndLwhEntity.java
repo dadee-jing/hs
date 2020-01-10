@@ -64,4 +64,7 @@ public class WeightAndLwhEntity {
     private int pathTag = 0;//2-左右拍都有
     private String lbh;//栏板高
     private String lwhScenePath = "";//外廓前抓
+    private String lbl;//栏板高长
+    private String lbw;//栏板宽
+
 }

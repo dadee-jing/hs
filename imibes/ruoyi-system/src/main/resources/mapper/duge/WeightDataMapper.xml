@@ -127,8 +127,8 @@
             <if test="laneMin != null  and laneMin != '' ">and lane_min = #{laneMin}</if>
             <if test="laneMax != null  and laneMax != '' ">and lane_max = #{laneMax}</if>
             <if test="lbh != null  and lbh != '' ">and lbh > 0 </if>
-            <if test="lbw != null  and lbw != '' ">and lbh > 0 </if>
-            <if test="lbl != null  and lbl != '' ">and lbh > 0 </if>
+            <if test="lbw != null  and lbw != '' ">and lbw > 0 </if>
+            <if test="lbl != null  and lbl != '' ">and lbl > 0 </if>
             <if test="passTime != null  and passTime != '' ">and pass_time = #{passTime}</if>
             <if test="uploadTag != null ">and upload_tag = #{uploadTag}</if>
             <if test="uploadYhl != null ">and upload_yhl = #{uploadYhl}</if>
@@ -334,6 +334,8 @@
             <if test="uploadSj != null  ">upload_sj = #{uploadSj},</if>
             <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
             <if test="lbh != null  and lbh != ''  ">lbh = #{lbh},</if>
+            <if test="lbw != null  and lbw != ''  ">lbw = #{lbw},</if>
+            <if test="lbl != null  and lbl != ''  ">lbl = #{lbl},</if>
             <if test="laneId != null  ">lane_id = #{laneId},</if>
             <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path = #{lwhScenePath},</if>
         </trim>
@@ -669,8 +671,10 @@
     </select>
 
     <select id="selectOverLoadRecordByPlate"  resultMap="WeightDataResult">
-        select wd.id,wd.weighting_date,wd.plate,wd.weight,wd.over_weight,wd.limit_weight,
-        wd.speed,dsi.name station_name
+        select wd.id,wd.weighting_date,wd.weight,wd.over_weight,wd.limit_weight,
+        wd.speed,wd.plate,dsi.name station_name,
+		CONCAT((select cd.value from config_data cd where cd.key='nginx_url'),wd.station_id,'/',
+		DATE_FORMAT(wd.weighting_date, '%Y%m%d'),'/',wd.ftp_plate) ftp_plate
         from weight_data wd
         left join duge_station_info dsi
         on dsi.id = wd.station_id

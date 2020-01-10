@@ -63,8 +63,8 @@
 	<div>
 
 		<ul class="nav nav-pills">
-			<li role="button" id="carOutNumber"class="active"><a href="#">过车统计</a></li>
-			<li role="button" id="overWeight" class=""><a href="#">超重统计</a></li>
+			<li role="button" id="carOutNumber"class=""><a href="#">过车统计</a></li>
+			<li role="button" id="overWeight" class="active"><a href="#">超重统计</a></li>
 		</ul>
 	</div>
     <div id="main"></div>
@@ -142,6 +142,7 @@
 							}
 							var stationName = ['五沙大桥-东侧', '五沙大桥-西侧', '三善大桥-下桥位', '三善大桥-上桥位', '德胜大桥-上桥位', '德胜大桥-下桥位', '乐龙大桥-南侧主道', '乐龙大桥-南侧辅道', '乐龙大桥-北侧主道', '乐龙大桥-北侧辅道', '三洪奇大桥-上桥位', '三洪奇大桥-下桥位', '甘竹滩大桥-南侧主道下桥位', '甘竹滩大桥-南侧辅道下桥位']
 							option = {
+								color:['#387cb4'],
 								title: {
 									text: text
 								},
@@ -183,10 +184,15 @@
 									type: 'value'
 								},
 								series: [
+
 									{
-										name: name,
+										name: '总数',
 										type: 'bar',
 										stack: '总量',
+										label: {
+											show: true,
+											position: 'top'
+										},
 										data: function () {
 											var list = [];
 											for (var i = 0; i <= obj.length - 1; i++) {
