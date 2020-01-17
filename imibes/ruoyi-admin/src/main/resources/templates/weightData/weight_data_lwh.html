@@ -20,6 +20,16 @@
                                        readonly="true" name="stationName"/>
                                 <input id='station-hide' type="hidden" readonly="true" name="stationId"/>
                             </li>
+                            <li>
+                                <label>车牌颜色： </label>
+                                <select id="color-select" name="truckCorlor" style="width: 100px">
+                                    <option value="">全部</option>
+                                    <option value="黄">黄</option>
+                                    <option value="蓝">蓝</option>
+                                    <option value="黑">黑</option>
+                                    <option value="白">白</option>
+                                </select>
+                            </li>
                             <li >
                                 <label>采集时间： </label>
                                 <input type="text" id="dt1" placeholder="开始时间"
@@ -27,6 +37,12 @@
                                 <span>-</span>
                                 <input type="text" id="dt2" placeholder="结束时间"
                                        name="params[endTime]"/>
+                            </li>
+                            <li>
+                                <label>车长： </label><input style="width: 100px" type="text" name="length"/>
+                            </li>
+                            <li>
+                                <label>栏板高： </label><input style="width: 100px" type="text" name="lbh"/>
                             </li>
                             <input type="hidden" id="hide-over-input" th:value="${overWeightMin}"
                                    name="params[overWeightMin]"/>
@@ -143,7 +159,34 @@
                 },
                 {
                     field: 'vehicleType',
-                    title: '车型'
+                    title: '车型',
+                    formatter: function (value, row, index) {
+                        if(value === '1'){
+                            return '中小型客车'
+                        }
+                        if(value === '2'){
+                            return '大型客车'
+                        }
+                        if(value === '3' || value === '9' || value === '13' || value === '15'){
+                            return '小型货车'
+                        }
+                        if(value === '4' || value === '10' || value === '16'){
+                            return '中型货车'
+                        }
+                        if(value === '5' || value === '10' || value === '17'){
+                            return '大型货车'
+                        }
+                        if(value === '6'){
+                            return '特大型货车'
+                        }
+                        if(value === '7'){
+                            return '集装箱车'
+                        }
+                        if(value === '8' || value === '11'){
+                            return '摩托车'
+                        }
+                        return '未知'
+                    }
                 },
                 {
                     field: 'axleCount',

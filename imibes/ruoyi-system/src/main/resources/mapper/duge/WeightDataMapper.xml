@@ -122,13 +122,13 @@
             <if test="plate != null  and plate != '' ">and plate = #{plate}</if>
             <if test="width != null  and width != '' ">and width = #{width}</if>
             <if test="height != null  and height != '' ">and height = #{height}</if>
-            <if test="length != null  and length != '' ">and length = #{length}</if>
+            <if test="length != null  and length != '' ">and length > CAST(#{length} AS signed) </if>
             <if test="laneMid != null  and laneMid != '' ">and lane_mid = #{laneMid}</if>
             <if test="laneMin != null  and laneMin != '' ">and lane_min = #{laneMin}</if>
             <if test="laneMax != null  and laneMax != '' ">and lane_max = #{laneMax}</if>
-            <if test="lbh != null  and lbh != '' ">and lbh > 0 </if>
-            <if test="lbw != null  and lbw != '' ">and lbw > 0 </if>
-            <if test="lbl != null  and lbl != '' ">and lbl > 0 </if>
+            <if test="lbh != null  and lbh != '' ">and lbh &gt;= CAST(#{lbh} AS signed) </if>
+            <if test="lbw != null  and lbw != '' ">and lbw &gt; 0 </if>
+            <if test="lbl != null  and lbl != '' ">and lbl &gt; 0 </if>
             <if test="passTime != null  and passTime != '' ">and pass_time = #{passTime}</if>
             <if test="uploadTag != null ">and upload_tag = #{uploadTag}</if>
             <if test="uploadYhl != null ">and upload_yhl = #{uploadYhl}</if>
