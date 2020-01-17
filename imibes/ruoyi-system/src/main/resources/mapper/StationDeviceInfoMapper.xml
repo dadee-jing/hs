@@ -112,5 +112,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDeviceByStationAndNameId" resultType="com.ruoyi.duge.domain.StationDeviceInfo">
         select  * from station_device_info where station_id = #{stationId} and deviceName_id = #{deviceNameId}
     </select>
+    <select id="getStationDeviceInfoId" resultType="java.lang.Integer">
+        select id from station_device_info where station_id = #{stationId} and deviceName_id = #{deviceNameId}
+        and deviceType_id = #{deviceTypeId}
+    </select>
 
 </mapper>

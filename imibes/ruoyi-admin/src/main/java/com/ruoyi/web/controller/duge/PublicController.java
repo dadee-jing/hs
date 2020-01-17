@@ -98,11 +98,14 @@ public class PublicController extends BaseController {
         }
     }
 
-    /**
+/*
+    */
+/**
      * 从站点发请求更新状态信息
      * @param stationInfo
      * @return
-     */
+     *//*
+
     @PostMapping("/updateStationState")
     @ResponseBody
     public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo stationInfo) {
@@ -119,6 +122,7 @@ public class PublicController extends BaseController {
         }
         return toAjax(result);
     }
+*/
 
 
     /**
@@ -139,7 +143,7 @@ public class PublicController extends BaseController {
                 stationInfoService.insertStationInfo(stationInfoWithDeviceInfoList);
                 stationId = stationInfoWithDeviceInfoList.getId();
             }
-            //传入设备名称，类型名称。查找是否存在，不存在新增
+            //传入设备名称，类型名称。查找设备枚举是否存在，不存在新增
             List<StationDeviceInfoVo> stationDeviceInfoVoList = stationInfoWithDeviceInfoList.getDeviceList();
             for (StationDeviceInfoVo stationDeviceInfoVo : stationDeviceInfoVoList) {
                 stationDeviceInfoVo.setStationId(stationId);
@@ -159,9 +163,16 @@ public class PublicController extends BaseController {
                     stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
                     deviceNameId = deviceEnum.getId();
                 }
+                //查找站点是否存在设备，存在则更新，不存在新增
+                Integer deviceInfoId = stationDeviceInfoMapper.getStationDeviceInfoId(stationId, deviceTypeId,deviceNameId);
                 stationDeviceInfoVo.setDeviceNameId(deviceNameId);
                 stationDeviceInfoVo.setDeviceTypeId(deviceTypeId);
-                result = stationDeviceInfoMapper.insertStationDeviceInfoVo(stationDeviceInfoVo);
+                if (null == deviceInfoId || deviceInfoId == 0) {
+                    stationDeviceInfoMapper.insertStationDeviceInfoVo(stationDeviceInfoVo);
+                }
+                else{
+                    stationDeviceInfoMapper.updateStationDeviceInfo(stationDeviceInfoVo);
+                }
             }
         }catch (Exception e){
             LOGGER.info("addStationAndDeviceInfo error" + stationInfoWithDeviceInfoList.toString(),e);
