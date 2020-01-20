@@ -44,7 +44,7 @@ public class BlacksmokevehicleInfo {
 
     private Integer lgmhd;
 
-    private String tp1;
+    private String tp5;
 
     private String tp2;
 

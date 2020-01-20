@@ -17,6 +17,7 @@ public class TransformService {
     SimpleDateFormat myFmt2=new SimpleDateFormat("yyMMddHHmmss");
     public BlacksmokevehicleDto transBlacksmokevehicleDto(BlacksmokevehicleInfo source) {
         BlacksmokevehicleDto target = new BlacksmokevehicleDto();
+        BeanUtils.copyProperties(source, target);
         target.setJlbh(source.getJlbh().replace("B","D"));
         target.setDwbh(source.getDwbh().replace("B","D"));
         if(source.getPdjg().equals("0")){
@@ -26,7 +27,6 @@ public class TransformService {
             target.setTp1(CommonUtils.newPath(source.getDwbh(),source.getJcsj(),source.getTp5()));
             target.setTp2(CommonUtils.newPath(source.getDwbh(),source.getJcsj(),source.getTp2()));
         }
-        BeanUtils.copyProperties(source, target);
         target.setLgmhd(String.valueOf(source.getLgmhd()));
         target.setJcsj(format.format(source.getJcsj()));
         return target;
@@ -44,6 +44,7 @@ public class TransformService {
     }
     public MonitorDataDto transMonitorDataDto(MonitorDataLog source) {
         MonitorDataDto target = new MonitorDataDto();
+        BeanUtils.copyProperties(source, target);
         target.setJcsj(format.format(source.getJcsj()));
         if(source.getRlzl().equals("Z")){
             target.setRlzl("Y");
@@ -58,7 +59,6 @@ public class TransformService {
         }else if (source.getPdjg().equals("999")){
             target.setPdjg("2");
         }
-        BeanUtils.copyProperties(source, target);
         return target;
     }
     public StationDto transStationDto(Station source) {
@@ -86,6 +86,9 @@ public class TransformService {
     }
     public VehicleInfoDto transVehicleInfoDto(VehicleInfo source) {
         VehicleInfoDto target = new VehicleInfoDto();
+        if(source.getHphm().toCharArray().length>8){
+            target.setHphm(source.getHphm().substring(0,7));
+        }
         BeanUtils.copyProperties(source, target);
         return target;
     }

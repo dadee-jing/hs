@@ -99,7 +99,9 @@ public class ImageDownloadUtil {
                 //上传新流向文件
                 uploadNewlxFile(foshanMessage,pathList,targetParentPath,entity,fileInfoState);
                 //上传外廓前抓拍
-                uploadLwhScenePic(foshanMessage,entity.getPlate(),entity.getLwhDate(),lwhScenePath,targetParentPath,fileInfoState);
+                if(StringUtils.isNotBlank(lwhScenePath)) {
+                    uploadLwhScenePic(foshanMessage, entity.getPlate(), entity.getLwhDate(), lwhScenePath, targetParentPath, fileInfoState);
+                }
                 //组装市局发送对象
                 combineFoshanMessage(foshanMessage,entity);
                 FoshanApiService.addEntity(foshanMessage);

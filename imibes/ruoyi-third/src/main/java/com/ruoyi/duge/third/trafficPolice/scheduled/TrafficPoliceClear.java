@@ -18,7 +18,13 @@ public class TrafficPoliceClear {
     SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
     SimpleDateFormat sdfPeccancy = new SimpleDateFormat("yyyy-MM-dd");
     private static final Logger log = LoggerFactory.getLogger(TrafficPoliceClear.class);
-    @Scheduled(cron = "${deletePasscar3DaysAgo.scheduled}")
+    @Scheduled(cron = "${deleteTrafficPolice3DaysAgo.scheduled}")
+    private void doTask(){
+        deletePasscar3DaysAgo();
+        deleteOverSpeed3DaysAgo();
+        deletePeccancy3DaysAgo();
+    }
+
     private void deletePasscar3DaysAgo(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -3);
@@ -27,7 +33,16 @@ public class TrafficPoliceClear {
         File file=new File(passcarPath);
         delFile(file);
     }
-    @Scheduled(cron = "${deletePeccancy3DaysAgo.scheduled}")
+
+    private void deleteOverSpeed3DaysAgo(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -3);
+        String peccancyczPath="/sharedata/ftp/peccancycz/"+sdf.format(calendar.getTime())+"/"+sdfDay.format(calendar.getTime());
+        log.info("delete the peccancycz file of "+peccancyczPath);
+        File file=new File(peccancyczPath);
+        delFile(file);
+    }
+
     private void deletePeccancy3DaysAgo(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -3);

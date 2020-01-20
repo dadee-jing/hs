@@ -4,90 +4,89 @@
 <head th:include="include :: header"></head>
 <link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
 <link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <title>默认样式信息窗体</title>
-    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
-    <style>
-        html, body, #container {
-            height: 100%;
-            width: 100%;
-        }
+<!--<link th:href="@{/css/gdmap.css}" rel="stylesheet"/>-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+<title>站点地图</title>
+<style>
+    html, body, #container {
+        height: 100%;
+        width: 100%;
+    }
 
-        .content-window-card {
-            position: relative;
-            box-shadow: none;
-            bottom: 0;
-            left: 0;
-            width: auto;
-            padding: 0;
-        }
+    .content-window-card {
+        position: relative;
+        box-shadow: none;
+        bottom: 0;
+        left: 0;
+        width: auto;
+        padding: 0;
+    }
 
-        .content-window-card p {
-            height: 2rem;
-        }
+    .content-window-card p {
+        height: 2rem;
+    }
 
-        .custom-info {
-            border: solid 1px silver;
-        }
+    .custom-info {
+        border: solid 1px silver;
+    }
 
-        div.info-top {
-            position: relative;
-            background: none repeat scroll 0 0 #F9F9F9;
-            border-bottom: 1px solid #CCC;
-            border-radius: 5px 5px 0 0;
-        }
+    div.info-top {
+        position: relative;
+        background: none repeat scroll 0 0 #F9F9F9;
+        border-bottom: 1px solid #CCC;
+        border-radius: 5px 5px 0 0;
+    }
 
-        div.info-top div {
-            display: inline-block;
-            color: #333333;
-            font-size: 14px;
-            font-weight: bold;
-            line-height: 31px;
-            padding: 0 10px;
-        }
+    div.info-top div {
+        display: inline-block;
+        color: #333333;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 31px;
+        padding: 0 10px;
+    }
 
-        div.info-top img {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            transition-duration: 0.25s;
-        }
+    div.info-top img {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        transition-duration: 0.25s;
+    }
 
-        div.info-top img:hover {
-            box-shadow: 0px 0px 5px #000;
-        }
+    div.info-top img:hover {
+        box-shadow: 0px 0px 5px #000;
+    }
 
-        div.info-middle {
-            font-size: 12px;
-            padding: 10px 6px;
-            line-height: 20px;
-        }
+    div.info-middle {
+        font-size: 12px;
+        padding: 10px 6px;
+        line-height: 20px;
+    }
 
-        div.info-bottom {
-            height: 0px;
-            width: 100%;
-            clear: both;
-            text-align: center;
-        }
+    div.info-bottom {
+        height: 0px;
+        width: 100%;
+        clear: both;
+        text-align: center;
+    }
 
-        div.info-bottom img {
-            position: relative;
-            z-index: 104;
-        }
+    div.info-bottom img {
+        position: relative;
+        z-index: 104;
+    }
 
-        span {
-            margin-left: 5px;
-            font-size: 11px;
-        }
+    span {
+        margin-left: 5px;
+        font-size: 11px;
+    }
 
-        .info-middle img {
-            float: left;
-            margin-right: 6px;
-        }
-    </style>
-</head>
+    .info-middle img {
+        float: left;
+        margin-right: 6px;
+    }
+</style>
 <body>
 <div class="ui-layout-west">
     <div class="main-content">
@@ -142,17 +141,22 @@
             success : function(result) {
                 stationList = result.rows;
                 total = result.total;
-                console.log(stationList[0])
-                console.log(result);
+                //console.log(stationList[0])
+                //console.log(result);
                 $.each(stationList,function(index,station){
-                    console.info(station);
+                    //console.log(station);
+                    //如果经纬度为空，或者不符合格式，忽略
+                    if(isNaN(station.longitude) || isNaN(station.latitude) ||station.longitude == null ||station.latitude ==null){
+                        console.log(station.longitude)
+                        return true;//执行下一次循环
+                    }
                     var dataSet = {
                         lnglat: [station.longitude, station.latitude],
                         color: '#f8983a',
                         type: 'circle',
                         speed: 0.2,
                         clickable: true
-                    }
+                    };
                     dataSetList.push(dataSet);
                     var marker = new AMap.CircleMarker({
                         map: map,
@@ -160,8 +164,10 @@
                         center:[station.longitude,station.latitude],
                         radius:10+Math.random()*10,//3D视图下，CircleMarker半径不要超过64px
                         strokeColor:'white',
-                        strokeWeight:2,
-                        strokeOpacity:0.5,
+                        //strokeWeight:2,
+                        //strokeOpacity:0.5,
+                        strokeWeight:0,
+                        strokeOpacity:0,
                         fillColor:'rgba(255,255,255,0)',
                         fillOpacity:0.5,
                         zIndex:10,
@@ -173,9 +179,11 @@
                     //鼠标点击marker弹出自定义的信息窗体
                     AMap.event.addListener(marker, 'click', function () {
                         //infoWindow.setContent(setStationInfo(station))
-                        infoWindow.setContent(createInfoWindow(station.name,"<div>" + station.address + "</div>>"))
+                        //infoWindow.setContent(createInfoWindow(station.name,"<div>" + station.address + "</div>>"))
+                        infoWindow.setContent(createInfoWindow(station.name + " ",
+                            '<a onclick="stationDetail('+ station.id +')">详情>></a>'))
                         infoWindow.open(map, [station.longitude, station.latitude]);
-                        console.log([station.longitude, station.latitude]);
+                        //console.log([station.longitude, station.latitude]);
                     });
                 });
                 flashMarkerLayer = new FlashMarker(map, dataSetList);
@@ -197,11 +205,6 @@
         content: createInfoWindow(title, content.join("<br/>")),
         offset: new AMap.Pixel(16, -45)
     });
-
-    function setStationInfo(station) {
-        alert("66")
-        createInfoWindow(station.name,"<div>" + station.address + "</div>>")
-    }
 
     //构建自定义信息窗体
     function createInfoWindow(title, content) {
@@ -243,9 +246,17 @@
         return info;
     }
 
-    function clickStation(row) {
-        map.setZoomAndCenter(12, [row.longitude, row.latitude]);
-
+    function clickStation(station) {
+        //console.log(station)
+        var typeId = station.id;
+        var stationId = typeId - 1000;
+        if(stationId < 1){
+            return;
+        }
+        map.setZoomAndCenter(12, [station.longitude, station.latitude]);
+        infoWindow.setContent(createInfoWindow(station.name,
+            '<a onclick="stationDetail('+ stationId +')">详情>></a>'))
+        infoWindow.open(map, [station.longitude, station.latitude]);
     }
 
     //关闭信息窗体
@@ -266,12 +277,28 @@
         };
         $.tree.init(options);
         function zOnClick(event, treeId, treeNode) {
-            var typeId = treeNode.id;
-            var pid = treeNode.pId;
-            var stationId = typeId - 1000;
-            $("#stationId").val(stationId);
-            clickStation();
+            clickStation(treeNode);
         }
+    }
+
+    function stationDetail(id) {
+        var dataUrl = "/module/stationInfo/stationDashboard/" + id,
+            menuName = "站点信息",
+            dataIndex = 100;
+        var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
+        $('.menuTab', parent.document).removeClass('active');
+
+        // 添加选项卡对应的iframe
+        var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+        $('.mainContent', parent.document).find('iframe.RuoYi_iframe', parent.document).hide().parents('.mainContent', parent.document).append(str1);
+
+        //$.modal.loading("数据加载中，请稍后...");
+        $('.mainContent iframe:visible', parent.document).load(function () {
+            $.modal.closeLoading();
+        });
+        // 添加选项卡
+        $('.menuTabs .page-tabs-content', parent.document).append(str);
+        //scrollToTab($('.menuTab.active'));
     }
 
     $('#btnExpand').click(function() {

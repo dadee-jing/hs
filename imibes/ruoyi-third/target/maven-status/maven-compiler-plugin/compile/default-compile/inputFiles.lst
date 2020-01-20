@@ -1,11 +1,9 @@
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\model\Data.java
-E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\scheduled\TrafficPoliceClear.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\model\BaseVehicleDataRequest.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\utils\ImageUploadUtil.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\guangdong\model\GDEquipmentStatusRequest.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\socket\SendMsgClient.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\guangdong\service\GuandongApiService.java
-E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\data\backups\DataBackups.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\utils\IOUtil.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\ETL\JDBC\WeightDataTransForm.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\socket\FoshanCodecFactory.java
@@ -20,6 +18,7 @@ E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\soc
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\socket\FoshanEncoder.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\socket\StructUtil.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\model\BaseEquipmentStatusRequest.java
+E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\overspeed\PollFiles.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\ETL\JDBC\model\VehicleRecordYHL.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\service\FoshanApiService.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\socket\FoshanRspMessage.java
@@ -27,6 +26,7 @@ E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\shunde\per
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\storageManage\StorageManage.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\controller\TrafficPoliceController.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\ThirdApplication.java
+E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\overspeed\OverSpeed.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\trafficPolice\scheduled\TrafficPoliceApiService.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\foshan\socket\SendMsgClientHandler.java
 E:\Work\project\imibes\ruoyi-third\src\main\java\com\ruoyi\duge\third\guangdong\model\GDResponse.java

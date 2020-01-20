@@ -35,8 +35,8 @@ public class TrafficPoliceApiService {
                     StationInfo stationInfo = stationInfoService.selectStationInfoById(weightData.getStationId().intValue(),weightData.getLaneMid());
                     Double overRate = weightData.getOverWeight().doubleValue() / weightData.getLimitWeight().doubleValue();
                     int overLevel = overRate > 0 ? overRate >= 0.3 ? 2 : 1 : 0;
-                    int speedValue=weightData.getSpeed().intValue()-stationInfo.getSpeedLimit();
-                    if (overLevel > 0 || speedValue>0) {
+//                  int speedValue=weightData.getSpeed().intValue()-stationInfo.getSpeedLimit();
+                    if (overLevel > 0 ) {
                         if(IOUtil.IllegalImages(weightData, stationInfo)){
                             weightData.setUploadJj(1);
                             successCount.increment();
@@ -57,5 +57,7 @@ public class TrafficPoliceApiService {
             }
         }
     }
+
+
 
 }

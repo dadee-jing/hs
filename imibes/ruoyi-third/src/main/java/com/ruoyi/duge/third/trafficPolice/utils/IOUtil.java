@@ -2,6 +2,7 @@ package com.ruoyi.duge.third.trafficPolice.utils;
 
 import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.WeightData;
+import com.ruoyi.duge.third.trafficPolice.overspeed.OverSpeed;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class IOUtil {
     private static Logger LOGGER = LoggerFactory.getLogger(IOUtil.class);
@@ -20,6 +20,53 @@ public class IOUtil {
     static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
     static SimpleDateFormat yearmonth =new SimpleDateFormat("yyyyMM" );
     static SimpleDateFormat day =new SimpleDateFormat("dd" );
+    public static boolean OverSpeedImages(OverSpeed os ) throws UnsupportedEncodingException {
+        String basePath="/sharedata/ftp/share/";
+        String sourcePath=basePath+os.getFileName();
+        File file=new File(sourcePath);
+        if(file.exists() && file.length()>0){
+            StringBuffer imageName=new StringBuffer();
+            imageName.append("a")
+                    .append(sdf.format(os.getShootDate()))
+                    .append("_b")
+                    .append(parsePlateType(os.getColorStr(),os.getTruckNumber()))
+                    .append("_c")
+                    .append(os.getTruckNumber())
+                    .append("_d")
+                    .append(os.getAddress())
+                    .append("_e")
+                    .append("2001001")
+                    .append("_f")
+                    .append(os.getSpeed())
+                    .append("_g")
+                    .append(os.getSpeedLimit())
+                    .append("_h")
+                    .append(calculateSpeedingPercentage(Integer.valueOf(os.getSpeed()),os.getSpeedLimit()))
+                    .append("_i")
+                    .append("")
+                    .append("_j")
+                    .append("")
+                    .append("_k")
+                    .append("TEST")
+                    .append("_m")
+                    .append("")
+                    .append("_s")
+                    .append("")
+                    .append("_x")
+                    .append("TEST")
+                    .append("_y")
+                    .append("治超")
+                    .append("_z")
+                    .append("11")
+                    .append(".JPG");
+            String targetPath="/sharedata/ftp/peccancycz/"+yearmonth.format(os.getShootDate())+"/"+day.format(os.getShootDate())
+                    +"/"+os.getStationId() +"/"+new String(imageName.toString().getBytes(),"UTf-8");
+            LOGGER.info("upload the OverSpeedImages of "+os.getTruckNumber()+ ",targetPath="+targetPath);
+            IOOperate(sourcePath,targetPath);
+            return true;
+        }
+        return false;
+    }
     public static boolean IllegalImages(WeightData wd , StationInfo st) throws UnsupportedEncodingException {
         String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
         String sourcePath=basePath+wd.getFtpPriorHead();
@@ -229,8 +276,6 @@ public class IOUtil {
         return bufferedImage;
     }
     public static String  calculateSpeedingPercentage(Integer speed, Integer speedLimit){
-        System.out.println(speed);
-        System.out.println(speedLimit);
         DecimalFormat df=new DecimalFormat("0");
         Integer SpeedingPercentage=Integer.parseInt(df.format(((float)speed/speedLimit -1)*100));
         return SpeedingPercentage>0 ? SpeedingPercentage.toString() : "";

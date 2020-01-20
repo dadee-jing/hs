@@ -18,8 +18,7 @@ import java.sql.Timestamp;
  */
 
 @Data
-public class StationType extends BaseEntity
-{
+public class StationType extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/** 部门ID */
@@ -48,5 +47,11 @@ public class StationType extends BaseEntity
 
 	/** 父部门名称 */
 	private String parentName;
+
+	/** 经度 */
+	private String longitude;
+
+	/** 纬度 */
+	private String latitude;
 
 }

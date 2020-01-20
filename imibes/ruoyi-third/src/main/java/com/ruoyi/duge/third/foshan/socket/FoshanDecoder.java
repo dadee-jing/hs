@@ -104,7 +104,7 @@ public class FoshanDecoder extends ProtocolDecoderAdapter {
             //System.out.println("addition:" + bytesToHexString(tag));
         } else {
             in.get(tag);
-            System.out.println("end_tag:" + bytesToHexString(tag));
+            //System.out.println("end_tag:" + bytesToHexString(tag));
             receiveMessageMap.put("end_tag", bytesToHexString(tag));
             foshanRspMessage.setEndTag(bytesToHexString(tag));
         }

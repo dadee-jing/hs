@@ -43,7 +43,7 @@ public class PublicController extends BaseController {
     @ResponseBody
     public AjaxResult addStationAndDeviceInfo(@RequestBody StationInfoWithDeviceInfoList stationInfoWithDeviceInfoList) {
         LOGGER.info("addStationAndDeviceInfo:" + stationInfoWithDeviceInfoList.toString());
-        System.out.println(stationInfoWithDeviceInfoList.toString());
+        //System.out.println(stationInfoWithDeviceInfoList.toString());
         int stationId;
         int result = 0;
         //id为0代表新增站点，不为0更新站点信息
