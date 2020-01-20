@@ -221,6 +221,10 @@ public class WeightData extends BaseEntity {
      */
     private String lbh;
 
+    private String lbw;
+
+    private String lbl;
+
     /**
      * 外廓前抓拍
      */

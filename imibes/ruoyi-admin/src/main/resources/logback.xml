@@ -100,7 +100,7 @@
     <appender name="FoshanApiServiceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}/sys-FoshanApiService.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/FoshanApiService.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log.path}/foshan/FoshanApiService.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>60</maxHistory>
         </rollingPolicy>
         <encoder charset="UTF-8">

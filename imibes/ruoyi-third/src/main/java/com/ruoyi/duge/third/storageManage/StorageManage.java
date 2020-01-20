@@ -40,7 +40,7 @@ public class StorageManage {
                         weightDataMapperService.updateWeightDataBefore40Days(weightData);
                         continue;
                     }
-                    System.out.println(weightData.getStationId());
+                    //System.out.println(weightData.getStationId());
                     deleteFileByWeightData(weightData);
                     successCount.increment();
                     weightData.setMarkDel(1);

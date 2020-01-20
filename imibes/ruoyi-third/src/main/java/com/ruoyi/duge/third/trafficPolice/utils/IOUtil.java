@@ -276,6 +276,11 @@ public class IOUtil {
         return bufferedImage;
     }
     public static String  calculateSpeedingPercentage(Integer speed, Integer speedLimit){
+<<<<<<< HEAD
+=======
+        //System.out.println(speed);
+        //System.out.println(speedLimit);
+>>>>>>> 596fa599ef5a8fc931fd082e4fabc97e9cd179a2
         DecimalFormat df=new DecimalFormat("0");
         Integer SpeedingPercentage=Integer.parseInt(df.format(((float)speed/speedLimit -1)*100));
         return SpeedingPercentage>0 ? SpeedingPercentage.toString() : "";

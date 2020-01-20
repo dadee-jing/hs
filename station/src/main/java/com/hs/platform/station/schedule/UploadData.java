@@ -85,6 +85,8 @@ public class UploadData {
                         long endTime2 = System.currentTimeMillis();
                         if(successTag){
                             logger.info("upload " + weightData.getTruckNumber() + ",cost:" +(endTime2 - startTime2));
+                        }else{
+                            logger.info("upload fail");
                         }
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);

@@ -12,12 +12,14 @@ import com.ruoyi.duge.third.trafficPolice.utils.IOUtil;
 import com.ruoyi.web.core.base.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -34,54 +36,6 @@ public class PublicController extends BaseController {
     private IStationInfoService stationInfoService;
     @Autowired
     private StationDeviceInfoMapper stationDeviceInfoMapper;
-
-
-    /**
-     * 新增站点信息与设备信息
-     */
-    @PostMapping("/addStationAndDeviceInfo")
-    @ResponseBody
-    public AjaxResult addStationAndDeviceInfo(@RequestBody StationInfoWithDeviceInfoList stationInfoWithDeviceInfoList) {
-        LOGGER.info("addStationAndDeviceInfo:" + stationInfoWithDeviceInfoList.toString());
-        //System.out.println(stationInfoWithDeviceInfoList.toString());
-        int stationId;
-        int result = 0;
-        //id为0代表新增站点，不为0更新站点信息
-        if(null != stationInfoWithDeviceInfoList.getId() && 0 != stationInfoWithDeviceInfoList.getId()){
-            stationInfoService.updateStationInfo(stationInfoWithDeviceInfoList);
-            stationId = stationInfoWithDeviceInfoList.getId();
-        }
-        else{
-            stationInfoService.insertStationInfo(stationInfoWithDeviceInfoList);
-            stationId = stationInfoWithDeviceInfoList.getId();
-        }
-        //传入设备名称，类型名称。查找是否存在，不存在新增
-        List<StationDeviceInfoVo> stationDeviceInfoVoList = stationInfoWithDeviceInfoList.getDeviceList();
-        for(StationDeviceInfoVo stationDeviceInfoVo : stationDeviceInfoVoList){
-            stationDeviceInfoVo.setStationId(stationId);
-            Integer deviceTypeId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceTypeName(),1);
-            Integer deviceNameId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceName(),2);
-            if(null == deviceTypeId || deviceTypeId == 0){
-                DeviceEnum deviceEnum = new DeviceEnum();
-                deviceEnum.setValue(stationDeviceInfoVo.getDeviceTypeName());
-                deviceEnum.setType(1);
-                stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
-                deviceTypeId = deviceEnum.getId();
-            }
-            if(null == deviceNameId || deviceNameId == 0){
-                DeviceEnum deviceEnum = new DeviceEnum();
-                deviceEnum.setValue(stationDeviceInfoVo.getDeviceName());
-                deviceEnum.setType(2);
-                stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
-                deviceNameId = deviceEnum.getId();
-            }
-            stationDeviceInfoVo.setDeviceNameId(deviceNameId);
-            stationDeviceInfoVo.setDeviceTypeId(deviceTypeId);
-            result = stationDeviceInfoMapper.insertStationDeviceInfoVo(stationDeviceInfoVo);
-        }
-        return toAjax(result);
-    }
-
 
     @PostMapping("/weightData/add")
     @ResponseBody
@@ -144,26 +98,120 @@ public class PublicController extends BaseController {
         }
     }
 
-    /**
+/*
+    */
+/**
      * 从站点发请求更新状态信息
      * @param stationInfo
      * @return
-     */
+     *//*
+
     @PostMapping("/updateStationState")
     @ResponseBody
     public AjaxResult updateStationStateInfo(@RequestBody com.ruoyi.duge.domain.StationInfo stationInfo) {
-        LOGGER.info("updateStationState:" + stationInfo.toString());
         int result;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String now = simpleDateFormat.format(new Date());
-        stationInfo.setRemarkInfo(now);
         try {
+            LOGGER.info("updateStationState:" + stationInfo.toString());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String now = simpleDateFormat.format(new Date());
+            stationInfo.setRemarkInfo(now);
             result = stationInfoService.updateStationInfo(stationInfo);
-        }catch (Exception e) {
+        }catch (Exception e){
             result = 0;
+            LOGGER.info("updateStationState error," + stationInfo.getName(),e);
         }
-        if(result == 1){
-            LOGGER.info("update "+ stationInfo.getId() + " " + stationInfo.getName());
+        return toAjax(result);
+    }
+*/
+
+
+    /**
+     * 新增站点信息与设备信息
+     */
+    @PostMapping("/addStationAndDeviceInfo")
+    @ResponseBody
+    public int addStationAndDeviceInfo(@RequestBody StationInfoWithDeviceInfoList stationInfoWithDeviceInfoList) {
+        int result = 0;
+        int stationId = 0;
+        try {
+            LOGGER.info("addStationAndDeviceInfo:" + stationInfoWithDeviceInfoList.toString());
+            //id为0代表新增站点，不为0更新站点信息
+            if (null != stationInfoWithDeviceInfoList.getId() && 0 != stationInfoWithDeviceInfoList.getId()) {
+                stationInfoService.updateStationInfo(stationInfoWithDeviceInfoList);
+                stationId = stationInfoWithDeviceInfoList.getId();
+            } else {
+                stationInfoService.insertStationInfo(stationInfoWithDeviceInfoList);
+                stationId = stationInfoWithDeviceInfoList.getId();
+            }
+            //传入设备名称，类型名称。查找设备枚举是否存在，不存在新增
+            List<StationDeviceInfoVo> stationDeviceInfoVoList = stationInfoWithDeviceInfoList.getDeviceList();
+            for (StationDeviceInfoVo stationDeviceInfoVo : stationDeviceInfoVoList) {
+                stationDeviceInfoVo.setStationId(stationId);
+                Integer deviceTypeId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceTypeName(), 1);
+                Integer deviceNameId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceName(), 2);
+                if (null == deviceTypeId || deviceTypeId == 0) {
+                    DeviceEnum deviceEnum = new DeviceEnum();
+                    deviceEnum.setValue(stationDeviceInfoVo.getDeviceTypeName());
+                    deviceEnum.setType(1);
+                    stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
+                    deviceTypeId = deviceEnum.getId();
+                }
+                if (null == deviceNameId || deviceNameId == 0) {
+                    DeviceEnum deviceEnum = new DeviceEnum();
+                    deviceEnum.setValue(stationDeviceInfoVo.getDeviceName());
+                    deviceEnum.setType(2);
+                    stationDeviceInfoMapper.insertDeviceEnum(deviceEnum);
+                    deviceNameId = deviceEnum.getId();
+                }
+                //查找站点是否存在设备，存在则更新，不存在新增
+                Integer deviceInfoId = stationDeviceInfoMapper.getStationDeviceInfoId(stationId, deviceTypeId,deviceNameId);
+                stationDeviceInfoVo.setDeviceNameId(deviceNameId);
+                stationDeviceInfoVo.setDeviceTypeId(deviceTypeId);
+                if (null == deviceInfoId || deviceInfoId == 0) {
+                    stationDeviceInfoMapper.insertStationDeviceInfoVo(stationDeviceInfoVo);
+                }
+                else{
+                    stationDeviceInfoMapper.updateStationDeviceInfo(stationDeviceInfoVo);
+                }
+            }
+        }catch (Exception e){
+            LOGGER.info("addStationAndDeviceInfo error" + stationInfoWithDeviceInfoList.toString(),e);
+        }
+        return stationId;
+    }
+
+    /**
+     * 更新站点和设备状态
+     * @param stationInfoWithDeviceInfoList
+     * @return
+     */
+    @PostMapping("/updateStationDeviceState")
+    @ResponseBody
+    public AjaxResult updateStationDeviceState(@RequestBody StationInfoWithDeviceInfoList stationInfoWithDeviceInfoList) {
+        int result;
+        try {
+            //站点状态
+            LOGGER.info("updateStationDeviceState:" + stationInfoWithDeviceInfoList.toString());
+            StationInfo stationInfo = new StationInfo();
+            BeanUtils.copyProperties(stationInfoWithDeviceInfoList,stationInfo);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String now = simpleDateFormat.format(new Date());
+            stationInfo.setRemarkInfo(now);
+            result = stationInfoService.updateStationInfo(stationInfo);
+            //设备状态
+            List<StationDeviceInfoVo> stationDeviceInfoVoList = stationInfoWithDeviceInfoList.getDeviceList();
+            for (StationDeviceInfoVo stationDeviceInfoVo : stationDeviceInfoVoList) {
+                Integer deviceNameId = stationDeviceInfoMapper.getDeviceEnumIdByName(stationDeviceInfoVo.getDeviceName(), 2);
+                StationDeviceInfo stationDeviceInfo = stationDeviceInfoMapper.selectDeviceByStationAndNameId(stationInfo.getId(),deviceNameId);
+                stationDeviceInfo.setState(stationDeviceInfoVo.getState());
+                stationDeviceInfo.setRemark(stationDeviceInfoVo.getRemark());
+                stationDeviceInfo.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                result = stationDeviceInfoMapper.updateStationDeviceInfo(stationDeviceInfo);
+            }
+
+        }catch (Exception e){
+            result = 0;
+            LOGGER.info("updateStationDeviceState error," + stationInfoWithDeviceInfoList.getName(),e);
         }
         return toAjax(result);
     }

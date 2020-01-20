@@ -178,11 +178,12 @@
                     marker.content = station.name;
                     //鼠标点击marker弹出自定义的信息窗体
                     AMap.event.addListener(marker, 'click', function () {
+                        openInfoWindow(station.id,station)
                         //infoWindow.setContent(setStationInfo(station))
                         //infoWindow.setContent(createInfoWindow(station.name,"<div>" + station.address + "</div>>"))
-                        infoWindow.setContent(createInfoWindow(station.name + " ",
+/*                        infoWindow.setContent(createInfoWindow(station.name + " ",
                             '<a onclick="stationDetail('+ station.id +')">详情>></a>'))
-                        infoWindow.open(map, [station.longitude, station.latitude]);
+                        infoWindow.open(map, [station.longitude, station.latitude]);*/
                         //console.log([station.longitude, station.latitude]);
                     });
                 });
@@ -247,15 +248,20 @@
     }
 
     function clickStation(station) {
-        //console.log(station)
         var typeId = station.id;
         var stationId = typeId - 1000;
         if(stationId < 1){
             return;
         }
         map.setZoomAndCenter(12, [station.longitude, station.latitude]);
+        openInfoWindow(stationId,station);
+    }
+
+    function openInfoWindow(stationId,station) {
         infoWindow.setContent(createInfoWindow(station.name,
-            '<a onclick="stationDetail('+ stationId +')">详情>></a>'))
+            '<a onclick="openTab('+ stationId +',1)">站点详情>></a>' + '&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<a onclick="openTab('+ stationId +',2)">过车记录>></a>'
+        ))
         infoWindow.open(map, [station.longitude, station.latitude]);
     }
 
@@ -264,6 +270,31 @@
         map.clearInfoWindow();
     }
 
+    function openTab(id,type) {
+        if(type == 1){
+            var dataUrl = "/module/stationInfo/stationDashboard/" + id;
+            var menuName = "站点详情";
+        }
+        else if(type == 2){
+            var dataUrl = "/duge/weightData?id=" + id;
+            var menuName = "过车记录";
+        }
+        var dataIndex = 100;
+        var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
+        $('.menuTab', parent.document).removeClass('active');
+
+        // 添加选项卡对应的iframe
+        var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+        $('.mainContent', parent.document).find('iframe.RuoYi_iframe', parent.document).hide().parents('.mainContent', parent.document).append(str1);
+
+        //$.modal.loading("数据加载中，请稍后...");
+        $('.mainContent iframe:visible', parent.document).load(function () {
+            $.modal.closeLoading();
+        });
+        // 添加选项卡
+        $('.menuTabs .page-tabs-content', parent.document).append(str);
+        //scrollToTab($('.menuTab.active'));
+    }
     function resetMap() {
         map.setZoomAndCenter(12, [113.218667, 22.848183]);
     }

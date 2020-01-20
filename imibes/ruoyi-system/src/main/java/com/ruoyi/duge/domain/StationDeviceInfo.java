@@ -30,4 +30,5 @@ public class StationDeviceInfo{
 	private Timestamp createTime;
 	private String remark;
 	private String snCode;
+	private Timestamp updateTime;
 }

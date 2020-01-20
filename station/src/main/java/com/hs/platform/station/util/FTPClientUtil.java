@@ -291,7 +291,7 @@ public class FTPClientUtil {
         } catch (FileNotFoundException e) {
             //源文件丢失
             e.printStackTrace();
-            LOGGER.error("getSourcePathFileLocal fail" + sourcePath);
+            LOGGER.error("getSourcePathFileLocal fail," + sourcePath,e);
             fileInfo.put("fileState","0");
             return fileInfo;
         }

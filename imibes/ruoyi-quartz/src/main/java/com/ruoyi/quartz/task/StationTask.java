@@ -86,7 +86,6 @@ public class StationTask {
                 stationInfoService.updateStationInfo(stationInfo);
             }
         }
-
     }
 
     public void ryNoParams() {

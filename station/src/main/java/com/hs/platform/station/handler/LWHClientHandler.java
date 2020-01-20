@@ -148,7 +148,9 @@ public class LWHClientHandler extends IoHandlerAdapter {
                 String laneMin = dataMap.get("laneMin");
                 String laneMax = dataMap.get("laneMax");
                 String passTime = dataMap.get("passTime");
-                String lbh = dataMap.get("lbh");
+                String lbh = dataMap.get("lbh")==null?"0":dataMap.get("lbh");
+                String lbw = dataMap.get("BW")==null?"0":dataMap.get("BW");
+                String lbl = dataMap.get("BL")==null?"0":dataMap.get("BL");
                 entity.setProcessStatus(1);
                 entity.setLwhDate(lwhDate);
                 entity.setWidth(width);
@@ -160,6 +162,8 @@ public class LWHClientHandler extends IoHandlerAdapter {
                 entity.setPassTime(passTime);
                 entity.setSizeTag(true);
                 entity.setLbh(lbh);
+                entity.setLbw(lbw);
+                entity.setLbl(lbl);
             }
             // 解析报文->WeightAndLwhEntity
             WeightAndLWHContainer.processData(entity);
