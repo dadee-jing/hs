@@ -694,6 +694,30 @@
     	SELECT station_id as stationId, COUNT(*) AS number
 		FROM weight_data
 		WHERE DATE(weighting_date) = #{date} AND over_weight>0 GROUP BY station_id
-
     </select>
+
+    <select id="selectOverLengthRecordByPlate"  resultMap="WeightDataResult">
+        select wd.id,wd.weighting_date,wd.weight,wd.over_weight,wd.limit_weight,
+        wd.speed,wd.truck_number plate,dsi.name station_name,
+		CONCAT((select cd.value from config_data cd where cd.key='nginx_url'),wd.station_id,'/',
+		DATE_FORMAT(wd.weighting_date, '%Y%m%d'),'/',wd.ftp_plate) ftp_plate
+        from weight_data wd
+        left join duge_station_info dsi
+        on dsi.id = wd.station_id
+        where wd.truck_number = #{plate} and wd.length > 8000 and wd.lbh > 2000
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(wd.weighting_date)
+        order by wd.weighting_date desc
+    </select>
+
+    <select id="overLengthCarList" resultType="java.util.HashMap">
+        select truck_number plate,count(*) overCount
+        from weight_data
+        where length > 8000 and lbh > 2000 and truck_number &lt;> '无车牌'
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(weighting_date)
+        <if test="plate != null and plate != '' ">
+            and truck_number like concat('%', #{plate}, '%')
+        </if>
+        group by truck_number order by overCount desc
+    </select>
+
 </mapper>

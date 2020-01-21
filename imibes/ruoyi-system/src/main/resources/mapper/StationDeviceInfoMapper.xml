@@ -106,7 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getDeviceEnumIdByName" resultType="integer">
-        select id from device_enum where value = #{value} and type = #{type}
+        select id from device_enum where value = #{value} and type = #{type} limit 1
     </select>
 
     <select id="selectDeviceByStationAndNameId" resultType="com.ruoyi.duge.domain.StationDeviceInfo">
@@ -114,7 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="getStationDeviceInfoId" resultType="java.lang.Integer">
         select id from station_device_info where station_id = #{stationId} and deviceName_id = #{deviceNameId}
-        and deviceType_id = #{deviceTypeId}
+        and deviceType_id = #{deviceTypeId} limit 1
     </select>
 
 </mapper>

@@ -74,7 +74,12 @@ public class StationDeviceInfoController extends BaseController {
         if(stationDeviceInfo.getStationId() == null || stationDeviceInfo.getStationId() < 1){
             stationDeviceInfo.setStationId(51);
         }
-        return toAjax(stationDeviceInfoMapper.insertStationDeviceInfo(stationDeviceInfo));
+        Integer deviceInfoId = stationDeviceInfoMapper.getStationDeviceInfoId(stationDeviceInfo.getStationId(),
+                stationDeviceInfo.getDeviceTypeId(),stationDeviceInfo.getDeviceNameId());
+        if (null == deviceInfoId || deviceInfoId == 0) {
+            return toAjax(stationDeviceInfoMapper.insertStationDeviceInfo(stationDeviceInfo));
+        }
+        return AjaxResult.error();
     }
 
 
