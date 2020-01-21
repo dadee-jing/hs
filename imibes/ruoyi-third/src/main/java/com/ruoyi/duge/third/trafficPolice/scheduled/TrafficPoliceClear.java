@@ -46,7 +46,7 @@ public class TrafficPoliceClear {
     private void deletePeccancy3DaysAgo(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -3);
-        String peccancyPath="/sharedata/ftp/peccancybak/"+sdfPeccancy.format(calendar.getTime());
+        String peccancyPath="/sharedata/ftp/peccancy/"+sdf.format(calendar.getTime())+"/"+sdfDay.format(calendar.getTime());
         log.info("delete the peccancy file of "+peccancyPath);
         File file=new File(peccancyPath);
         delFile(file);
