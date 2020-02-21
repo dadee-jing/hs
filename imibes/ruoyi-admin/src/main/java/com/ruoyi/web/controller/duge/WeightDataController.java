@@ -447,6 +447,85 @@ public class WeightDataController extends BaseController {
 		return rspData;
 	}
 
+	/**
+	 * 改装车违规排行页面
+	 * @param mmap
+	 * @return
+	 */
+	@GetMapping("/overLengthRanking")
+	public String overLengthRanking(ModelMap mmap) {
+		return "/statistics/overLengthRanking";
+	}
+
+	/**
+	 * 查询站点改装车违规记录
+	 */
+	@PostMapping("/overLengthRecordList")
+	@ResponseBody
+	public TableDataInfo overLengthRecordList(String plate,String startDay) {
+		PageDomain pageDomain = TableSupport.buildPageRequest();
+		Integer pageNum = pageDomain.getPageNum();
+		Integer pageSize = pageDomain.getPageSize();
+		PageHelper.startPage(pageNum,pageSize);
+        if(null == startDay || "".equals(startDay) || "0".equals(startDay)){
+            startDay = "1";
+        }
+		String key = "overLength_" + plate + "_" + startDay + "_record_" + pageNum;
+		//ValueOperations<String, PageInfo<WeightData>> operations = redisTemplate.opsForValue();
+		//boolean hasKey = redisTemplate.hasKey(key);
+		PageInfo<WeightData> pageList;
+/*		if (hasKey) {
+			pageList = operations.get(key);
+		}
+		else{*/
+			List<WeightData> list = weightDataMapper.selectOverLengthRecordByPlate(plate,startDay);
+			pageList = new PageInfo<WeightData>(list,4);
+			//operations.set(key, pageList, 5, TimeUnit.HOURS);
+		//}
+		TableDataInfo rspData = new TableDataInfo();
+		rspData.setCode(0);
+		rspData.setRows(pageList.getList());
+		rspData.setTotal(pageList.getTotal());
+		return rspData;
+	}
+
+	/**
+	 * 查询车辆改装车违规排行
+	 */
+	@PostMapping("/overLengthCarList")
+	@ResponseBody
+	public TableDataInfo overLengthStationList(String plate,String startDay) {
+		PageDomain pageDomain = TableSupport.buildPageRequest();
+		Integer pageNum = pageDomain.getPageNum();
+		Integer pageSize = pageDomain.getPageSize();
+		if(null == pageNum || null == pageSize){
+		    pageNum = 1;
+		    pageSize = 18;
+        }
+		PageHelper.startPage(pageNum,pageSize);
+
+		if(null == startDay || "".equals(startDay) || "0".equals(startDay)){
+			startDay = "1";
+		}
+		String key = "overLength_" + plate + "_" + startDay + "_car_" + pageNum;
+		//ValueOperations<String, PageInfo<HashMap>> operations = redisTemplate.opsForValue();
+		//boolean hasKey = redisTemplate.hasKey(key);
+		PageInfo<HashMap> pageList;
+/*		if (hasKey) {
+			pageList = operations.get(key);
+		}
+		else{*/
+			List<HashMap> carList = weightDataMapper.overLengthCarList(plate,startDay);
+			pageList = new PageInfo<HashMap>(carList,4);
+			//operations.set(key, pageList, 5, TimeUnit.HOURS);
+		//}
+		TableDataInfo rspData = new TableDataInfo();
+		rspData.setCode(0);
+		rspData.setRows(pageList.getList());
+		rspData.setTotal(pageList.getTotal());
+		return rspData;
+	}
+
 
 	@PostMapping("/stationDaily/{date}")
 	@ResponseBody

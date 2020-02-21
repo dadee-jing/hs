@@ -175,7 +175,7 @@ public class PublicController extends BaseController {
                 }
             }
         }catch (Exception e){
-            LOGGER.info("addStationAndDeviceInfo error" + stationInfoWithDeviceInfoList.toString(),e);
+            LOGGER.info("addStationAndDeviceInfo error," + stationInfoWithDeviceInfoList.toString(),e);
         }
         return stationId;
     }

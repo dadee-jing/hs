@@ -113,7 +113,11 @@ public interface WeightDataMapper {
 
     List<HashMap> overLoadCarList(@Param("plate")String plate,@Param("startDay") String startDay);
 
+    List<HashMap> overLengthCarList(@Param("plate")String plate,@Param("startDay") String startDay);
+
     List<WeightData> selectOverLoadRecordByPlate(@Param("plate")String plate,@Param("startDay") String startDay);
+
+    List<WeightData> selectOverLengthRecordByPlate(@Param("plate")String plate,@Param("startDay") String startDay);
 
     List<CarOut> stationDaily(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
