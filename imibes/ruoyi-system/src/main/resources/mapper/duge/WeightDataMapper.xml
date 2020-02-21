@@ -721,5 +721,4 @@
         </if>
         group by truck_number order by overCount desc
     </select>
-
 </mapper>
