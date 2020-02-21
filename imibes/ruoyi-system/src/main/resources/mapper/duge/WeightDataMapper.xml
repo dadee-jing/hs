@@ -432,23 +432,15 @@
         SELECT avg(speed) FROM weight_data WHERE weighting_date >  #{params.timeStr}
     </select>
 
-    <!--报警图片视频数据-->
-    <select id="selectIllegalAnd2YearAgo" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
-        <include refid="selectDataVo"/>
-        <where>
-            wd.create_time &lt; date_add(now(), interval - 2*356*24*60 minute)
-            and wd.over_weight  > 0
-        </where>
-        limit 100
-    </select>
-    <!--抽取时间区间内单个站点无报警的十辆车的车牌-->
+
+    <!--随机抽取无报警的100辆车的车牌-->
     <select id="selectTruckNumberByTime" resultMap="WeightDataResult">
-        select *  from weight_data_before_40days  where create_time > date_add(now(), interval - 42*24*60 minute)
-        and over_weight=0
+        select *  from weight_data_before_40days  where over_weight=0
         and mark_del= 0
         ORDER BY id DESC
         LIMIT 100
     </select>
+
     <!--查这辆车一天内有没有违法-->
     <select id="selectByTruckNumber"  resultType="Integer">
        select COUNT(0) from weight_data_before_40days where to_days(weighting_date) = to_days(#{weightingDate})
@@ -456,20 +448,26 @@
        AND over_weight>0
     </select>
 
-    <!--查询报警车辆对应其过车数据车牌号-->
+    <!--满90天，查询之前被mark_del=2的-->
     <select id="selectTruckNumberOver90Date" resultMap="WeightDataResult">
         select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
-        AND create_time > date_add(now(), interval - 91*24*60 minute)
         and over_weight=0
         and mark_del= 2
         ORDER BY id DESC
-        LIMIT 100
     </select>
     <!--查这辆车90天前那一天内所有数据-->
     <select id="selectByTruckNumberOver90Date"  resultMap="WeightDataResult">
         select *  from weight_data_before_40days  where
         to_days(weighting_date) = to_days(#{weightingDate})
         and truck_number = #{truckNumber}
+    </select>
+    <!--报警图片视频数据-->
+    <select id="selectIllegalAnd2YearAgo" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            wd.create_time &lt; date_add(now(), interval - 2*356*24*60 minute)
+            and wd.over_weight  > 0
+        </where>
     </select>
     <update id="updateWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
         update weight_data_before_40days
@@ -531,10 +529,14 @@
         where id = #{id}
     </update>
 
+
+
+    <!--备份数据-->
     <select id="selectBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
-        LIMIT 200
+        ORDER BY id LIMIT 200
     </select>
+    <!--备份数据-->
     <insert id="insertIntoWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
         insert into weight_data_before_40days
         <trim prefix="(" suffix=")" suffixOverrides=",">

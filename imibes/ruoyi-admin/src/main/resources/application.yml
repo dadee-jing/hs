@@ -165,13 +165,11 @@ foshan.scheduled: 0/5 * * * * ?
 #定时清理过期文件任务执行
 storagemanage.scheduled40DayAgo: 0/59 * * * * ?
 storagemanage.scheduled90DayAgo: 0 0 1 * * ?
-storagemanage.scheduled2YearAgo: 0 1 * * * ?
+storagemanage.scheduled2YearAgo: 0 0 1 * * ?
 #上传交警定时任务执行
 trafficpolice.scheduled: 0/5 * * * * ?
 #数据备份
-#databackups.scheduled: 0/5 * * * * ?
-databackups.scheduled: 0/3 * 1,2,3,4,5,6 * * ?
-
+databackups.scheduled: 0/5 * * * * ?
 #保底删除给交警的图片
 deleteTrafficPolice3DaysAgo.scheduled: 0 0 1 * * ?
 #轮询超速文件夹

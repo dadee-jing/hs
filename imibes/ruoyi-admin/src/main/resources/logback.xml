@@ -86,8 +86,8 @@
             <Pattern>${log.pattern}</Pattern>
         </encoder>
     </appender>
-    <appender name="storageManageAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/sys-storageManage.log</file>
+    <appender name="storagemanageAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys-storagemanage.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/storageManage.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>60</maxHistory>
@@ -118,8 +118,8 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{30} - %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="backupsAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/sys-backups.log</file>
+    <appender name="databackupsAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys-databackups.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/backups.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>60</maxHistory>
@@ -147,12 +147,12 @@
         <appender-ref ref="trafficPoliceAppender" />
     </logger>
     <!--D删除文件定时任务-->
-    <logger name="com.ruoyi.duge.third.storageManage" level="info" additivity="false">
-        <appender-ref ref="storageManageAppender" />
+    <logger name="com.ruoyi.duge.third.storagemanage" level="info" additivity="false">
+        <appender-ref ref="storagemanageAppender" />
     </logger>
     <!--备份数据定时任务-->
-    <logger name="com.ruoyi.duge.third.data.backups" level="info" additivity="false">
-        <appender-ref ref="backupsAppender" />
+    <logger name="com.ruoyi.duge.third.databackups" level="info" additivity="false">
+        <appender-ref ref="databackupsAppender" />
     </logger>
 
     <logger name="com.ruoyi" level="info" />

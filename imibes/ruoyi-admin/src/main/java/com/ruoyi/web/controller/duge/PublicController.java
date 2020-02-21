@@ -1,6 +1,5 @@
 package com.ruoyi.web.controller.duge;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.base.AjaxResult;
 import com.ruoyi.duge.domain.*;
 import com.ruoyi.duge.mapper.StationDeviceInfoMapper;
@@ -8,7 +7,6 @@ import com.ruoyi.duge.service.IStationInfoService;
 import com.ruoyi.duge.third.foshan.service.FoshanApiService;
 import com.ruoyi.duge.third.model.BaseVehicleDataRequest;
 import com.ruoyi.duge.third.shunde.service.ShundeApiService;
-import com.ruoyi.duge.third.trafficPolice.utils.IOUtil;
 import com.ruoyi.web.core.base.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;

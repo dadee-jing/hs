@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 @Component
 @Data
-public class OverSpeed {
+public class OverSpeeds {
     private String stationId;//站点id
     private Date shootDate;//    a违法时间
     private String plateType;//    b号牌种类
