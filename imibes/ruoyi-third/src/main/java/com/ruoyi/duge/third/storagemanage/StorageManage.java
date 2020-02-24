@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -43,6 +44,7 @@ public class StorageManage {
                     if(deleteFileByWeightData(weightData)){
                         successCount.increment();
                         weightData.setMarkDel(1);
+                        weightData.setUpdateTime(new Date());
                         weightDataMapperService.updateWeightDataBefore40Days(weightData);
                     }
                 }
@@ -62,11 +64,12 @@ public class StorageManage {
                 List<WeightData> weightDatalist = weightDataMapperService
                         .selectByTruckNumberOver90Date(weightData.getWeightingDate(),weightData.getTruckNumber());
                 for (WeightData weight : weightDatalist) {
-                    deleteFileByWeightData(weightData);
+                    if(deleteFileByWeightData(weightData)){
                     successCount.increment();
                     weight.setMarkDel(1);
+                    weightData.setUpdateTime(new Date());
                     weightDataMapperService.updateWeightDataBefore40Days(weightData);
-                }
+                }}
             }
             log.info("passcar and 90 days ago success count:" + successCount);
         }
@@ -80,11 +83,12 @@ public class StorageManage {
             log.info("peccancy  and 2 years ago delete count:" + list.size());
             if(list.size()>0) {
                 for (WeightData weightData : list) {
-                    deleteFileByWeightData(weightData);
+                    if(deleteFileByWeightData(weightData)){
                     successCount.increment();
                     weightData.setMarkDel(1);
+                    weightData.setUpdateTime(new Date());
                     weightDataMapperService.updateWeightDataBefore40Days(weightData);
-                }
+                }}
             }
             log.info("peccancy  and 2 years ago success count:" + successCount);
         }
