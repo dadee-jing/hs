@@ -40,10 +40,11 @@ public class StorageManage {
                         weightDataMapperService.updateWeightDataBefore40Days(weightData);
                         continue;
                     }
-                    deleteFileByWeightData(weightData);
-                    successCount.increment();
-                    weightData.setMarkDel(1);
-                    weightDataMapperService.updateWeightDataBefore40Days(weightData);
+                    if(deleteFileByWeightData(weightData)){
+                        successCount.increment();
+                        weightData.setMarkDel(1);
+                        weightDataMapperService.updateWeightDataBefore40Days(weightData);
+                    }
                 }
             }
             log.info("passcar and 40 days ago success count:" + successCount);
@@ -88,19 +89,32 @@ public class StorageManage {
             log.info("peccancy  and 2 years ago success count:" + successCount);
         }
     }
-    public void deleteFileByWeightData(WeightData wd){
+    public boolean deleteFileByWeightData(WeightData wd){
             String basePath="/sharedata/ftp/"+wd.getStationId()+"/"+today.format(wd.getCreateTime())+"/";
-            if(StringUtils.isNotBlank(wd.getFtpHead())){
-                new File(basePath+wd.getFtpHead()).delete();}
-            else if(StringUtils.isNotBlank(wd.getFtpAxle())){
-                new File(basePath+wd.getFtpAxle()).delete();}
-            else if(StringUtils.isNotBlank(wd.getFtpTail())){
-                new File(basePath+wd.getFtpTail()).delete();}
-            else if(StringUtils.isNotBlank(wd.getFtpPriorHead())){
-                new File(basePath+wd.getFtpPriorHead()).delete();}
-            else if(StringUtils.isNotBlank(wd.getFtpPlate())){
-                new File(basePath+wd.getFtpPlate()).delete();}
-            else if(StringUtils.isNotBlank(wd.getFtpFullView())){
-                new File(basePath+wd.getFtpFullView()).delete();}
+             if(StringUtils.isNotBlank(wd.getFtpHead())){
+                 if(!new File(basePath+wd.getFtpHead()).delete()){
+                     return false;
+                 }}
+             if(StringUtils.isNotBlank(wd.getFtpAxle())){
+                 if(!new File(basePath+wd.getFtpAxle()).delete()){
+                     return false;
+                 }}
+             if(StringUtils.isNotBlank(wd.getFtpTail())){
+                 if(!new File(basePath+wd.getFtpTail()).delete()){
+                     return false;
+                 }}
+             if(StringUtils.isNotBlank(wd.getFtpPriorHead())){
+                 if(!new File(basePath+wd.getFtpPriorHead()).delete()){
+                 return false;
+                 }}
+             if(StringUtils.isNotBlank(wd.getFtpPlate())){
+                 if(!new File(basePath+wd.getFtpPlate()).delete()){
+                     return false;
+                 }}
+             if(StringUtils.isNotBlank(wd.getFtpFullView())){
+                 if(!new File(basePath+wd.getFtpFullView()).delete()){
+                     return false;
+                 }}
+            return true;
         }
 }
