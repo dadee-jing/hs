@@ -591,6 +591,7 @@
             <if test="uploadYhl != null  ">upload_yhl,</if>
             <if test="uploadSj != null  ">upload_sj,</if>
             <if test="uploadJj != null  ">upload_jj,</if>
+            <if test="laneId != null  ">lane_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null  ">#{id},</if>
