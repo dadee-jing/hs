@@ -2,7 +2,7 @@ package com.ruoyi.duge.third.trafficPolice.utils;
 
 import com.ruoyi.duge.domain.StationInfo;
 import com.ruoyi.duge.domain.WeightData;
-import com.ruoyi.duge.third.trafficPolice.overspeed.OverSpeed;
+import com.ruoyi.duge.third.trafficPolice.overspeed.OverSpeeds;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class IOUtil {
     static SimpleDateFormat today =new SimpleDateFormat("yyyyMMdd" );
     static SimpleDateFormat yearmonth =new SimpleDateFormat("yyyyMM" );
     static SimpleDateFormat day =new SimpleDateFormat("dd" );
-    public static boolean OverSpeedImages(OverSpeed os ) throws UnsupportedEncodingException {
+    public static boolean OverSpeedImages(OverSpeeds os ) throws UnsupportedEncodingException {
         String basePath="/sharedata/ftp/share/";
         String sourcePath=basePath+os.getFileName();
         File file=new File(sourcePath);
