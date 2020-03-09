@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.yaogan.mapper.StationCheckLogMapper">
+    
+    <resultMap type="StationCheckLog" id="StationCheckLogResult">
+        <result property="iD"    column="ID"    />
+        <result property="dWBH"    column="DWBH"    />
+        <result property="yCXBH"    column="YCXBH"    />
+        <result property="zJKSRQ"    column="ZJKSRQ"    />
+        <result property="sFTG"    column="SFTG"    />
+        <result property="bZ"    column="BZ"    />
+    </resultMap>
+	
+	<sql id="selectStationCheckLogVo">
+        select ID, DWBH, YCXBH, ZJKSRQ, SFTG, BZ from rs_station_check_log
+    </sql>
+	
+    <select id="selectStationCheckLogList" parameterType="StationCheckLog" resultMap="StationCheckLogResult">
+        <include refid="selectStationCheckLogVo"/>
+        <where>  
+            <if test="iD != null "> and ID = #{iD}</if>
+             <if test="dWBH != null  and dWBH != '' "> and DWBH = #{dWBH}</if>
+             <if test="yCXBH != null  and yCXBH != '' "> and YCXBH = #{yCXBH}</if>
+             <if test="zJKSRQ != null "> and ZJKSRQ = #{zJKSRQ}</if>
+             <if test="sFTG != null  and sFTG != '' "> and SFTG = #{sFTG}</if>
+             <if test="bZ != null  and bZ != '' "> and BZ = #{bZ}</if>
+         </where>
+    </select>
+    
+    <select id="selectStationCheckLogById" parameterType="Integer" resultMap="StationCheckLogResult">
+        <include refid="selectStationCheckLogVo"/>
+        where ID = #{iD}
+    </select>
+        
+    <insert id="insertStationCheckLog" parameterType="StationCheckLog">
+        insert into rs_station_check_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="iD != null  ">ID,</if>
+			<if test="dWBH != null  and dWBH != ''  ">DWBH,</if>
+			<if test="yCXBH != null  and yCXBH != ''  ">YCXBH,</if>
+			<if test="zJKSRQ != null  ">ZJKSRQ,</if>
+			<if test="sFTG != null  and sFTG != ''  ">SFTG,</if>
+			<if test="bZ != null  and bZ != ''  ">BZ,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="iD != null  ">#{iD},</if>
+			<if test="dWBH != null  and dWBH != ''  ">#{dWBH},</if>
+			<if test="yCXBH != null  and yCXBH != ''  ">#{yCXBH},</if>
+			<if test="zJKSRQ != null  ">#{zJKSRQ},</if>
+			<if test="sFTG != null  and sFTG != ''  ">#{sFTG},</if>
+			<if test="bZ != null  and bZ != ''  ">#{bZ},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateStationCheckLog" parameterType="StationCheckLog">
+        update rs_station_check_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dWBH != null  and dWBH != ''  ">DWBH = #{dWBH},</if>
+            <if test="yCXBH != null  and yCXBH != ''  ">YCXBH = #{yCXBH},</if>
+            <if test="zJKSRQ != null  ">ZJKSRQ = #{zJKSRQ},</if>
+            <if test="sFTG != null  and sFTG != ''  ">SFTG = #{sFTG},</if>
+            <if test="bZ != null  and bZ != ''  ">BZ = #{bZ},</if>
+        </trim>
+        where ID = #{iD}
+    </update>
+
+	<delete id="deleteStationCheckLogById" parameterType="Integer">
+        delete from rs_station_check_log where ID = #{iD}
+    </delete>
+	
+    <delete id="deleteStationCheckLogByIds" parameterType="String">
+        delete from rs_station_check_log where ID in 
+        <foreach item="iD" collection="array" open="(" separator="," close=")">
+            #{iD}
+        </foreach>
+    </delete>
+    
+</mapper>

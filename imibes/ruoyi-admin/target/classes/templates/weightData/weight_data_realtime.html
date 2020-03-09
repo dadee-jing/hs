@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/blueimp/css/blueimp-gallery.min.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/blueimp/css/blueimp-gallery-video.css}" rel="stylesheet"/>
+<link th:href="@{/css/video-js.min.css}" rel="stylesheet"/>
+<style>
+    .carousel-inner .item img{
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+    .carousel-inner .item h4{
+        margin-bottom: 0px;
+    }
+    .form-group-new {
+        margin-bottom: 1px;
+        margin-right: -1px;
+        margin-left: -1px;
+    }
+    .form-horizontal .control-label-new {
+        padding-top: 1px;
+        margin-bottom: 0;
+        text-align: right;
+    }
+    .form-control-static-new {
+        min-height: 28px;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        margin-bottom: 0;
+    }
+    .over-filed{
+        background-color: red;
+        color: white
+    }
+    .m {
+        width: 600px;
+        height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal" id="signupForm">
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h4 class="col-md-6">五沙大桥西侧上桥位：</h4>
+                <div class="col-md-12 carousel slide" id="carousel2">
+                    <div class="m">
+                        <video id="motherfucker" class="video-js" controls preload="auto" width="600" height="290"   data-setup="{}">
+                            <source src="rtmp://19.202.173.153:8080/mylive/test" type="rtmp/flv">
+                        </video>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <h4>前车头图片</h4>
+                    <a th:href="${ctxPath +data.ftpPriorHead}" title="前车头图片" data-gallery="">
+                        <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpPriorHead}" id="img1">
+                    </a>
+                </div>
+                <div class="col-sm-6">
+                    <h4>车尾图片</h4>
+                    <a th:href="${ctxPath +data.ftpTail}" title="车尾图片" data-gallery="">
+                        <img alt="image" class="img-responsive" height="280" th:src="${ctxPath +data.ftpTail}" id="img2">
+                    </a>
+                </div>
+            </div>
+
+            <h4 class="col-md-6">行车信息：</h4>
+            <div class="col-sm-3">
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">治超站点：</label>
+                    <div class="form-control-static-new" th:text="${data.stationName}">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车牌信息：</label>
+                    <div class="form-control-static-new" th:text="${data.truckNumber}" id="truckNumberDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">采集日期：</label>
+                    <div class="form-control-static-new" th:text="${#dates.format(data.weightingDate,'yyyy-MM-dd')}" id="dateDiv">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">总重(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.weight}" id="weightDiv">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">轴数：</label>
+                    <div class="form-control-static-new" th:text="${data.axleCount}" id="axleCountDiv">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">超重(吨)：</label>
+                    <div class="form-control-static-new" >
+                        <span th:text="${data.overWeight}" id="overWeightDiv"></span>
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">轴一重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight1}" id="axleWeight1Div">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item" th:if="${data.axleWeight3 != null && data.axleWeight3 >0 }">
+                    <label class="col-sm-7 control-label-new">轴三重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight3}" id="axleWeight3Div">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item" th:if="${data.axleWeight5 != null && data.axleWeight5 >0 }">
+                    <label class="col-sm-7 control-label-new">轴五重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight5}" id="axleWeight5Div">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item" th:if="${data.axleWeight7 != null && data.axleWeight7 >0 }">
+                    <label class="col-sm-7 control-label-new">轴七重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight7}" id="axleWeight7Div">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车长(m)：</label>
+                    <div class="form-control-static-new" >
+                        <span th:text="${data.length}/1000" id="lengthDiv"></span>
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车宽(m)：</label>
+                    <div class="form-control-static-new" >
+                        <span th:text="${data.width}/1000" id="widthDiv"></span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">行驶车道：</label>
+                    <div class="form-control-static-new" th:text="${data.laneMid}" id="laneDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车速(km/h)：</label>
+                    <div class="form-control-static-new" th:text="${data.speed}" id="speedDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">采集时间：</label>
+                    <div class="form-control-static-new" th:text="${#dates.format(data.weightingDate,'HH:mm:ss')}" id="timeDiv">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">超重率：</label>
+                    <div class="form-control-static-new" th:text="${overRate}" id="overRateDiv">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">限重：</label>
+                    <div class="form-control-static-new" th:text="${data.limitWeight}" id="limitWeightDiv">
+                    </div>
+                </div>
+
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">轴二重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight2}" id="axleWeight2Div">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item" th:if="${data.axleWeight4 != null && data.axleWeight4 >0 }">
+                    <label class="col-sm-7 control-label-new">轴四重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight4}" id="axleWeight4Div">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item" th:if="${data.axleWeight6 != null && data.axleWeight6 >0 }">
+                    <label class="col-sm-7 control-label-new">轴六重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight6}" id="axleWeight6Div">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item" th:if="${data.axleWeight8 != null && data.axleWeight8 >0 }">
+                    <label class="col-sm-7 control-label-new">轴八重量(吨)：</label>
+                    <div class="form-control-static-new" th:text="${data.axleWeight8}" id="axleWeight8Div">
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">通过时间(ms)：</label>
+                    <div class="form-control-static-new" th:text="${data.passTime}" id="passTimeDiv">
+                    </div>
+                </div>
+                <div class="form-group-new">
+                    <label class="col-sm-7 control-label-new">车高(m)：</label>
+                    <div class="form-control-static-new" >
+                        <span th:text="${data.height}/1000" id="heightDiv"></span>
+                    </div>
+                </div>
+                <div class="form-group-new weight_item">
+                    <label class="col-sm-7 control-label-new">车辆方向：</label>
+                    <div class="form-control-static-new" th:text="${data.direction}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+            </div>
+            <div class="col-sm-3">
+                <div class="col-sm-12" th:if="${data.ftpPlate != null && data.ftpPlate ne ''}">
+                    <h4>车牌</h4>
+                    <a th:href="${ctxPath + data.ftpPlate}" title="车牌" data-gallery=""
+                       style="position:absolute;left:50%;top:110%;transform: translate(-50%,-50%);">
+                        <img id="img3" alt="image" class="img-responsive" height="280" th:src="${ctxPath + data.ftpPlate}">
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-3">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/blueimp/js/jquery.blueimp-gallery.min.js}"></script>
+<script th:src="@{/dahua/foundation.js}"></script>
+<script th:src="@{/dahua/WebVideoCtrl.js}"></script>
+<script th:src="@{/dahua/modifyUI.js}"></script>
+<script th:src="@{/dahua/demo.js}"></script>
+<script th:src="@{/ajax/libs/vedio/video.min.js}"></script>
+<script th:src="@{/ajax/libs/vedio/videojs-flash.min.js}"></script>
+<script>
+    $("#links").children("li").onclick = function (event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement,
+            link = target.src ? target.parentNode : target,
+            options = {index: link, event: event},
+            links = this.getElementsByTagName('a');
+            blueimp.Gallery(links, options);
+    };
+    
+    function checkOver() {
+        if(parseInt($("#overWeightDiv").html())>0){
+            $("#overWeightDiv").addClass("over-filed")
+        }else {
+            $("#overWeightDiv").removeClass("over-filed")
+        }
+        if(parseFloat($("#lengthDiv").html())>18.1){
+            $("#lengthDiv").addClass("over-filed")
+        }else {
+            $("#lengthDiv").removeClass("over-filed")
+        }
+        if(parseFloat($("#widthDiv").html())>2.55){
+            $("#widthDiv").addClass("over-filed")
+        }else {
+            $("#widthDiv").removeClass("over-filed")
+        }
+        if(parseFloat($("#heightDiv").html())>4){
+            $("#heightDiv").addClass("over-filed")
+        }else {
+            $("#heightDiv").removeClass("over-filed")
+        }
+    }
+
+    function relast() {
+        $.ajax({
+            cache: true,
+            type: "GET",
+            url: "/duge/weightData/last?key="+new Date().getTime(),
+            async: false,
+            error: function (request) {
+
+            },
+            success: function (data) {
+                $("#stationDiv").html(data.stationName);
+                $("#directionDiv").html(data.direction);
+                $("#truckNumberDiv").html(data.truckNumber);
+                $("#laneDiv").html(data.lane);
+                $("#dateDiv").html(data.params.weightDate.substring(0,10));
+                $("#timeDiv").html(data.params.weightDate.substring(11,19));
+                $("#weightDiv").html(data.weight);
+                $("#axleCountDiv").html(data.axleCount);
+                $("#overWeightDiv").html(data.overWeight);
+                $("#axleWeight1Div").html(data.axleWeight1);
+                $("#axleWeight3Div").html(data.axleWeight3);
+                $("#axleWeight5Div").html(data.axleWeight5);
+                $("#axleWeight7Div").html(data.axleWeight7);
+                $("#lengthDiv").html(data.length /1000);
+                $("#widthDiv").html(data.width /1000);
+                $("#overRateDiv").html(data.params.overRate);
+                $("#limitWeightDiv").html(data.limitWeight);
+                $("#speedDiv").html(data.speed);
+                $("#axleWeight2Div").html(data.axleWeight2);
+                $("#axleWeight4Div").html(data.axleWeight4);
+                $("#axleWeight6Div").html(data.axleWeight6);
+                $("#axleWeight8Div").html(data.axleWeight8);
+                $("#heightDiv").html(data.height /1000);
+                $("#passTimeDiv").html(data.passTime);
+                $("#img1").attr("src",data.params.ctxPath+data.ftpPriorHead);
+                $("#img2").attr("src",data.params.ctxPath+data.ftpTail);
+                $("#img3").attr("src",data.params.ctxPath+data.ftpPlate);
+                checkOver();
+            }
+        });
+    }
+
+    $(function () {
+        checkOver();
+
+        videojs.addLanguage('zh-CN', {
+            "Play": "播放",
+            "Pause": "暂停",
+            "Current Time": "当前时间",
+            "Duration": "时长",
+            "Remaining Time": "剩余时间",
+            "Stream Type": "媒体流类型",
+            "LIVE": "直播",
+            "Loaded": "加载完毕",
+            "Progress": "进度",
+            "Fullscreen": "全屏",
+            "Non-Fullscreen": "退出全屏",
+            "Mute": "静音",
+            "Unmute": "取消静音",
+            "Playback Rate": "播放速度",
+            "Subtitles": "字幕",
+            "subtitles off": "关闭字幕",
+            "Captions": "内嵌字幕",
+            "captions off": "关闭内嵌字幕",
+            "Chapters": "节目段落",
+            "Close Modal Dialog": "关闭弹窗",
+            "Descriptions": "描述",
+            "descriptions off": "关闭描述",
+            "Audio Track": "音轨",
+            "You aborted the media playback": "视频播放被终止",
+            "A network error caused the media download to fail part-way.": "网络错误导致视频下载中途失败。",
+            "The media could not be loaded, either because the server or network failed or because the format is not supported.": "视频因格式不支持或者服务器或网络的问题无法加载。",
+            "The media playback was aborted due to a corruption problem or because the media used features your browser did not support.": "由于视频文件损坏或是该视频使用了你的浏览器不支持的功能，播放终止。",
+            "No compatible source was found for this media.": "无法找到此视频兼容的源。",
+            "The media is encrypted and we do not have the keys to decrypt it.": "视频已加密，无法解密。",
+            "Play Video": "播放视频",
+            "Close": "关闭",
+            "Modal Window": "弹窗",
+            "This is a modal window": "这是一个弹窗",
+            "This modal can be closed by pressing the Escape key or activating the close button.": "可以按ESC按键或启用关闭按钮来关闭此弹窗。",
+            ", opens captions settings dialog": ", 开启标题设置弹窗",
+            ", opens subtitles settings dialog": ", 开启字幕设置弹窗",
+            ", opens descriptions settings dialog": ", 开启描述设置弹窗",
+            ", selected": ", 选择",
+            "captions settings": "字幕设定",
+            "Audio Player": "音频播放器",
+            "Video Player": "视频播放器",
+            "Replay": "重播",
+            "Progress Bar": "进度小节",
+            "Volume Level": "音量",
+            "subtitles settings": "字幕设定",
+            "descriptions settings": "描述设定",
+            "Text": "文字",
+            "White": "白",
+            "Black": "黑",
+            "Red": "红",
+            "Green": "绿",
+            "Blue": "蓝",
+            "Yellow": "黄",
+            "Magenta": "紫红",
+            "Cyan": "青",
+            "Background": "背景",
+            "Window": "视窗",
+            "Transparent": "透明",
+            "Semi-Transparent": "半透明",
+            "Opaque": "不透明",
+            "Font Size": "字体尺寸",
+            "Text Edge Style": "字体边缘样式",
+            "None": "无",
+            "Raised": "浮雕",
+            "Depressed": "压低",
+            "Uniform": "均匀",
+            "Dropshadow": "下阴影",
+            "Font Family": "字体库",
+            "Proportional Sans-Serif": "比例无细体",
+            "Monospace Sans-Serif": "单间隔无细体",
+            "Proportional Serif": "比例细体",
+            "Monospace Serif": "单间隔细体",
+            "Casual": "舒适",
+            "Script": "手写体",
+            "Small Caps": "小型大写字体",
+            "Reset": "重启",
+            "restore all settings to the default values": "恢复全部设定至预设值",
+            "Done": "完成",
+            "Caption Settings Dialog": "字幕设定视窗",
+            "Beginning of dialog window. Escape will cancel and close the window.": "开始对话视窗。离开会取消及关闭视窗",
+            "End of dialog window.": "结束对话视窗"
+        });
+        var myPlayer = videojs('motherfucker');
+        videojs("motherfucker").ready(function(){
+            var myPlayer = this;
+            myPlayer.play();
+        });
+
+        setInterval( relast, 10000);
+    });
+
+</script>
+</body>
+</html>

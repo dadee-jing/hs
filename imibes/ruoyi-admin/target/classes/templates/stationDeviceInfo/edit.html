@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-role-edit" th:object="${stationDeviceInfo}">
+			<input name="typeId"  type="hidden" id="treeId"  th:value="${stationInfo==null?51:stationInfo.id + 1000}"/>
+			<input id="id" name="id" type="hidden" th:field="*{id}"/>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">站点名称：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="typeName" onclick="selectStationTree()" readonly="true"
+						   id="treeName"  th:value="${stationInfo==null?'':stationInfo.name}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">设备类型：</label>
+				<div class="col-sm-8">
+					<select name="deviceTypeId" th:field="*{deviceTypeId}" class="form-control m-b">
+						<option th:each="deviceType : ${deviceTypeList}" th:text="${deviceType.value}" th:value="${deviceType.id}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">设备名称：</label>
+				<div class="col-sm-8">
+					<select name="deviceNameId" th:field="*{deviceNameId}" class="form-control m-b">
+						<option th:each="deviceName : ${deviceNameList}" th:text="${deviceName.value}" th:value="${deviceName.id}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">状态：</label>
+				<div class="col-sm-8">
+					<div class="onoffswitch">
+                         <input type="checkbox" th:checked="${stationDeviceInfo.state == 1 ? true : false}"
+								class="onoffswitch-checkbox" id="state" name="state">
+                         <label class="onoffswitch-label" for="state">
+                             <span class="onoffswitch-inner"></span>
+                             <span class="onoffswitch-switch"></span>
+                         </label>
+                     </div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">ip：</label>
+				<div class="col-sm-8">
+					<input id="ipAddress" name="ipAddress" class="form-control" type="text" th:field="*{ipAddress}">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">端口：</label>
+				<div class="col-sm-8">
+					<input id="port" name="port" class="form-control" type="text" th:field="*{port}">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">SN码：</label>
+				<div class="col-sm-8">
+					<input id="snCode" name="snCode" class="form-control" type="text" th:field="*{snCode}">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text" th:field="*{remark}">
+				</div>
+			</div>
+
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+	<script th:src="@{/js/mobile.js}"></script>
+	<script type="text/javascript">
+		var prefix = ctx + "module/stationDeviceInfo";
+
+		function edit() {
+			var id = $("input[name='id']").val();
+			var stationId = $("input[name='typeId']").val() - 1000;
+			var deviceTypeId = $("select[name='deviceTypeId']").val();
+			var deviceNameId = $("select[name='deviceNameId']").val();
+			var state = $("input[name='state']").is(':checked') == true ? 1 : 0;
+			var ipAddress = $("input[name='ipAddress']").val();
+			var port = $("input[name='port']").val();
+			var remark = $("input[name='remark']").val();
+			var snCode = $("input[name='snCode']").val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : prefix + "/edit",
+				data : {
+					"id":id,
+					"stationId": stationId,
+					"deviceTypeId": deviceTypeId,
+					"deviceNameId": deviceNameId,
+					"state": state,
+					"ipAddress": ipAddress,
+					"port": port,
+					"remark": remark,
+					"snCode": snCode
+				},
+				async : false,
+				error : function(request) {
+					$.modal.alertError("系统错误");
+				},
+				success : function(data) {
+					$.operate.saveSuccess(data);
+				}
+			});
+		}
+
+		function submitHandler() {
+			var stationId = $("input[name='typeId']").val() - 1000;
+			if(stationId < 1){
+				$.modal.alertError("<p>站点名称 请勿选择站点分类。</p>" +
+						"<p>没有站点请先到站点管理页面新增站点</p>");
+				return;
+			}
+	        if ($.validate.form()) {
+	        	edit();
+	        }
+	    }
+		function selectStationTree() {
+			var treeId = $("#treeId").val();
+			//var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+			var deptId = 100;
+			var options = {
+				title: '选择站点',
+				width: "380",
+				url: ctx + "module/stationType/selectStationTree/" + deptId,
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		function doSubmit(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#treeId").val(body.find('#treeId').val());
+				$("#treeName").val(body.find('#treeName').val());
+				layer.close(index);
+			}
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.duge.mapper.WeightDataMapper">
+    <resultMap type="com.ruoyi.duge.domain.WeightData" id="WeightDataResult">
+        <result property="id" column="id"/>
+        <result property="stationName" column="station_name"/>
+        <result property="limitOverLevel" column="limit_over_level"/>
+        <result property="limitMode" column="limit_mode"/>
+        <result property="vehicleType" column="vehicle_type"/>
+        <result property="weightingId" column="weighting_id"/>
+        <result property="weightingDate" column="weighting_date"/>
+        <result property="lane" column="lane"/>
+        <result property="direction" column="direction"/>
+        <result property="truckNumber" column="truck_number"/>
+        <result property="truckCorlor" column="truck_corlor"/>
+        <result property="speed" column="speed"/>
+        <result property="axleCount" column="axle_count"/>
+        <result property="axleType" column="axle_type"/>
+        <result property="weight" column="weight"/>
+        <result property="limitWeight" column="limit_weight"/>
+        <result property="overWeight" column="over_weight"/>
+        <result property="axleWeight1" column="axle_weight1"/>
+        <result property="axleWeight2" column="axle_weight2"/>
+        <result property="axleWeight3" column="axle_weight3"/>
+        <result property="axleWeight4" column="axle_weight4"/>
+        <result property="axleWeight5" column="axle_weight5"/>
+        <result property="axleWeight6" column="axle_weight6"/>
+        <result property="axleWeight7" column="axle_weight7"/>
+        <result property="axleWeight8" column="axle_weight8"/>
+        <result property="sequenceTag" column="sequence_tag"/>
+        <result property="ftpHead" column="ftp_head"/>
+        <result property="ftpAxle" column="ftp_axle"/>
+        <result property="ftpTail" column="ftp_tail"/>
+        <result property="ftpPriorHead" column="ftp_prior_head"/>
+        <result property="ftpPlate" column="ftp_plate"/>
+        <result property="ftpFullView" column="ftp_full_view"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="deviceCode" column="device_code"/>
+        <result property="stationId" column="station_id"/>
+        <result property="lwhDate" column="lwh_date"/>
+        <result property="plate" column="plate"/>
+        <result property="width" column="width"/>
+        <result property="height" column="height"/>
+        <result property="length" column="length"/>
+        <result property="laneMid" column="lane_mid"/>
+        <result property="laneMin" column="lane_min"/>
+        <result property="laneMax" column="lane_max"/>
+        <result property="passTime" column="pass_time"/>
+        <result property="uploadTag" column="upload_tag"/>
+        <result property="uploadYhl" column="upload_yhl"/>
+        <result property="uploadSj" column="upload_sj"/>
+        <result property="uploadJj" column="upload_jj"/>
+        <result property="markDel" column="mark_del"/>
+        <result property="lbh" column="lbh"/>
+        <result property="lbw" column="lbw"/>
+        <result property="lbl" column="lbl"/>
+        <result property="laneId" column="lane_id"/>
+        <result property="lwhScenePath" column="lwh_scene_path"/>
+    </resultMap>
+
+    <sql id="selectDataVo">
+        select wd.id as id,dsi.name as station_name,limit_over_level, limit_mode, vehicle_type, weighting_id,
+         weighting_date, lane, direction, truck_number, truck_corlor, speed, axle_count, axle_type, weight,
+          limit_weight,over_weight, axle_weight1, axle_weight2, axle_weight3, axle_weight4, axle_weight5,
+           axle_weight6, axle_weight7, axle_weight8, sequence_tag, ftp_head, ftp_axle, ftp_tail, ftp_prior_head,
+            ftp_plate, ftp_full_view, wd.create_by, wd.create_time, wd.update_by, wd.update_time, wd.remark,
+             wd.device_code, station_id, lwh_date, plate, width, height, length, lane_mid, lane_min, lane_max,
+              pass_time, upload_tag, upload_yhl, upload_sj, upload_jj, lbh,lbw,lbl,lwh_scene_path from weight_data wd
+        left join duge_station_info dsi on dsi.id = wd.station_id
+    </sql>
+
+    <select id="selectDataList" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            <if test="id != null ">and wd.id = #{id}</if>
+            <if test="limitOverLevel != null ">and limit_over_level = #{limitOverLevel}</if>
+            <if test="limitMode != null ">and limit_mode = #{limitMode}</if>
+            <if test="vehicleType != null  and vehicleType != '' ">and vehicle_type = #{vehicleType}</if>
+            <if test="weightingId != null ">and weighting_id = #{weightingId}</if>
+            <if test="weightingDate != null ">and weighting_date = #{weightingDate}</if>
+            <if test="lane != null ">and lane = #{lane}</if>
+            <if test="direction != null  and direction != '' ">and direction = #{direction}</if>
+            <if test="truckNumber != null  and truckNumber != '' ">
+                AND truck_number like concat('%',#{truckNumber}, '%')
+            </if>
+            <if test="truckCorlor != null  and truckCorlor != '' ">and truck_corlor = #{truckCorlor}</if>
+            <if test="speed != null ">and speed = #{speed}</if>
+            <if test="axleCount != null ">and axle_count = #{axleCount}</if>
+            <if test="axleType != null  and axleType != '' ">and axle_type = #{axleType}</if>
+            <if test="weight != null ">and weight = #{weight}</if>
+            <if test="limitWeight != null ">and limit_weight = #{limitWeight}</if>
+            <if test="overWeight != null ">and over_weight = #{overWeight}</if>
+            <if test="axleWeight1 != null ">and axle_weight1 = #{axleWeight1}</if>
+            <if test="axleWeight2 != null ">and axle_weight2 = #{axleWeight2}</if>
+            <if test="axleWeight3 != null ">and axle_weight3 = #{axleWeight3}</if>
+            <if test="axleWeight4 != null ">and axle_weight4 = #{axleWeight4}</if>
+            <if test="axleWeight5 != null ">and axle_weight5 = #{axleWeight5}</if>
+            <if test="axleWeight6 != null ">and axle_weight6 = #{axleWeight6}</if>
+            <if test="axleWeight7 != null ">and axle_weight7 = #{axleWeight7}</if>
+            <if test="axleWeight8 != null ">and axle_weight8 = #{axleWeight8}</if>
+            <if test="sequenceTag != null  and sequenceTag != '' ">and sequence_tag = #{sequenceTag}</if>
+            <if test="ftpHead != null  and ftpHead != '' ">and ftp_head = #{ftpHead}</if>
+            <if test="ftpAxle != null  and ftpAxle != '' ">and ftp_axle = #{ftpAxle}</if>
+            <if test="ftpTail != null  and ftpTail != '' ">and ftp_tail = #{ftpTail}</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != '' ">and ftp_prior_head = #{ftpPriorHead}</if>
+            <if test="ftpPlate != null  and ftpPlate != '' ">and ftp_plate = #{ftpPlate}</if>
+            <if test="ftpFullView != null  and ftpFullView != '' ">and ftp_full_view = #{ftpFullView}</if>
+            <if test="createBy != null  and createBy != '' ">and create_by = #{createBy}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="updateBy != null  and updateBy != '' ">and update_by = #{updateBy}</if>
+            <if test="updateTime != null ">and update_time = #{updateTime}</if>
+            <if test="remark != null  and remark != '' ">and remark = #{remark}</if>
+            <if test="deviceCode != null  and deviceCode != '' ">and device_code = #{deviceCode}</if>
+            <if test="stationId != null ">and station_id = #{stationId}</if>
+            <if test="lwhDate != null ">and lwh_date = #{lwhDate}</if>
+            <if test="plate != null  and plate != '' ">and plate = #{plate}</if>
+            <if test="width != null  and width != '' ">and width = #{width}</if>
+            <if test="height != null  and height != '' ">and height = #{height}</if>
+            <if test="length != null  and length != '' ">and length > CAST(#{length} AS signed) </if>
+            <if test="laneMid != null  and laneMid != '' ">and lane_mid = #{laneMid}</if>
+            <if test="laneMin != null  and laneMin != '' ">and lane_min = #{laneMin}</if>
+            <if test="laneMax != null  and laneMax != '' ">and lane_max = #{laneMax}</if>
+            <if test="lbh != null  and lbh != '' ">and lbh &gt;= CAST(#{lbh} AS signed) </if>
+            <if test="lbw != null  and lbw != '' ">and lbw &gt; 0 </if>
+            <if test="lbl != null  and lbl != '' ">and lbl &gt; 0 </if>
+            <if test="passTime != null  and passTime != '' ">and pass_time = #{passTime}</if>
+            <if test="uploadTag != null ">and upload_tag = #{uploadTag}</if>
+            <if test="uploadYhl != null ">and upload_yhl = #{uploadYhl}</if>
+            <if test="uploadSj != null ">and upload_sj = #{uploadSj}</if>
+            <if test="uploadJj != null ">and upload_jj = #{uploadJj}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(weighting_date,'%Y-%m-%d %H:%i') &gt;= date_format(#{params.beginTime},'%Y-%m-%d %H:%i')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(weighting_date,'%Y-%m-%d %H:%i') &lt;= date_format(#{params.endTime},'%Y-%m-%d %H:%i')
+            </if>
+            <if test="params.overWeightMin != null and params.overWeightMin != '' and params.overWeightMin > -1">and over_weight >
+                #{params.overWeightMin}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectLast" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult" >
+        <include refid="selectDataVo"/>
+        <where>
+            <if test="stationId != null ">and station_id = #{stationId}</if>
+        </where>
+        order by id desc limit 1
+    </select>
+
+    <select id="selectDataById" parameterType="Long" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        where wd.id = #{id}
+    </select>
+
+    <insert id="insertData" parameterType="com.ruoyi.duge.domain.WeightData">
+        insert into weight_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="limitOverLevel != null  ">limit_over_level,</if>
+            <if test="limitMode != null  ">limit_mode,</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">vehicle_type,</if>
+            <if test="weightingId != null  ">weighting_id,</if>
+            <if test="weightingDate != null  ">weighting_date,</if>
+            <if test="lane != null  ">lane,</if>
+            <if test="direction != null  and direction != ''  ">direction,</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">truck_number,</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">truck_corlor,</if>
+            <if test="speed != null  ">speed,</if>
+            <if test="axleCount != null  ">axle_count,</if>
+            <if test="axleType != null  and axleType != ''  ">axle_type,</if>
+            <if test="weight != null  ">weight,</if>
+            <if test="limitWeight != null  ">limit_weight,</if>
+            <if test="overWeight != null  ">over_weight,</if>
+            <if test="axleWeight1 != null  ">axle_weight1,</if>
+            <if test="axleWeight2 != null  ">axle_weight2,</if>
+            <if test="axleWeight3 != null  ">axle_weight3,</if>
+            <if test="axleWeight4 != null  ">axle_weight4,</if>
+            <if test="axleWeight5 != null  ">axle_weight5,</if>
+            <if test="axleWeight6 != null  ">axle_weight6,</if>
+            <if test="axleWeight7 != null  ">axle_weight7,</if>
+            <if test="axleWeight8 != null  ">axle_weight8,</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">sequence_tag,</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">ftp_head,</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">ftp_axle,</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">ftp_tail,</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">ftp_prior_head,</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">ftp_plate,</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">ftp_full_view,</if>
+            <if test="createBy != null  and createBy != ''  ">create_by,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+            <if test="updateTime != null  ">update_time,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code,</if>
+            <if test="stationId != null  ">station_id,</if>
+            <if test="lwhDate != null  ">lwh_date,</if>
+            <if test="plate != null  and plate != ''  ">plate,</if>
+            <if test="width != null  and width != ''  ">width,</if>
+            <if test="height != null  and height != ''  ">height,</if>
+            <if test="length != null  and length != ''  ">length,</if>
+            <if test="laneMid != null  and laneMid != ''  ">lane_mid,</if>
+            <if test="laneMin != null  and laneMin != ''  ">lane_min,</if>
+            <if test="laneMax != null  and laneMax != ''  ">lane_max,</if>
+            <if test="passTime != null  and passTime != ''  ">pass_time,</if>
+            <if test="uploadTag != null  ">upload_tag,</if>
+            <if test="uploadYhl != null  ">upload_yhl,</if>
+            <if test="uploadSj != null  ">upload_sj,</if>
+            <if test="uploadJj != null  ">upload_jj,</if>
+            <if test="lbh != null  and lbh != ''  ">lbh,</if>
+            <if test="lbw != null  and lbw != ''  ">lbw,</if>
+            <if test="lbl != null  and lbl != ''  ">lbl,</if>
+            <if test="laneId != null  ">lane_id,</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="limitOverLevel != null  ">#{limitOverLevel},</if>
+            <if test="limitMode != null  ">#{limitMode},</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">#{vehicleType},</if>
+            <if test="weightingId != null  ">#{weightingId},</if>
+            <if test="weightingDate != null  ">#{weightingDate},</if>
+            <if test="lane != null  ">#{lane},</if>
+            <if test="direction != null  and direction != ''  ">#{direction},</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">#{truckNumber},</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">#{truckCorlor},</if>
+            <if test="speed != null  ">#{speed},</if>
+            <if test="axleCount != null  ">#{axleCount},</if>
+            <if test="axleType != null  and axleType != ''  ">#{axleType},</if>
+            <if test="weight != null  ">#{weight},</if>
+            <if test="limitWeight != null  ">#{limitWeight},</if>
+            <if test="overWeight != null  ">#{overWeight},</if>
+            <if test="axleWeight1 != null  ">#{axleWeight1},</if>
+            <if test="axleWeight2 != null  ">#{axleWeight2},</if>
+            <if test="axleWeight3 != null  ">#{axleWeight3},</if>
+            <if test="axleWeight4 != null  ">#{axleWeight4},</if>
+            <if test="axleWeight5 != null  ">#{axleWeight5},</if>
+            <if test="axleWeight6 != null  ">#{axleWeight6},</if>
+            <if test="axleWeight7 != null  ">#{axleWeight7},</if>
+            <if test="axleWeight8 != null  ">#{axleWeight8},</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">#{sequenceTag},</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">#{ftpHead},</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">#{ftpAxle},</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">#{ftpTail},</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">#{ftpPriorHead},</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">#{ftpPlate},</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">#{ftpFullView},</if>
+            <if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+            <if test="updateTime != null  ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">#{deviceCode},</if>
+            <if test="stationId != null  ">#{stationId},</if>
+            <if test="lwhDate != null  ">#{lwhDate},</if>
+            <if test="plate != null  and plate != ''  ">#{plate},</if>
+            <if test="width != null  and width != ''  ">#{width},</if>
+            <if test="height != null  and height != ''  ">#{height},</if>
+            <if test="length != null  and length != ''  ">#{length},</if>
+            <if test="laneMid != null  and laneMid != ''  ">#{laneMid},</if>
+            <if test="laneMin != null  and laneMin != ''  ">#{laneMin},</if>
+            <if test="laneMax != null  and laneMax != ''  ">#{laneMax},</if>
+            <if test="passTime != null  and passTime != ''  ">#{passTime},</if>
+            <if test="uploadTag != null  ">#{uploadTag},</if>
+            <if test="uploadYhl != null  ">#{uploadYhl},</if>
+            <if test="uploadSj != null  ">#{uploadSj},</if>
+            <if test="uploadJj != null  ">#{uploadJj},</if>
+            <if test="lbh != null  and lbh != ''  ">#{lbh},</if>
+            <if test="lbw != null  and lbw != ''  ">#{lbw},</if>
+            <if test="lbl != null  and lbl != ''  ">#{lbl},</if>
+            <if test="laneId != null  ">#{laneId},</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">#{lwhScenePath},</if>
+        </trim>
+    </insert>
+
+    <update id="updateData" parameterType="com.ruoyi.duge.domain.WeightData">
+        update weight_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="limitOverLevel != null  ">limit_over_level = #{limitOverLevel},</if>
+            <if test="limitMode != null  ">limit_mode = #{limitMode},</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">vehicle_type = #{vehicleType},</if>
+            <if test="weightingId != null  ">weighting_id = #{weightingId},</if>
+            <if test="weightingDate != null  ">weighting_date = #{weightingDate},</if>
+            <if test="lane != null  ">lane = #{lane},</if>
+            <if test="direction != null  and direction != ''  ">direction = #{direction},</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">truck_number = #{truckNumber},</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">truck_corlor = #{truckCorlor},</if>
+            <if test="speed != null  ">speed = #{speed},</if>
+            <if test="axleCount != null  ">axle_count = #{axleCount},</if>
+            <if test="axleType != null  and axleType != ''  ">axle_type = #{axleType},</if>
+            <if test="weight != null  ">weight = #{weight},</if>
+            <if test="limitWeight != null  ">limit_weight = #{limitWeight},</if>
+            <if test="overWeight != null  ">over_weight = #{overWeight},</if>
+            <if test="axleWeight1 != null  ">axle_weight1 = #{axleWeight1},</if>
+            <if test="axleWeight2 != null  ">axle_weight2 = #{axleWeight2},</if>
+            <if test="axleWeight3 != null  ">axle_weight3 = #{axleWeight3},</if>
+            <if test="axleWeight4 != null  ">axle_weight4 = #{axleWeight4},</if>
+            <if test="axleWeight5 != null  ">axle_weight5 = #{axleWeight5},</if>
+            <if test="axleWeight6 != null  ">axle_weight6 = #{axleWeight6},</if>
+            <if test="axleWeight7 != null  ">axle_weight7 = #{axleWeight7},</if>
+            <if test="axleWeight8 != null  ">axle_weight8 = #{axleWeight8},</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">sequence_tag = #{sequenceTag},</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">ftp_head = #{ftpHead},</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">ftp_axle = #{ftpAxle},</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">ftp_tail = #{ftpTail},</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">ftp_prior_head = #{ftpPriorHead},</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">ftp_plate = #{ftpPlate},</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">ftp_full_view = #{ftpFullView},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code = #{deviceCode},</if>
+            <if test="stationId != null  ">station_id = #{stationId},</if>
+            <if test="lwhDate != null  ">lwh_date = #{lwhDate},</if>
+            <if test="plate != null  and plate != ''  ">plate = #{plate},</if>
+            <if test="width != null  and width != ''  ">width = #{width},</if>
+            <if test="height != null  and height != ''  ">height = #{height},</if>
+            <if test="length != null  and length != ''  ">length = #{length},</if>
+            <if test="laneMid != null  and laneMid != ''  ">lane_mid = #{laneMid},</if>
+            <if test="laneMin != null  and laneMin != ''  ">lane_min = #{laneMin},</if>
+            <if test="laneMax != null  and laneMax != ''  ">lane_max = #{laneMax},</if>
+            <if test="passTime != null  and passTime != ''  ">pass_time = #{passTime},</if>
+            <if test="uploadTag != null  ">upload_tag = #{uploadTag},</if>
+            <if test="uploadYhl != null  ">upload_yhl = #{uploadYhl},</if>
+            <if test="uploadSj != null  ">upload_sj = #{uploadSj},</if>
+            <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
+            <if test="lbh != null  and lbh != ''  ">lbh = #{lbh},</if>
+            <if test="lbw != null  and lbw != ''  ">lbw = #{lbw},</if>
+            <if test="lbl != null  and lbl != ''  ">lbl = #{lbl},</if>
+            <if test="laneId != null  ">lane_id = #{laneId},</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path = #{lwhScenePath},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDataById" parameterType="Long">
+        delete from weight_data where id = #{id}
+    </delete>
+
+    <delete id="deleteDataByIds" parameterType="String">
+        delete from weight_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectNotUpload" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            and upload_tag in (0, 2)
+        </where>
+        order by upload_tag
+    </select>
+
+    <select id="selectNotUploadYhl" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            AND upload_yhl in (0, 2)
+        </where>
+        order by id DESC
+        limit 300
+    </select>
+    <select id="selectNotUploadSj" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            wd.create_time &gt; date_add(now(), interval - 5 minute)
+            and upload_sj  in (0, 2)
+            and station_id = 2
+        </where>
+        order by upload_sj
+        limit 5
+    </select>
+
+    <select id="selectNotUploadJj" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            wd.create_time &lt; date_add(now(), interval - 5 minute)
+            and upload_jj =0
+        </where>
+        order by create_time DESC
+        limit 100
+    </select>
+
+    <select id="selectStationStatistics" parameterType="com.ruoyi.duge.domain.WeightData" resultType="hashMap">
+         select count(*) as trafficFlow,sum(if(over_weight>0,1,0)) as overCount from weight_data wd
+         where wd.weighting_date between #{params.beginTime} and #{params.endTime} and wd.station_id=#{stationId};
+    </select>
+
+    <select id="selectCountHourList" parameterType="com.ruoyi.duge.domain.WeightData" resultType="hashMap">
+        SELECT
+          station_id,
+          count(IF (over_weight > 0, TRUE, NULL)) as over_count
+        FROM
+            weight_data
+        WHERE
+            weighting_date > #{params.timeStr}
+        GROUP BY
+        station_id
+    </select>
+
+    <select id="selectCarOutNumber" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
+    	SELECT carOutNum.* FROM
+		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number
+		FROM weight_data
+		WHERE
+		station_id = #{stationId}
+		GROUP BY hour) carOutNum
+		WHERE carOutNum.`hour` BETWEEN  #{startDate} AND  #{endDate};
+
+    </select>
+
+    <select id="selectCarOverWeight" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
+    	SELECT carOutNum.* FROM
+		(SELECT DATE_FORMAT(weighting_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(id) AS number
+		FROM weight_data
+		WHERE
+		station_id = #{stationId} and over_weight>0
+		GROUP BY hour) carOutNum
+		WHERE carOutNum.`hour` BETWEEN  #{startDate} AND  #{endDate};
+
+    </select>
+    <select id="selectSpeedAvg" parameterType="com.ruoyi.duge.domain.WeightData" resultType="Double">
+        SELECT avg(speed) FROM weight_data WHERE weighting_date >  #{params.timeStr}
+    </select>
+
+
+    <!--随机抽取无报警的100辆车的车牌-->
+    <select id="selectTruckNumberByTime" resultMap="WeightDataResult">
+        select *  from weight_data_before_40days  where over_weight=0
+        and mark_del= 0
+        ORDER BY id DESC
+        LIMIT 100
+    </select>
+
+    <!--查这辆车一天内有没有违法-->
+    <select id="selectByTruckNumber"  resultType="Integer">
+       select COUNT(0) from weight_data_before_40days where to_days(weighting_date) = to_days(#{weightingDate})
+       AND truck_number = #{truckNumber}
+       AND over_weight>0
+    </select>
+
+    <!--满90天，查询之前被mark_del=2的-->
+    <select id="selectTruckNumberOver90Date" resultMap="WeightDataResult">
+        select *  from weight_data_before_40days  where create_time &lt; date_add(now(), interval - 90*24*60 minute)
+        and over_weight=0
+        and mark_del= 2
+        ORDER BY id DESC
+    </select>
+    <!--查这辆车90天前那一天内所有数据-->
+    <select id="selectByTruckNumberOver90Date"  resultMap="WeightDataResult">
+        select *  from weight_data_before_40days  where
+        to_days(weighting_date) = to_days(#{weightingDate})
+        and truck_number = #{truckNumber}
+    </select>
+    <!--报警图片视频数据-->
+    <select id="selectIllegalAnd2YearAgo" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            wd.create_time &lt; date_add(now(), interval - 2*356*24*60 minute)
+            and wd.over_weight  > 0
+        </where>
+    </select>
+    <update id="updateWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
+        update weight_data_before_40days
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="limitOverLevel != null  ">limit_over_level = #{limitOverLevel},</if>
+            <if test="limitMode != null  ">limit_mode = #{limitMode},</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">vehicle_type = #{vehicleType},</if>
+            <if test="weightingId != null  ">weighting_id = #{weightingId},</if>
+            <if test="weightingDate != null  ">weighting_date = #{weightingDate},</if>
+            <if test="lane != null  ">lane = #{lane},</if>
+            <if test="direction != null  and direction != ''  ">direction = #{direction},</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">truck_number = #{truckNumber},</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">truck_corlor = #{truckCorlor},</if>
+            <if test="speed != null  ">speed = #{speed},</if>
+            <if test="axleCount != null  ">axle_count = #{axleCount},</if>
+            <if test="axleType != null  and axleType != ''  ">axle_type = #{axleType},</if>
+            <if test="weight != null  ">weight = #{weight},</if>
+            <if test="limitWeight != null  ">limit_weight = #{limitWeight},</if>
+            <if test="overWeight != null  ">over_weight = #{overWeight},</if>
+            <if test="axleWeight1 != null  ">axle_weight1 = #{axleWeight1},</if>
+            <if test="axleWeight2 != null  ">axle_weight2 = #{axleWeight2},</if>
+            <if test="axleWeight3 != null  ">axle_weight3 = #{axleWeight3},</if>
+            <if test="axleWeight4 != null  ">axle_weight4 = #{axleWeight4},</if>
+            <if test="axleWeight5 != null  ">axle_weight5 = #{axleWeight5},</if>
+            <if test="axleWeight6 != null  ">axle_weight6 = #{axleWeight6},</if>
+            <if test="axleWeight7 != null  ">axle_weight7 = #{axleWeight7},</if>
+            <if test="axleWeight8 != null  ">axle_weight8 = #{axleWeight8},</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">sequence_tag = #{sequenceTag},</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">ftp_head = #{ftpHead},</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">ftp_axle = #{ftpAxle},</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">ftp_tail = #{ftpTail},</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">ftp_prior_head = #{ftpPriorHead},</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">ftp_plate = #{ftpPlate},</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">ftp_full_view = #{ftpFullView},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code = #{deviceCode},</if>
+            <if test="stationId != null  ">station_id = #{stationId},</if>
+            <if test="lwhDate != null  ">lwh_date = #{lwhDate},</if>
+            <if test="plate != null  and plate != ''  ">plate = #{plate},</if>
+            <if test="width != null  and width != ''  ">width = #{width},</if>
+            <if test="height != null  and height != ''  ">height = #{height},</if>
+            <if test="length != null  and length != ''  ">length = #{length},</if>
+            <if test="laneMid != null  and laneMid != ''  ">lane_mid = #{laneMid},</if>
+            <if test="laneMin != null  and laneMin != ''  ">lane_min = #{laneMin},</if>
+            <if test="laneMax != null  and laneMax != ''  ">lane_max = #{laneMax},</if>
+            <if test="passTime != null  and passTime != ''  ">pass_time = #{passTime},</if>
+            <if test="uploadTag != null  ">upload_tag = #{uploadTag},</if>
+            <if test="uploadYhl != null  ">upload_yhl = #{uploadYhl},</if>
+            <if test="uploadSj != null  ">upload_sj = #{uploadSj},</if>
+            <if test="uploadJj != null  ">upload_jj = #{uploadJj},</if>
+            <if test="markDel != null  ">mark_del = #{markDel},</if>
+            <if test="laneId != null  ">lane_id = #{laneId},</if>
+            <if test="lwhScenePath != null  and lwhScenePath != ''  ">lwh_scene_path = #{lwhScenePath},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+
+    <!--备份数据-->
+    <select id="selectBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
+        select *  from weight_data  where create_time &lt; date_add(now(), interval - 40*24*60 minute)
+        ORDER BY id LIMIT 200
+    </select>
+    <!--备份数据-->
+    <insert id="insertIntoWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
+        insert into weight_data_before_40days
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="limitOverLevel != null  ">limit_over_level,</if>
+            <if test="limitMode != null  ">limit_mode,</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">vehicle_type,</if>
+            <if test="weightingId != null  ">weighting_id,</if>
+            <if test="weightingDate != null  ">weighting_date,</if>
+            <if test="lane != null  ">lane,</if>
+            <if test="direction != null  and direction != ''  ">direction,</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">truck_number,</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">truck_corlor,</if>
+            <if test="speed != null  ">speed,</if>
+            <if test="axleCount != null  ">axle_count,</if>
+            <if test="axleType != null  and axleType != ''  ">axle_type,</if>
+            <if test="weight != null  ">weight,</if>
+            <if test="limitWeight != null  ">limit_weight,</if>
+            <if test="overWeight != null  ">over_weight,</if>
+            <if test="axleWeight1 != null  ">axle_weight1,</if>
+            <if test="axleWeight2 != null  ">axle_weight2,</if>
+            <if test="axleWeight3 != null  ">axle_weight3,</if>
+            <if test="axleWeight4 != null  ">axle_weight4,</if>
+            <if test="axleWeight5 != null  ">axle_weight5,</if>
+            <if test="axleWeight6 != null  ">axle_weight6,</if>
+            <if test="axleWeight7 != null  ">axle_weight7,</if>
+            <if test="axleWeight8 != null  ">axle_weight8,</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">sequence_tag,</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">ftp_head,</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">ftp_axle,</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">ftp_tail,</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">ftp_prior_head,</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">ftp_plate,</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">ftp_full_view,</if>
+            <if test="createBy != null  and createBy != ''  ">create_by,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+            <if test="updateTime != null  ">update_time,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">device_code,</if>
+            <if test="stationId != null  ">station_id,</if>
+            <if test="lwhDate != null  ">lwh_date,</if>
+            <if test="plate != null  and plate != ''  ">plate,</if>
+            <if test="width != null  and width != ''  ">width,</if>
+            <if test="height != null  and height != ''  ">height,</if>
+            <if test="length != null  and length != ''  ">length,</if>
+            <if test="laneMid != null  and laneMid != ''  ">lane_mid,</if>
+            <if test="laneMin != null  and laneMin != ''  ">lane_min,</if>
+            <if test="laneMax != null  and laneMax != ''  ">lane_max,</if>
+            <if test="passTime != null  and passTime != ''  ">pass_time,</if>
+            <if test="uploadTag != null  ">upload_tag,</if>
+            <if test="uploadYhl != null  ">upload_yhl,</if>
+            <if test="uploadSj != null  ">upload_sj,</if>
+            <if test="uploadJj != null  ">upload_jj,</if>
+            <if test="laneId != null  ">lane_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="limitOverLevel != null  ">#{limitOverLevel},</if>
+            <if test="limitMode != null  ">#{limitMode},</if>
+            <if test="vehicleType != null  and vehicleType != ''  ">#{vehicleType},</if>
+            <if test="weightingId != null  ">#{weightingId},</if>
+            <if test="weightingDate != null  ">#{weightingDate},</if>
+            <if test="lane != null  ">#{lane},</if>
+            <if test="direction != null  and direction != ''  ">#{direction},</if>
+            <if test="truckNumber != null  and truckNumber != ''  ">#{truckNumber},</if>
+            <if test="truckCorlor != null  and truckCorlor != ''  ">#{truckCorlor},</if>
+            <if test="speed != null  ">#{speed},</if>
+            <if test="axleCount != null  ">#{axleCount},</if>
+            <if test="axleType != null  and axleType != ''  ">#{axleType},</if>
+            <if test="weight != null  ">#{weight},</if>
+            <if test="limitWeight != null  ">#{limitWeight},</if>
+            <if test="overWeight != null  ">#{overWeight},</if>
+            <if test="axleWeight1 != null  ">#{axleWeight1},</if>
+            <if test="axleWeight2 != null  ">#{axleWeight2},</if>
+            <if test="axleWeight3 != null  ">#{axleWeight3},</if>
+            <if test="axleWeight4 != null  ">#{axleWeight4},</if>
+            <if test="axleWeight5 != null  ">#{axleWeight5},</if>
+            <if test="axleWeight6 != null  ">#{axleWeight6},</if>
+            <if test="axleWeight7 != null  ">#{axleWeight7},</if>
+            <if test="axleWeight8 != null  ">#{axleWeight8},</if>
+            <if test="sequenceTag != null  and sequenceTag != ''  ">#{sequenceTag},</if>
+            <if test="ftpHead != null  and ftpHead != ''  ">#{ftpHead},</if>
+            <if test="ftpAxle != null  and ftpAxle != ''  ">#{ftpAxle},</if>
+            <if test="ftpTail != null  and ftpTail != ''  ">#{ftpTail},</if>
+            <if test="ftpPriorHead != null  and ftpPriorHead != ''  ">#{ftpPriorHead},</if>
+            <if test="ftpPlate != null  and ftpPlate != ''  ">#{ftpPlate},</if>
+            <if test="ftpFullView != null  and ftpFullView != ''  ">#{ftpFullView},</if>
+            <if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+            <if test="updateTime != null  ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="deviceCode != null  and deviceCode != ''  ">#{deviceCode},</if>
+            <if test="stationId != null  ">#{stationId},</if>
+            <if test="lwhDate != null  ">#{lwhDate},</if>
+            <if test="plate != null  and plate != ''  ">#{plate},</if>
+            <if test="width != null  and width != ''  ">#{width},</if>
+            <if test="height != null  and height != ''  ">#{height},</if>
+            <if test="length != null  and length != ''  ">#{length},</if>
+            <if test="laneMid != null  and laneMid != ''  ">#{laneMid},</if>
+            <if test="laneMin != null  and laneMin != ''  ">#{laneMin},</if>
+            <if test="laneMax != null  and laneMax != ''  ">#{laneMax},</if>
+            <if test="passTime != null  and passTime != ''  ">#{passTime},</if>
+            <if test="uploadTag != null  ">#{uploadTag},</if>
+            <if test="uploadYhl != null  ">#{uploadYhl},</if>
+            <if test="uploadSj != null  ">#{uploadSj},</if>
+            <if test="uploadJj != null  ">#{uploadJj},</if>
+            <if test="laneId != null  ">#{laneId},</if>
+        </trim>
+    </insert>
+    <select id="selectWeightDataBefore40DaysById" parameterType="Long" resultMap="WeightDataResult">
+        select * from weight_data_before_40days where id = #{id}
+    </select>
+    <select id="selectLaneId" resultType="Integer" >
+        select lane_id from station_lane_info where station_id = #{stationId} and  lane_no = #{lane}
+    </select>
+    <select id="selectByStationIdAndLane" resultMap="WeightDataResult">
+        select id,weighting_date,lwh_date,plate,create_time,weight,lane_mid,
+        lwh_scene_path,ftp_prior_head,ftp_tail,ftp_head,ftp_axle,ftp_plate,ftp_full_view
+        from weight_data
+        where station_id = #{stationId} and lane_mid = #{laneMid}
+        order by id desc limit 10
+    </select>
+
+    <select id="overLoadCarList" resultType="java.util.HashMap">
+        select plate,count(*) overCount
+        from weight_data
+        where  over_weight > 0
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(weighting_date)
+        <if test="plate != null and plate != '' ">
+            and plate like concat('%', #{plate}, '%')
+        </if>
+        group by plate order by overCount desc
+    </select>
+
+    <select id="selectOverLoadRecordByPlate"  resultMap="WeightDataResult">
+        select wd.id,wd.weighting_date,wd.weight,wd.over_weight,wd.limit_weight,
+        wd.speed,wd.plate,dsi.name station_name,
+		CONCAT((select cd.value from config_data cd where cd.key='nginx_url'),wd.station_id,'/',
+		DATE_FORMAT(wd.weighting_date, '%Y%m%d'),'/',wd.ftp_plate) ftp_plate
+        from weight_data wd
+        left join duge_station_info dsi
+        on dsi.id = wd.station_id
+        where wd.plate = #{plate} and wd.over_weight > 0
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(wd.weighting_date)
+        order by wd.weighting_date desc
+    </select>
+
+    <select id="stationDaily" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
+    	SELECT station_id as stationId, COUNT(id) AS number
+		FROM weight_data
+		WHERE weighting_date BETWEEN  #{startDate} AND  #{endDate}
+		GROUP BY station_id;
+    </select>
+
+    <select id="stationDailyOverWeight" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
+    	SELECT station_id as stationId, COUNT(*) AS number
+		FROM weight_data
+		WHERE DATE(weighting_date) = #{date} AND over_weight>0 GROUP BY station_id
+    </select>
+
+    <select id="selectOverLengthRecordByPlate"  resultMap="WeightDataResult">
+        select wd.id,wd.weighting_date,wd.weight,wd.over_weight,wd.limit_weight,
+        wd.speed,wd.truck_number plate,dsi.name station_name,
+		CONCAT((select cd.value from config_data cd where cd.key='nginx_url'),wd.station_id,'/',
+		DATE_FORMAT(wd.weighting_date, '%Y%m%d'),'/',wd.ftp_plate) ftp_plate
+        from weight_data wd
+        left join duge_station_info dsi
+        on dsi.id = wd.station_id
+        where wd.truck_number = #{plate} and wd.length > 8000 and wd.lbh > 2000
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(wd.weighting_date)
+        order by wd.weighting_date desc
+    </select>
+
+    <select id="overLengthCarList" resultType="java.util.HashMap">
+        select truck_number plate,count(*) overCount
+        from weight_data
+        where length > 8000 and lbh > 2000 and truck_number &lt;> '无车牌'
+        and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(weighting_date)
+        <if test="plate != null and plate != '' ">
+            and truck_number like concat('%', #{plate}, '%')
+        </if>
+        group by truck_number order by overCount desc
+    </select>
+</mapper>

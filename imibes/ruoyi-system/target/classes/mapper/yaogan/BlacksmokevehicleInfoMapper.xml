@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.yaogan.mapper.BlacksmokevehicleInfoMapper">
+
+    <resultMap type="BlacksmokevehicleInfo" id="BlacksmokevehicleInfoResult">
+        <result property="id"    column="id"    />
+        <result property="JLBH"    column="JLBH"    />
+        <result property="DWBH"    column="DWBH"    />
+        <result property="JCXBH"    column="JCXBH"    />
+        <result property="CDXH"    column="CDXH"    />
+        <result property="JCSJ"    column="JCSJ"    />
+        <result property="PDJG"    column="PDJG"    />
+        <result property="HPHM"    column="HPHM"    />
+        <result property="CPYS"    column="CPYS"    />
+        <result property="HPZL"    column="HPZL"    />
+        <result property="RLZL"    column="RLZL"    />
+        <result property="LGMHD"    column="LGMHD"    />
+        <result property="TP1"    column="TP1"    />
+        <result property="TP2"    column="TP2"    />
+        <result property="SP1"    column="SP1"    />
+        <result property="uploaded"    column="uploaded"    />
+    </resultMap>
+
+    <sql id="selectBlacksmokevehicleInfoVo">
+        select id,JLBH, DWBH, JCXBH, CDXH, JCSJ, PDJG, HPHM, CPYS, HPZL, RLZL, LGMHD, TP1, TP2,SP1  uploaded from rs_blacksmokevehicle
+    </sql>
+
+    <select id="selectBlacksmokevehicleInfoList" parameterType="BlacksmokevehicleInfo" resultMap="BlacksmokevehicleInfoResult">
+        <include refid="selectBlacksmokevehicleInfoVo"/>
+        <where>
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+            <if test="JLBH != null  and JLBH != '' "> and JLBH = #{JLBH}</if>
+            <if test="DWBH != null  and DWBH != '' "> and DWBH = #{DWBH}</if>
+            <if test="JCXBH != null  and JCXBH != '' "> and JCXBH = #{JCXBH}</if>
+            <if test="CDXH != null  and CDXH != '' "> and CDXH = #{CDXH}</if>
+            <if test="JCSJ != null  "> and JCSJ = #{JCSJ}</if>
+            <if test="PDJG != null  and PDJG != '' "> and PDJG = #{PDJG}</if>
+            <if test="HPHM != null  and HPHM != '' "> and HPHM = #{HPHM}</if>
+            <if test="CPYS != null  and CPYS != '' "> and CPYS = #{CPYS}</if>
+            <if test="HPZL != null  and HPZL != '' "> and HPZL = #{HPZL}</if>
+            <if test="RLZL != null  and RLZL != '' "> and RLZL = #{RLZL}</if>
+            <if test="LGMHD != null  "> and LGMHD = #{LGMHD}</if>
+            <if test="TP1 != null  and TP1 != '' "> and TP1 = #{TP1}</if>
+            <if test="TP2 != null  and TP2 != '' "> and TP2 = #{TP2}</if>
+            <if test="SP1 != null  and SP1 != '' "> and SP1 = #{SP1}</if>
+            <if test="uploaded != null "> and uploaded = #{uploaded}</if>
+        </where>
+        order by JLSJ desc
+    </select>
+
+    <select id="selectBlacksmokevehicleInfoById" parameterType="Long" resultMap="BlacksmokevehicleInfoResult">
+        <include refid="selectBlacksmokevehicleInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBlacksmokevehicleInfo" parameterType="BlacksmokevehicleInfo">
+        insert into rs_blacksmokevehicle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''  ">id,</if>
+            <if test="JLBH != null  and JLBH != ''  ">JLBH,</if>
+            <if test="DWBH != null  and DWBH != ''  ">DWBH,</if>
+            <if test="JCXBH != null  and JCXBH != ''  ">JCXBH,</if>
+            <if test="CDXH != null  and CDXH != ''  ">CDXH,</if>
+            <if test="JCSJ != null    ">JCSJ,</if>
+            <if test="PDJG != null  and PDJG != ''  ">PDJG,</if>
+            <if test="HPHM != null  and HPHM != ''  ">HPHM,</if>
+            <if test="CPYS != null  and CPYS != ''  ">CPYS,</if>
+            <if test="HPZL != null  and HPZL != ''  ">HPZL,</if>
+            <if test="RLZL != null  and RLZL != ''  ">RLZL,</if>
+            <if test="LGMHD != null  and LGMHD != ''  ">LGMHD,</if>
+            <if test="TP1 != null  and TP1 != ''  ">TP1,</if>
+            <if test="TP2 != null  and TP2 != ''  ">TP2,</if>
+            <if test="SP1 != null  and SP1 != ''  ">SP1,</if>
+            <if test="uploaded != null  ">uploaded,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''  ">#{id},</if>
+            <if test="JLBH != null  and JLBH != ''  ">#{JLBH},</if>
+            <if test="DWBH != null  and DWBH != ''  ">#{DWBH},</if>
+            <if test="CDXH != null  and CDXH != ''  ">#{CDXH},</if>
+            <if test="JCSJ != null   ">#{JCSJ},</if>
+            <if test="PDJG != null  and PDJG != ''  ">#{PDJG},</if>
+            <if test="HPHM != null  and HPHM != ''  ">#{HPHM},</if>
+            <if test="CPYS != null  and CPYS != ''  ">#{CPYS},</if>
+            <if test="HPZL != null  and HPZL != ''  ">#{HPZL},</if>
+            <if test="RLZL != null  and RLZL != ''  ">#{RLZL},</if>
+            <if test="LGMHD != null  and LGMHD != ''  ">#{LGMHD},</if>
+            <if test="TP1 != null  and TP1 != ''  ">#{TP1},</if>
+            <if test="TP2 != null  and TP2 != ''  ">#{TP2},</if>
+            <if test="SP1 != null  and SP1 != ''  ">#{SP1},</if>
+            <if test="uploaded != null  ">#{uploaded},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBlacksmokevehicleInfo" parameterType="BlacksmokevehicleInfo">
+        update rs_blacksmokevehicle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="JLBH != null  and JLBH != ''  ">#{JLBH},</if>
+            <if test="DWBH != null  and DWBH != ''  ">#{DWBH},</if>
+            <if test="CDXH != null  and CDXH != ''  ">#{CDXH},</if>
+            <if test="JCSJ != null   ">#{JCSJ},</if>
+            <if test="PDJG != null  and PDJG != ''  ">#{PDJG},</if>
+            <if test="HPHM != null  and HPHM != ''  ">#{HPHM},</if>
+            <if test="CPYS != null  and CPYS != ''  ">#{CPYS},</if>
+            <if test="HPZL != null  and HPZL != ''  ">#{HPZL},</if>
+            <if test="RLZL != null  and RLZL != ''  ">#{RLZL},</if>
+            <if test="LGMHD != null  and LGMHD != ''  ">#{LGMHD},</if>
+            <if test="TP1 != null  and TP1 != ''  ">#{TP1},</if>
+            <if test="TP2 != null  and TP2 != ''  ">#{TP2},</if>
+            <if test="SP1 != null  and SP1 != ''  ">#{SP1},</if>
+            <if test="uploaded != null  ">#{uploaded},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBlacksmokevehicleInfoById" parameterType="Long">
+        delete from rs_blacksmokevehicle where id = #{id}
+    </delete>
+
+    <delete id="deleteBlacksmokevehicleInfoByIds" parameterType="Long">
+        delete from rs_blacksmokevehicle where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selecBlacksmokeCount" parameterType="WeightData" resultType="Long">
+         select count(*) as blacksmokeCount from rs_blacksmokevehicle bs
+         where bs.JCSJ between #{params.beginTime} and #{params.endTime} and bs.PDJG = '0'
+    </select>
+</mapper>

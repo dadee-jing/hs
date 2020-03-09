@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.module.mapper.DeviceDataMapper">
+    
+    <resultMap type="DeviceData" id="DeviceDataResult">
+        <result property="id"    column="id"    />
+        <result property="indexCode"    column="index_code"    />
+        <result property="checkDate"    column="check_date"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="checkId"    column="check_id"    />
+        <result property="ipAddress"    column="ip_address"    />
+        <result property="checkState"    column="check_state"    />
+        <result property="exceptionDesc"    column="exception_desc"    />
+        <result property="uploadTag"    column="upload_tag"    />
+    </resultMap>
+	
+	<sql id="selectDataVo">
+        select id, index_code, check_date, device_type, check_id, ip_address, check_state, exception_desc, upload_tag from device_data
+    </sql>
+	
+    <select id="selectDataList" parameterType="DeviceData" resultMap="DeviceDataResult">
+        <include refid="selectDataVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="indexCode != null  and indexCode != '' "> and index_code = #{indexCode}</if>
+             <if test="checkDate != null "> and check_date = #{checkDate}</if>
+             <if test="deviceType != null  and deviceType != '' "> and device_type = #{deviceType}</if>
+             <if test="checkId != null "> and check_id = #{checkId}</if>
+             <if test="ipAddress != null  and ipAddress != '' "> and ip_address = #{ipAddress}</if>
+             <if test="checkState != null "> and check_state = #{checkState}</if>
+             <if test="exceptionDesc != null  and exceptionDesc != '' "> and exception_desc = #{exceptionDesc}</if>
+             <if test="uploadTag != null "> and upload_tag = #{uploadTag}</if>
+         </where>
+    </select>
+
+    <select id="selectNotUpload" parameterType="DeviceData" resultMap="DeviceDataResult">
+        <include refid="selectDataVo"/>
+        <where>
+            and upload_tag = 0
+        </where>
+    </select>
+    
+    <select id="selectDataById" parameterType="Long" resultMap="DeviceDataResult">
+        <include refid="selectDataVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertData" parameterType="DeviceData">
+        insert into device_data
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="indexCode != null  and indexCode != ''  ">index_code,</if>
+			<if test="checkDate != null  ">check_date,</if>
+			<if test="deviceType != null  and deviceType != ''  ">device_type,</if>
+			<if test="checkId != null  ">check_id,</if>
+			<if test="ipAddress != null  and ipAddress != ''  ">ip_address,</if>
+			<if test="checkState != null  ">check_state,</if>
+			<if test="exceptionDesc != null  and exceptionDesc != ''  ">exception_desc,</if>
+			<if test="uploadTag != null  ">upload_tag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="indexCode != null  and indexCode != ''  ">#{indexCode},</if>
+			<if test="checkDate != null  ">#{checkDate},</if>
+			<if test="deviceType != null  and deviceType != ''  ">#{deviceType},</if>
+			<if test="checkId != null  ">#{checkId},</if>
+			<if test="ipAddress != null  and ipAddress != ''  ">#{ipAddress},</if>
+			<if test="checkState != null  ">#{checkState},</if>
+			<if test="exceptionDesc != null  and exceptionDesc != ''  ">#{exceptionDesc},</if>
+			<if test="uploadTag != null  ">#{uploadTag},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateData" parameterType="DeviceData">
+        update device_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="indexCode != null  and indexCode != ''  ">index_code = #{indexCode},</if>
+            <if test="checkDate != null  ">check_date = #{checkDate},</if>
+            <if test="deviceType != null  and deviceType != ''  ">device_type = #{deviceType},</if>
+            <if test="checkId != null  ">check_id = #{checkId},</if>
+            <if test="ipAddress != null  and ipAddress != ''  ">ip_address = #{ipAddress},</if>
+            <if test="checkState != null  ">check_state = #{checkState},</if>
+            <if test="exceptionDesc != null  and exceptionDesc != ''  ">exception_desc = #{exceptionDesc},</if>
+            <if test="uploadTag != null  ">upload_tag = #{uploadTag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteDataById" parameterType="Long">
+        delete from device_data where id = #{id}
+    </delete>
+	
+    <delete id="deleteDataByIds" parameterType="String">
+        delete from device_data where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
