@@ -122,13 +122,13 @@
             <if test="plate != null  and plate != '' ">and plate = #{plate}</if>
             <if test="width != null  and width != '' ">and width = #{width}</if>
             <if test="height != null  and height != '' ">and height = #{height}</if>
-            <if test="length != null  and length != '' ">and length > CAST(#{length} AS signed) </if>
+            <if test="length != null  and length != '' ">and length > CAST(#{length} AS signed)</if>
             <if test="laneMid != null  and laneMid != '' ">and lane_mid = #{laneMid}</if>
             <if test="laneMin != null  and laneMin != '' ">and lane_min = #{laneMin}</if>
             <if test="laneMax != null  and laneMax != '' ">and lane_max = #{laneMax}</if>
-            <if test="lbh != null  and lbh != '' ">and lbh &gt;= CAST(#{lbh} AS signed) </if>
-            <if test="lbw != null  and lbw != '' ">and lbw &gt; 0 </if>
-            <if test="lbl != null  and lbl != '' ">and lbl &gt; 0 </if>
+            <if test="lbh != null  and lbh != '' ">and lbh &gt;= CAST(#{lbh} AS signed)</if>
+            <if test="lbw != null  and lbw != '' ">and lbw &gt; 0</if>
+            <if test="lbl != null  and lbl != '' ">and lbl &gt; 0</if>
             <if test="passTime != null  and passTime != '' ">and pass_time = #{passTime}</if>
             <if test="uploadTag != null ">and upload_tag = #{uploadTag}</if>
             <if test="uploadYhl != null ">and upload_yhl = #{uploadYhl}</if>
@@ -140,14 +140,15 @@
             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
                 and date_format(weighting_date,'%Y-%m-%d %H:%i') &lt;= date_format(#{params.endTime},'%Y-%m-%d %H:%i')
             </if>
-            <if test="params.overWeightMin != null and params.overWeightMin != '' and params.overWeightMin > -1">and over_weight >
+            <if test="params.overWeightMin != null and params.overWeightMin != '' and params.overWeightMin > -1">and
+                over_weight >
                 #{params.overWeightMin}
             </if>
         </where>
         order by id desc
     </select>
 
-    <select id="selectLast" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult" >
+    <select id="selectLast" parameterType="com.ruoyi.duge.domain.WeightData" resultMap="WeightDataResult">
         <include refid="selectDataVo"/>
         <where>
             <if test="stationId != null ">and station_id = #{stationId}</if>
@@ -373,7 +374,7 @@
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &gt; date_add(now(), interval - 5 minute)
-            and upload_sj  in (0, 2)
+            and upload_sj in (0, 2)
             and station_id = 2
         </where>
         order by upload_sj
@@ -442,7 +443,7 @@
     </select>
 
     <!--查这辆车一天内有没有违法-->
-    <select id="selectByTruckNumber"  resultType="Integer">
+    <select id="selectByTruckNumber" resultType="Integer">
        select COUNT(0) from weight_data_before_40days where to_days(weighting_date) = to_days(#{weightingDate})
        AND truck_number = #{truckNumber}
        AND over_weight>0
@@ -456,7 +457,7 @@
         ORDER BY id DESC
     </select>
     <!--查这辆车90天前那一天内所有数据-->
-    <select id="selectByTruckNumberOver90Date"  resultMap="WeightDataResult">
+    <select id="selectByTruckNumberOver90Date" resultMap="WeightDataResult">
         select *  from weight_data_before_40days  where
         to_days(weighting_date) = to_days(#{weightingDate})
         and truck_number = #{truckNumber}
@@ -466,7 +467,7 @@
         <include refid="selectDataVo"/>
         <where>
             wd.create_time &lt; date_add(now(), interval - 2*356*24*60 minute)
-            and wd.over_weight  > 0
+            and wd.over_weight > 0
         </where>
     </select>
     <update id="updateWeightDataBefore40Days" parameterType="com.ruoyi.duge.domain.WeightData">
@@ -528,7 +529,6 @@
         </trim>
         where id = #{id}
     </update>
-
 
 
     <!--备份数据-->
@@ -651,7 +651,7 @@
     <select id="selectWeightDataBefore40DaysById" parameterType="Long" resultMap="WeightDataResult">
         select * from weight_data_before_40days where id = #{id}
     </select>
-    <select id="selectLaneId" resultType="Integer" >
+    <select id="selectLaneId" resultType="Integer">
         select lane_id from station_lane_info where station_id = #{stationId} and  lane_no = #{lane}
     </select>
     <select id="selectByStationIdAndLane" resultMap="WeightDataResult">
@@ -665,7 +665,7 @@
     <select id="overLoadCarList" resultType="java.util.HashMap">
         select plate,count(*) overCount
         from weight_data
-        where  over_weight > 0
+        where over_weight > 0
         and DATE_SUB(CURDATE(), INTERVAL #{startDay} DAY) &lt;= date(weighting_date)
         <if test="plate != null and plate != '' ">
             and plate like concat('%', #{plate}, '%')
@@ -673,7 +673,7 @@
         group by plate order by overCount desc
     </select>
 
-    <select id="selectOverLoadRecordByPlate"  resultMap="WeightDataResult">
+    <select id="selectOverLoadRecordByPlate" resultMap="WeightDataResult">
         select wd.id,wd.weighting_date,wd.weight,wd.over_weight,wd.limit_weight,
         wd.speed,wd.plate,dsi.name station_name,
 		CONCAT((select cd.value from config_data cd where cd.key='nginx_url'),wd.station_id,'/',
@@ -693,13 +693,20 @@
 		GROUP BY station_id;
     </select>
 
+    <select id="sendYihualu" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
+    	SELECT station_id as stationId, COUNT(id) AS number
+		FROM weight_data
+		WHERE (create_time BETWEEN  #{startDate} AND  #{endDate}) and upload_yhl = 1
+		GROUP BY station_id;
+    </select>
+
     <select id="stationDailyOverWeight" parameterType="com.ruoyi.duge.domain.CarOut" resultType="hashMap">
     	SELECT station_id as stationId, COUNT(*) AS number
 		FROM weight_data
 		WHERE DATE(weighting_date) = #{date} AND over_weight>0 GROUP BY station_id
     </select>
 
-    <select id="selectOverLengthRecordByPlate"  resultMap="WeightDataResult">
+    <select id="selectOverLengthRecordByPlate" resultMap="WeightDataResult">
         select wd.id,wd.weighting_date,wd.weight,wd.over_weight,wd.limit_weight,
         wd.speed,wd.truck_number plate,dsi.name station_name,
 		CONCAT((select cd.value from config_data cd where cd.key='nginx_url'),wd.station_id,'/',

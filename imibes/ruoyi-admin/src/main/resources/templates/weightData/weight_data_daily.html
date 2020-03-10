@@ -115,7 +115,7 @@
 				} else if ($("#overWeight").hasClass('active')) {
 					url = "/duge/weightData/stationDailyOverWeight/" + $("#startTime").val();
 				} else if ($("#sendyihualu").hasClass('active')) {
-					url = "/duge/weightData/sendyihualu/" + $("#startTime").val();			//记得改url
+					url = "/duge/weightData/sendyihualu/" + startDate;			//记得改url
 				}
 
 				$.ajax({
