@@ -101,4 +101,7 @@ public interface IWeightDataMapperService
     List<CarOut> stationDaily(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 	List<CarOut> stationDailyOverWeight(@Param("date") Date date);
+
+	//统计易华录
+	List<CarOut> sendYihualu(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

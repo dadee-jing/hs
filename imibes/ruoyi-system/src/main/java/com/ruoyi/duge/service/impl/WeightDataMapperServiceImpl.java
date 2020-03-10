@@ -90,7 +90,7 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     }
 
     @Override
-    public Map selectStationStatistics(com.ruoyi.duge.domain.WeightData data){
+    public Map selectStationStatistics(com.ruoyi.duge.domain.WeightData data) {
         return dataMapper.selectStationStatistics(data);
     }
 
@@ -110,7 +110,6 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     }
 
 
-
     @Override
     public List<WeightData> selectTruckNumberByTime() {
         return dataMapper.selectTruckNumberByTime();
@@ -118,26 +117,27 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
 
     @Override
     public Integer selectByTruckNumber(Date weightingDate, String truckNumber) {
-        return dataMapper.selectByTruckNumber(weightingDate,truckNumber);
+        return dataMapper.selectByTruckNumber(weightingDate, truckNumber);
     }
+
     @Override
     public List<WeightData> selectTruckNumberOver90Date() {
         return dataMapper.selectTruckNumberOver90Date();
     }
 
     @Override
-    public List<WeightData> selectByTruckNumberOver90Date(Date weightingDate,String truckNum) {
-        return dataMapper.selectByTruckNumberOver90Date(weightingDate,truckNum);
+    public List<WeightData> selectByTruckNumberOver90Date(Date weightingDate, String truckNum) {
+        return dataMapper.selectByTruckNumberOver90Date(weightingDate, truckNum);
     }
 
-     @Override
+    @Override
     public List<WeightData> selectBefore40Days() {
         return dataMapper.selectBefore40Days();
     }
 
     @Override
     public int insertIntoWeightDataBefore40Days(WeightData weightData) {
-      return   dataMapper.insertIntoWeightDataBefore40Days(weightData);
+        return dataMapper.insertIntoWeightDataBefore40Days(weightData);
     }
 
     @Override
@@ -147,28 +147,28 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
 
     @Override
     public boolean checkIsExist(Long id) {
-        if(dataMapper.selectWeightDataBefore40DaysById(id).size()>0){
-         return true;
-        }else {
-         return false;
+        if (dataMapper.selectWeightDataBefore40DaysById(id).size() > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     @Override
-	public List<CarOut> selectCarOutNumber(@Param("stationId")int stationId,@Param("startDate")Date startDate,
-                                           @Param("endDate")Date endDate) {
-		// TODO Auto-generated method stub
-		return dataMapper.selectCarOutNumber(stationId,startDate,endDate);
-	}
+    public List<CarOut> selectCarOutNumber(@Param("stationId") int stationId, @Param("startDate") Date startDate,
+                                           @Param("endDate") Date endDate) {
+        // TODO Auto-generated method stub
+        return dataMapper.selectCarOutNumber(stationId, startDate, endDate);
+    }
 
     /**
      * 查询过车超重统计
      */
     @Override
-    public List<CarOut> selectCarOverWeight(@Param("stationId")int stationId,@Param("startDate")Date startDate,
-                                           @Param("endDate")Date endDate) {
+    public List<CarOut> selectCarOverWeight(@Param("stationId") int stationId, @Param("startDate") Date startDate,
+                                            @Param("endDate") Date endDate) {
         // TODO Auto-generated method stub
-        return dataMapper.selectCarOverWeight(stationId,startDate,endDate);
+        return dataMapper.selectCarOverWeight(stationId, startDate, endDate);
     }
 
     @Override
@@ -179,5 +179,10 @@ public class WeightDataMapperServiceImpl implements IWeightDataMapperService {
     @Override
     public List<CarOut> stationDailyOverWeight(Date date) {
         return dataMapper.stationDailyOverWeight(date);
+    }
+
+    @Override
+    public List<CarOut> sendYihualu(Date startDate, Date endDate) {
+        return dataMapper.sendYihualu(startDate, endDate);
     }
 }

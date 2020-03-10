@@ -562,4 +562,22 @@ public class WeightDataController extends BaseController {
 		}
 		return list;
 	}
+
+	@PostMapping("/sendyihualu/{date}")
+	@ResponseBody
+	public List<CarOut> sendyihualu(@PathVariable("date") String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		Date startTime;
+		Date endTime;
+		List<CarOut> list = null;
+		try {
+			startTime = sdf.parse(date);
+			endTime = DateUtils.addDays(startTime, 1);
+			list = dataService.sendYihualu(startTime, endTime);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
 }
